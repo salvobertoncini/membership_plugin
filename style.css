@@ -1,0 +1,16 @@
+.pointer 
+{
+	cursor: pointer; 
+}
+
+.message_dashboard
+{
+	max-height: 200px;
+	max-width: 200px;
+}
+
+#img-settings
+{
+	max-height: 200px;
+	max-width: 200px;
+}
