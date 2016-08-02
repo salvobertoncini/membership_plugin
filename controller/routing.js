@@ -1,5 +1,11 @@
 $(function() {
 
+    init_the_plugin();
+
+});
+
+function init_the_plugin()
+{
     var test = if_membership_exist();
 
     if(test == "true")
@@ -10,8 +16,7 @@ $(function() {
     {
         init_membership_view();
     }
-
-});
+}
 
 function route()
 {
@@ -53,11 +58,13 @@ function if_membership_exist()
             var resp = jQuery.parseJSON(response);
 
             if(resp.response=="true")
-                ret = "true";
+                localStorage.setItem('testing', true);
             else
-                ret = "false";
+                localStorage.setItem('testing', false);
         }
     );
 
-    return ret;
+    post = localStorage.getItem('testing');
+
+    return post;
 }

@@ -107,7 +107,21 @@ function registration_step_2()
 			
 			if(resp.response=="true")
 			{
-				registration_success();
+				//inserisco i dati in un json
+				object = JSON.stringify({ r: 'EmailSender', t:  token, e: user.email, p: user.password });
+
+				$.post(path+"api/servo.php", { js_object: object }, 
+					function(response)
+					{
+						console.log(response);
+
+						var resp = jQuery.parseJSON(response);
+						
+						if(resp.response=="true")
+						{
+							registration_success();
+						}
+					});
 			}
 						
 		});

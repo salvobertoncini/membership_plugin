@@ -14,3 +14,11 @@
 	max-height: 200px;
 	max-width: 200px;
 }
+
+.button-danger
+{
+    color: #fff;
+    background-color: #d9534f;
+    border-color: #d43f3a;
+    border-radius: 3px;
+}

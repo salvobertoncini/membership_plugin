@@ -28,6 +28,52 @@ function init_membership_all()
 	return post;
 }
 
+function registration_membership()
+{
+	var name 				= $('#name').val();
+	var registered_office 	= $('#registered_office').val();
+	var op_headquarter 		= $('#op_headquarter').val();
+	var VAT 				= $('#VAT').val();
+	var email 				= $('#email').val();
+	var fee 				= $('#fee').val();
+	var range_fee 			= $('#range_fee').val();
+	var website 			= $('#website').val();
+	var clientId			= $('#clientId').val();
+	var clientSecret		= $('#clientSecret').val();
+	var url_plugin 			= window.location.href;
+
+	if((!check_something(clientId))||(!check_something(clientSecret)))
+	{
+		clientSecret = "null";
+		clientId = "null";
+	}
+
+	if(check_something(name) && check_something(registered_office) && check_something(op_headquarter) && check_something(VAT) && check_something(email) && check_something(fee) && check_something(range_fee) && check_something(website))
+	{
+		//inserisco i dati in un json
+		object = JSON.stringify({ r: 'RegistrationMembership', n: name, d: registered_office, o: op_headquarter, v: VAT, e: email, f: fee, g: range_fee, w: website, c: clientId, k: clientSecret, u: url_plugin });
+		console.log(object);
+
+		$.post(path+"api/servo.php", { js_object: object }, 
+			function(response)
+			{
+				console.log(response);
+
+				var resp = jQuery.parseJSON(response);
+				
+				if(resp.response=="true")
+				{
+					alert("registrazione associazione avvenuta con successo!");
+					route();
+				}
+							
+			});
+	}
+	else
+		alert("riempi tutti i campi richiesti");
+
+}
+
 function fill_membership_table(userList)
 {
 	var post = '';
@@ -300,6 +346,73 @@ function change_profile_image(id)
 				alert("immagine aggiornata con successo");
 
 				edit_member_view(id);
+			}
+						
+		});
+}
+
+function edit_membership_config()
+{
+	var name 				= $('#name').val();
+	var registered_office 	= $('#registered_office').val();
+	var op_headquarter 		= $('#op_headquarter').val();
+	var VAT 				= $('#VAT').val();
+	var email 				= $('#email').val();
+	var fee 				= $('#fee').val();
+	var range_fee 			= $('#range_fee').val();
+	var website 			= $('#website').val();
+	var clientId			= $('#clientId').val();
+	var clientSecret		= $('#clientSecret').val();
+	var url_plugin 			= window.location.href;
+
+	if((!check_something(clientId))||(!check_something(clientSecret)))
+	{
+		clientSecret = "null";
+		clientId = "null";
+	}
+
+	if(check_something(name) && check_something(registered_office) && check_something(op_headquarter) && check_something(VAT) && check_something(email) && check_something(fee) && check_something(range_fee) && check_something(website))
+	{
+		//inserisco i dati in un json
+		object = JSON.stringify({ r: 'UpdateMembership', n: name, d: registered_office, o: op_headquarter, v: VAT, e: email, f: fee, g: range_fee, w: website, c: clientId, k: clientSecret, u: url_plugin });
+		console.log(object);
+
+		$.post(path+"api/servo.php", { js_object: object }, 
+			function(response)
+			{
+				console.log(response);
+
+				var resp = jQuery.parseJSON(response);
+				
+				if(resp.response=="true")
+				{
+					alert("aggiornamento associazione effettuato con successo!");
+					route();
+				}
+							
+			});
+	}
+	else
+		alert("riempi tutti i campi richiesti");
+}
+
+function delete_membership_forever()
+{
+	//inserisco i dati in un json
+	object = JSON.stringify({ r: 'DeleteMembershipForever' });
+	console.log(object);
+
+	$.post(path+"api/servo.php", { js_object: object }, 
+		function(response)
+		{
+			console.log(response);
+
+			var resp = jQuery.parseJSON(response);
+			
+			if(resp.response=="true")
+			{
+				alert("Hai eliminato la tua associazione. Iscrivi una nuova associazione. ");
+				logout();
 			}
 						
 		});

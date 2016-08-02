@@ -53,6 +53,16 @@ function create_token()
 	return rand() + rand();
 }
 
+function create_password()
+{
+	var rand = function()
+	{
+    	return Math.random().toString(36).substr(2); // remove `0.`
+	};
+
+	return rand();
+}
+
 function splitSomething(data, split)
 {
     var arr = data.split(''+split);

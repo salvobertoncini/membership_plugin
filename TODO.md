@@ -59,18 +59,23 @@
 ###2 agosto 2016
 
 * fixato pagamento paypal
+
 * fixata registrazione
 
-##COSE DA FARE
-
 * SUDDIVISIONE DELLE VIEW
-* prefisso di wordpress, e "subprefisso" configurabile manualmente
+
 * setting iniziale associazione per:
 	- intestazione associazione
 	- quota associativa annuale
 	- range anno associativo per il pagamento (solitamente anno solare)
-	- gestione e personalizzazione ruoli
-* ricevuta del pagamento
+
 * email per conferma per l'iscrizione
 * email per password smarrita
+
+##COSE DA FARE
+
+* prefisso di wordpress, e "subprefisso" configurabile manualmente
+* gestione e personalizzazione ruoli
+* ricevuta del pagamento
 * inserimento contenuti
+* creazione widget per visualizzare funzioni e contenuti direttamente da sito web, e non da dashboard.

@@ -126,6 +126,102 @@ function default_return()
 	return $risposta;
 }
 
+function email_sender($token, $email, $password)
+{
+	$risposta = array('response' => 'false');
+
+	$sql = "SELECT * FROM `membership`";
+
+	$mysqli = db_connection();
+
+    //eseguo la query
+	$query = $mysqli->query($sql);
+	
+
+	//verifichiamo che siano presenti records
+	if($query->data_seek(0))
+	{
+		while($row = $query->fetch_assoc())
+		{  
+			$name_membership	= $row['name'];
+			$admin_email		= $row['email'];
+			$url_plugin			= $row['url_plugin'];
+		}
+	}
+
+	// email per la conferma
+    // intestazioni
+    $headers = "From: $admin_email\nreply-To: noreply\r\n";
+    $subject = "Conferma la tua iscrizione.";
+    
+    //corpo del messaggio
+    $messaggio = "Ti ringraziamo per la tua iscrizione a ".$name_membership.". \n";
+    $messaggio .= "La tua user è: ".$email."\n";
+    $messaggio .= "La tua password è: ".$password."\n";
+    $messaggio .= "Per confemare vai alla pagina ".$url_plugin."&approvetoken=".$token;
+    $messaggio .= " \ne inserisci i dati per l'autenticazione.\n"; 
+    
+    // invio dell'email
+    @mail($email, stripslashes($subject),stripslashes($messaggio),$headers);
+    
+    $risposta = array('response' => 'true');
+
+    return $risposta;
+}
+
+function forgot_password($token, $email, $password)
+{
+	$risposta = array('response' => 'false');
+
+
+	//update password cliente
+	$sql = "UPDATE `users` SET `password`='".$password."',`token`='".$token."' WHERE email = '".$email."'";
+
+	$mysqli = db_connection();
+
+    //eseguo la query
+	$query = $mysqli->query($sql);
+
+
+	//prelevo le informazioni dell'associazione
+	$sql = "SELECT * FROM `membership`";
+
+	$mysqli = db_connection();
+
+    //eseguo la query
+	$query = $mysqli->query($sql);
+
+	//verifichiamo che siano presenti records
+	if($query->data_seek(0))
+	{
+		while($row = $query->fetch_assoc())
+		{  
+			$name_membership	= $row['name'];
+			$admin_email		= $row['email'];
+			$url_plugin			= $row['url_plugin'];
+		}
+	}
+
+
+	// email per la conferma
+    // intestazioni
+    $headers = "From: $admin_email\nreply-To: noreply\r\n";
+    $subject = "Password smarrita.";
+    
+    //corpo del messaggio
+    $messaggio = "Ti ringraziamo per la tua iscrizione a ".$name_membership.". \n";
+    $messaggio .= "La tua user è: ".$email."\n";
+    $messaggio .= "La tua nuova password è: ".$password."\n";
+    $messaggio .= "Per completare la procedura effettua il login con le nuove credenziali."; 
+    
+    // invio dell'email
+    @mail($email, stripslashes($subject),stripslashes($messaggio),$headers);
+    
+    $risposta = array('response' => 'true');
+
+    return $risposta;
+}
+
 function login($email, $password)
 {
 	$risposta = array('response' => 'false');
@@ -173,7 +269,28 @@ function login($email, $password)
 
 function registration($name, $surname, $birthday, $email, $password, $website, $education, $bio, $skills, $avatar, $id_role, $id_permission, $enabled, $paid, $verified, $token)
 {
-	$sql = "INSERT INTO `users` (id, name, surname, birthday, email, password, website, education, skills, bio, token, id_permission, verified, enabled, paid, id_role, avatar) VALUES (null, '".$name."', '".$surname."', '".$birthday."', '".$email."', '".$password."', '".$website."', '".$education."', '".$skills."', '".$bio."', '".$token."', ".$id_permission.", ".$verified.", ".$enabled.", ".$paid.", ".$id_role.", '".$avatar."');";
+	$ruolo = $id_role;
+	$permessi = $id_permission;
+
+	$sql = "SELECT * FROM `users`";
+
+	$mysqli = db_connection();
+
+    //eseguo la query
+	$query = $mysqli->query($sql);
+	
+
+	//verifichiamo che siano presenti records
+	if($query->data_seek(0))
+		$nothing = 0;
+	else
+	{
+		//se è il primo registrato, quindi l'admin
+		$ruolo = 4;
+		$permessi = 1;
+	}
+
+	$sql = "INSERT INTO `users` (id, name, surname, birthday, email, password, website, education, skills, bio, token, id_permission, verified, enabled, paid, id_role, avatar) VALUES (null, '".$name."', '".$surname."', '".$birthday."', '".$email."', '".$password."', '".$website."', '".$education."', '".$skills."', '".$bio."', '".$token."', ".$permessi.", ".$verified.", ".$enabled.", ".$paid.", ".$ruolo.", '".$avatar."');";
 
 	$mysqli = db_connection();
 
@@ -927,16 +1044,21 @@ function if_membership_exist()
 		{  
 
 			$id             	= $row['id'];
-			$name    	    	= $row['name'];
-			$registered_office  = $row['registered_office'];
-			$op_headquarter  	= $row['op_headquarter'];
+			$name				= $row['name'];
+			$registered_office	= $row['registered_office'];
+			$op_headquarter		= $row['op_headquarter'];
 			$VAT				= $row['VAT'];
-			$email             	= $row['email'];
-			$website    	    = $row['website'];
-			$clientId    		= $row['clientId'];
-			$clientSecret  		= $row['clientSecret'];
+			$email				= $row['email'];
+			$fee				= $row['fee'];
+			$range_fee			= $row['range_fee'];
+			$website			= $row['website'];
+			$clientId			= $row['clientId'];
+			$clientSecret		= $row['clientSecret'];
+			$registration_date	= $row['registration_date'];
+			$url_plugin			= $row['url_plugin'];
 
-			$item = array('id'=> $id, 'name' => $name, 'registered_office' => $registered_office, 'op_headquarter' => $op_headquarter, 'VAT' => $VAT, 'email' => $email, 'website' => $website, 'clientId' => $clientId, 'clientSecret' => $clientSecret);
+			$item = array('id'=> $id, 'name' => $name, 'registered_office' => $registered_office, 'op_headquarter' => $op_headquarter, 'VAT' => $VAT, 'email' => $email, 'fee' => $fee, 'range_fee' => $range_fee,'website' => $website, 'clientId' => $clientId, 'clientSecret' => $clientSecret, 'registration_date' => $registration_date, 'url_plugin' => $url_plugin);
+
 			array_push($item_list, $item);
 		}
 
@@ -945,6 +1067,51 @@ function if_membership_exist()
 
 	return $risposta;
 }
+
+function registration_membership($name, $registered_office, $op_headquarter, $VAT, $email, $fee, $range_fee, $website, $clientId, $clientSecret, $url_plugin)
+{
+	$timestamp = date('Y-m-d G:i:s');
+
+	$sql = "INSERT INTO `membership`(`id`, `name`, `registered_office`, `op_headquarter`, `VAT`, `email`, `fee`, `range_fee`, `website`, `clientId`, `clientSecret`, `url_plugin`, `registration_date`) VALUES (null,'".$name."','".$registered_office."','".$op_headquarter."','".$VAT."','".$email."',".$fee.",".$range_fee.",'".$website."','".$clientId."','".$clientSecret."','".$url_plugin."','".$timestamp."')";
+
+	$mysqli = db_connection();
+
+    //eseguo la query
+	$query = $mysqli->query($sql);
+
+	$risposta = array('response' => 'true');
+
+	return $risposta;
+}
+
+function update_membership($name, $registered_office, $op_headquarter, $VAT, $email, $fee, $range_fee, $website, $clientId, $clientSecret, $url_plugin)
+{
+	$sql = "UPDATE `membership` SET `name` = '".$name."', `registered_office` = '".$registered_office."', `op_headquarter` = '".$op_headquarter."', `VAT` = '".$VAT."', `email` = '".$email."', `fee` = ".$fee.", `range_fee` = ".$range_fee.", `website` = '".$website."', `clientId` = '".$clientId."', `clientSecret` = '".$clientSecret."', `url_plugin` = '".$url_plugin."'";
+
+	$mysqli = db_connection();
+
+    //eseguo la query
+	$query = $mysqli->query($sql);
+
+	$risposta = array('response' => 'true');
+
+	return $risposta;
+}
+
+function delete_membership_forever()
+{
+	$sql = "DELETE FROM `membership`";
+
+	$mysqli = db_connection();
+
+    //eseguo la query
+	$query = $mysqli->query($sql);
+
+	$risposta = array('response' => 'true');
+
+	return $risposta;
+}
+
 
 //Create a stdClass instance to hold important information
 $return = new stdClass(); 
@@ -964,125 +1131,145 @@ $php_object = json_decode($json_object);
 switch ($php_object->r) 
 {
 	case "IfMembershipExist":
-	$return = if_membership_exist();
-	returnsomething($return);
-	break;
+		$return = if_membership_exist();
+		returnsomething($return);
+		break;
+	case "RegistrationMembership":
+		$return = registration_membership($php_object->n, $php_object->d, $php_object->o, $php_object->v, $php_object->e, $php_object->f, $php_object->g, $php_object->w, $php_object->c, $php_object->k, $php_object->u);
+		returnsomething($return);
+		break;
+	case "UpdateMembership":
+		$return = update_membership($php_object->n, $php_object->d, $php_object->o, $php_object->v, $php_object->e, $php_object->f, $php_object->g, $php_object->w, $php_object->c, $php_object->k, $php_object->u);
+		returnsomething($return);
+		break;
+	case "DeleteMembershipForever":
+		$return = delete_membership_forever();
+		returnsomething($return);
+		break;
 	case "Login":
-	$return = login($php_object->e, $php_object->p);
-	returnsomething($return);
-	break;
+		$return = login($php_object->e, $php_object->p);
+		returnsomething($return);
+		break;
 	case "Registration":
-	$return = registration($php_object->nome, $php_object->cognome, $php_object->birthday, $php_object->email, $php_object->password, $php_object->website, $php_object->education, $php_object->bio, $php_object->skills, $php_object->avatar, $php_object->id_role, $php_object->id_permission, $php_object->enabled, $php_object->verified, $php_object->paid, $php_object->token);
-	returnsomething($return);
-	break;
+		$return = registration($php_object->nome, $php_object->cognome, $php_object->birthday, $php_object->email, $php_object->password, $php_object->website, $php_object->education, $php_object->bio, $php_object->skills, $php_object->avatar, $php_object->id_role, $php_object->id_permission, $php_object->enabled, $php_object->verified, $php_object->paid, $php_object->token);
+		returnsomething($return);
+		break;
+	case "EmailSender":
+		$return = email_sender($php_object->t, $php_object->e, $php_object->p);
+		returnsomething($return);
+		break;
+	case "ForgotPassword":
+		$return = forgot_password($php_object->t, $php_object->e, $php_object->p);
+		returnsomething($return);
+		break;
 	case "CheckExistEmail":
-	$return = check_exist_email($php_object->e);
-	returnsomething($return);
-	break;
+		$return = check_exist_email($php_object->e);
+		returnsomething($return);
+		break;
 	case "AllMembership":
-	$return = all_membership();
-	returnsomething($return);
-	break;
+		$return = all_membership();
+		returnsomething($return);
+		break;
 	case "editEnableUser":
-	$return = edit_enable_user($php_object->i, $php_object->t);
-	returnsomething($return);
-	break;
+		$return = edit_enable_user($php_object->i, $php_object->t);
+		returnsomething($return);
+		break;
 	case "MemberById":
-	$return = member_by_id($php_object->i);
-	returnsomething($return);
-	break;
+		$return = member_by_id($php_object->i);
+		returnsomething($return);
+		break;
 	case "removeUser":
-	$return = remove_user_by_id($php_object->i);
-	returnsomething($return);
-	break;
+		$return = remove_user_by_id($php_object->i);
+		returnsomething($return);
+		break;
 	case "EditUser":
-	$return = edit_user($php_object->i, $php_object->z, $php_object->n, $php_object->c, $php_object->b, $php_object->e, $php_object->w, $php_object->d, $php_object->s, $php_object->o);
-	returnsomething($return);
-	break;
+		$return = edit_user($php_object->i, $php_object->z, $php_object->n, $php_object->c, $php_object->b, $php_object->e, $php_object->w, $php_object->d, $php_object->s, $php_object->o);
+		returnsomething($return);
+		break;
 	case "AllMessages":
-	$return = all_messages();
-	returnsomething($return);
-	break;
+		$return = all_messages();
+		returnsomething($return);
+		break;
 	case "sendMessage":
-	$return = send_message($php_object->i, $php_object->l, $php_object->m);
-	returnsomething($return);
-	break;
+		$return = send_message($php_object->i, $php_object->l, $php_object->m);
+		returnsomething($return);
+		break;
 	case "deleteMessage":
-	$return = delete_message($php_object->i);
-	returnsomething($return);
-	break;
+		$return = delete_message($php_object->i);
+		returnsomething($return);
+		break;
 	case "editMessage":
-	$return = edit_message($php_object->i, $php_object->l, $php_object->m);
-	returnsomething($return);
-	break;
+		$return = edit_message($php_object->i, $php_object->l, $php_object->m);
+		returnsomething($return);
+		break;
 	case "findMessageById";
-	$return = find_message_by_id($php_object->i);
-	returnsomething($return);
-	break;
+		$return = find_message_by_id($php_object->i);
+		returnsomething($return);
+		break;
 	case "AllItems":
-	$return = all_items();
-	returnsomething($return);
-	break;
+		$return = all_items();
+		returnsomething($return);
+		break;
 	case "removeItem":
-	$return = remove_item($php_object->i);
-	returnsomething($return);
-	break;
+		$return = remove_item($php_object->i);
+		returnsomething($return);
+		break;
 	case "AllPayments":
-	$return = all_payments();
-	returnsomething($return);
-	break;
+		$return = all_payments();
+		returnsomething($return);
+		break;
 	case "removePayment":
-	$return = remove_payment($php_object->i);
-	returnsomething($return);
-	break;
+		$return = remove_payment($php_object->i);
+		returnsomething($return);
+		break;
 	case "restartAllPayment":
-	$return = restart_all_payment();
-	returnsomething($return);
-	break;
+		$return = restart_all_payment();
+		returnsomething($return);
+		break;
 	case "initMessageDashboard":
-	$return = init_message_dashboard($php_object->i);
-	returnsomething($return);
-	break;
+		$return = init_message_dashboard($php_object->i);
+		returnsomething($return);
+		break;
 	case "InitStatus":
-	$return = init_status();
-	returnsomething($return);
-	break;
+		$return = init_status();
+		returnsomething($return);
+		break;
 	case "changeAvatar":
-	$return = change_avatar($php_object->i, $php_object->a);
-	returnsomething($return);
-	break;
+		$return = change_avatar($php_object->i, $php_object->a);
+		returnsomething($return);
+		break;
 	case "uploadFile":
-	$return = upload_file($php_object->i, $php_object->a);
-	returnsomething($return);
-	break;
+		$return = upload_file($php_object->i, $php_object->a);
+		returnsomething($return);
+		break;
 	case "PaymentWithId":
-	$return = user_payment($php_object->i, $php_object->a, $php_object->y, $php_object->p, $php_object->t);
-	returnsomething($return);
-	break;
+		$return = user_payment($php_object->i, $php_object->a, $php_object->y, $php_object->p, $php_object->t);
+		returnsomething($return);
+		break;
 	case "RefreshPaidUserId":
-	$return = refresh_user_paid($php_object->i);
-	returnsomething($return);
-	break;
+		$return = refresh_user_paid($php_object->i);
+		returnsomething($return);
+		break;
 	case "AllUsersNotPaid":
-	$return = all_membership_not_paid();
-	returnsomething($return);
-	break;
+		$return = all_membership_not_paid();
+		returnsomething($return);
+		break;
 	case "UsersPaymentsMade":
-	$return = users_payments_made($php_object->i);
-	returnsomething($return);
-	break;
+		$return = users_payments_made($php_object->i);
+		returnsomething($return);
+		break;
 	case "InitPaypalPayment":
-	$return = init_paypal_payment($php_object->s, $php_object->i, $php_object->t, $php_object->p);
-	returnsomething($return);
-	break;
+		$return = init_paypal_payment($php_object->s, $php_object->i, $php_object->t, $php_object->p);
+		returnsomething($return);
+		break;
 	case "TryPaypalPayment":
-	$return = try_paypal_payment($php_object->i);
-	returnsomething($return);
-	break;		
+		$return = try_paypal_payment($php_object->i);
+		returnsomething($return);
+		break;
 	default:
-	$return = default_return();
-	returnsomething($return);
-	break;
+		$return = default_return();
+		returnsomething($return);
+		break;
 
 }
 
