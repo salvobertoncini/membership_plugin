@@ -1,3 +1,46 @@
+function init_membership_view()
+{
+	$("#secdiv").hide();
+
+	var post = '';
+
+	post += "<h2 class=\"hndle\"><span>MEMBERSHIP</span></h2>";
+	post += "<div class=\"inside\">";
+	post += "<table class=\"form-table\">";
+
+	post += "<tr><td>Benvenuto, inserisci i campi necessari per la creazione dell'associazione</td></tr>";
+
+	post += fill_init_membership();
+
+	post += "</table></div>";
+
+	$("#maindiv").html(post);
+
+}
+
+function fill_init_membership()
+{
+	var post = '';
+
+	post += "<tr><td><b>Intestazione: </b></td><td><input type=\"text\" name=\"name\" id=\"name\" value=\"\" class=\"regular-text\" /></td></tr>";
+	post += "<tr><td><b>Sede Legale: </b></td><td><input type=\"text\" name=\"registered_office\" id=\"registered_office\" value=\"\" class=\"regular-text\" /></td></tr>";
+	post += "<tr><td><b>Sede Operativa: </b></td><td><input type=\"text\" name=\"op_headquarter\" id=\"op_headquarter\" value=\"\" class=\"regular-text\" /></td></tr>";
+	post += "<tr><td><b>P. Iva / C.F. (VAT):</b></td><td><input type=\"text\" name=\"VAT\" id=\"VAT\" value=\"\" class=\"regular-text\" /></td></tr>";
+	post += "<tr><td><b>Email: </b></td><td><input type=\"email\" name=\"email\" id=\"email\" value=\"\" class=\"regular-text\" /></td></tr>";
+	post += "<tr><td><b>Sito Web: </b></td><td><input type=\"text\" name=\"website\" id=\"website\" value=\"\" class=\"regular-text\" /></td></tr>";
+	post += "<tr><td><b>Quota Annuale: </b></td><td><input type=\"number\" step=\"0.01\" name=\"fee\" id=\"fee\" value=\"\" class=\"regular-text\" /></td></tr>";
+
+	post += "<tr><td><b>Mese Start Quota: </b></td><td><input type=\"text\" name=\"name\" id=\"name\" value=\"\" class=\"regular-text\" /></td></tr>";
+
+	post += "<tr><td><b>ClientId PAYPAL: </b></td><td><input type=\"password\" name=\"ClientId\" id=\"ClientId\" value=\"\" class=\"regular-text\" /></td></tr>";
+	post += "<tr><td><b>ClientSecret PAYPAL</b></td><td><input type=\"password\" name=\"ClientSecret\" id=\"ClientSecret\" value=\"\" class=\"regular-text\" /></td></tr>";
+
+	post += "<tr><td><input class=\"button-primary\" type=\"submit\" onclick=\"registration_membership()\" name=\"registration_membership\" value=\"Registration\" /></td></tr>"
+
+	return post;
+
+}
+
 function admin_view()
 {
 	var user = JSON.parse(localStorage.getItem('userLogged'));

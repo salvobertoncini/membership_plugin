@@ -63,13 +63,13 @@
 
 ##COSE DA FARE
 
+* SUDDIVISIONE DELLE VIEW
 * prefisso di wordpress, e "subprefisso" configurabile manualmente
 * setting iniziale associazione per:
 	- intestazione associazione
 	- quota associativa annuale
-	- gestione e personalizzazione ruoli
 	- range anno associativo per il pagamento (solitamente anno solare)
-
+	- gestione e personalizzazione ruoli
 * ricevuta del pagamento
 * email per conferma per l'iscrizione
 * email per password smarrita

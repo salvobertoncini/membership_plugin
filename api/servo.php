@@ -20,8 +20,8 @@ use PayPal\Rest\ApiContext;
 use PayPal\Auth\OAuthTokenCredential;
 
 //chiave pubblica e chiave privata
-$clientId 	= 'AeEgHdt7Zf1MJk14or6F2IaeIJLaNSLXUoud5BPpQvk9JR3w9fNWPdRYHMky11s0Ay67PMvlnMKBscnB';
-$clientSecret = 'EOEWWww2_SxusFnkeksG-_NFNlWdSLj__Nk7tr6o-UERVxhznk4VcnKjabyFLk7L2jImVT2L0iDVIPWp';
+$clientId 		= 'AeEgHdt7Zf1MJk14or6F2IaeIJLaNSLXUoud5BPpQvk9JR3w9fNWPdRYHMky11s0Ay67PMvlnMKBscnB';
+$clientSecret 	= 'EOEWWww2_SxusFnkeksG-_NFNlWdSLj__Nk7tr6o-UERVxhznk4VcnKjabyFLk7L2jImVT2L0iDVIPWp';
 
 $paypal = new ApiContext(
 	new OAuthTokenCredential(
@@ -48,26 +48,26 @@ function getApiContext($clientId, $clientSecret)
     // OAuthTokenCredential class can be retrieved from
     // developer.paypal.com
     $apiContext = new ApiContext(
-        new OAuthTokenCredential(
-            $clientId,
-            $clientSecret
-        )
-    );
+    	new OAuthTokenCredential(
+    		$clientId,
+    		$clientSecret
+    		)
+    	);
     // Comment this line out and uncomment the PP_CONFIG_PATH
     // 'define' block if you want to use static file
     // based configuration
     $apiContext->setConfig(
-        array(
-            'mode' => 'sandbox',
+    	array(
+    		'mode' => 'sandbox',
             //'log.LogEnabled' => true,
             //'log.FileName' => '../PayPal.log',
             //'log.LogLevel' => 'DEBUG', // PLEASE USE `INFO` LEVEL FOR LOGGING IN LIVE ENVIRONMENTS
             //'cache.enabled' => true,
-            'http.CURLOPT_CONNECTTIMEOUT' => 30
+    		'http.CURLOPT_CONNECTTIMEOUT' => 30
             // 'http.headers.PayPal-Partner-Attribution-Id' => '123123123'
             //'log.AdapterFactory' => '\PayPal\Log\DefaultLogFactory' // Factory class implementing \PayPal\Log\PayPalLogFactory
-        )
-    );
+    		)
+    	);
     // Partner Attribution Id
     // Use this header if you are a PayPal partner. Specify a unique BN Code to receive revenue attribution.
     // To learn more or to request a BN Code, contact your Partner Manager or visit the PayPal Partner Portal
@@ -814,12 +814,12 @@ function init_paypal_payment($success, $paymentId, $token, $payerId)
 
 	$payment = Payment::get($paymentId, $apiContext);
 
-    $execution = new PaymentExecution();
-    $execution->setPayerId($payerId);
+	$execution = new PaymentExecution();
+	$execution->setPayerId($payerId);
 
 	try
 	{
-        $result = $payment->execute($execution, $apiContext);
+		$result = $payment->execute($execution, $apiContext);
 	}
 	catch(Exception $e)
 	{
@@ -905,6 +905,46 @@ function try_paypal_payment($id)
 
 }
 
+function if_membership_exist()
+{
+	$risposta = array('response' => 'false');
+
+	$item_list = [];
+	$item = '';
+
+	$sql = "SELECT * FROM `membership`";
+
+	$mysqli = db_connection();
+
+    //eseguo la query
+	$query = $mysqli->query($sql);
+	
+
+	//verifichiamo che siano presenti records
+	if($query->data_seek(0))
+	{
+		while($row = $query->fetch_assoc())
+		{  
+
+			$id             	= $row['id'];
+			$name    	    	= $row['name'];
+			$registered_office  = $row['registered_office'];
+			$op_headquarter  	= $row['op_headquarter'];
+			$VAT				= $row['VAT'];
+			$email             	= $row['email'];
+			$website    	    = $row['website'];
+			$clientId    		= $row['clientId'];
+			$clientSecret  		= $row['clientSecret'];
+
+			$item = array('id'=> $id, 'name' => $name, 'registered_office' => $registered_office, 'op_headquarter' => $op_headquarter, 'VAT' => $VAT, 'email' => $email, 'website' => $website, 'clientId' => $clientId, 'clientSecret' => $clientSecret);
+			array_push($item_list, $item);
+		}
+
+		$risposta = array('response' => 'true', 'membership' => $item_list);
+	}
+
+	return $risposta;
+}
 
 //Create a stdClass instance to hold important information
 $return = new stdClass(); 
@@ -923,6 +963,10 @@ $php_object = json_decode($json_object);
 
 switch ($php_object->r) 
 {
+	case "IfMembershipExist":
+	$return = if_membership_exist();
+	returnsomething($return);
+	break;
 	case "Login":
 	$return = login($php_object->e, $php_object->p);
 	returnsomething($return);

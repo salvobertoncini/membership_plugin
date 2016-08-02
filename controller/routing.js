@@ -1,6 +1,15 @@
 $(function() {
 
-    route();
+    var test = if_membership_exist();
+
+    if(test == "true")
+    {
+        route();
+    }
+    else
+    {
+        init_membership_view();
+    }
 
 });
 
@@ -29,4 +38,26 @@ function route()
         //login screen
         login_view();
     }
+}
+
+function if_membership_exist()
+{
+    var ret = '';
+
+    //inserisco i dati in un json
+    var object = JSON.stringify({ r: 'IfMembershipExist' });
+
+    $.post(path+"api/servo.php", { js_object: object }, 
+        function(response)
+        {
+            var resp = jQuery.parseJSON(response);
+
+            if(resp.response=="true")
+                ret = "true";
+            else
+                ret = "false";
+        }
+    );
+
+    return ret;
 }

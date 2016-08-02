@@ -20,14 +20,18 @@ function try_login()
 				{
 					if(resp.user.enabled == "1")
 					{
-						//salvo nel localStorage l'Utente
-						localStorage.setItem('userLogged', JSON.stringify(resp.user));
+						if(resp.user.verified == "1")
+						{
+							//salvo nel localStorage l'Utente
+							localStorage.setItem('userLogged', JSON.stringify(resp.user));
 
-						//salvo nel localStorage immagine profilo
-						localStorage.setItem('fotoProfilo', resp.user.avatar);
+							//salvo nel localStorage immagine profilo
+							localStorage.setItem('fotoProfilo', resp.user.avatar);
 
-						//se admin pannello admin, altrimenti pannello utente
-						route();
+							//se admin pannello admin, altrimenti pannello utente
+							route();
+						}
+						alert("Utente non ancora verificato. Effettua la procedura di verifica tramite email.");
 					}
 					else
 						alert("Utente bloccato. Contatta l'amministrazione. ");
