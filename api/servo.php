@@ -1,5 +1,94 @@
 <?php
 
+require '../vendor/autoload.php';
+
+define('SITE_URL', 'http://127.0.0.1:81/wordpress/wp-admin/options-general.php?page=wpassociazione');
+
+use PayPal\Api\Amount;
+use PayPal\Api\Details;
+use PayPal\Api\ExecutePayment;
+use PayPal\Api\Payment;
+use PayPal\Api\PaymentExecution;
+use PayPal\Api\Transaction;
+use PayPal\Api\Payer;
+use PayPal\Api\Item;
+use PayPal\Api\ItemList;
+use PayPal\Api\RedirectUrls;
+use PayPal\Api\Auth;
+use PayPal\Exception\PayPalInvalidCredentialException;
+use PayPal\Rest\ApiContext;
+use PayPal\Auth\OAuthTokenCredential;
+
+//chiave pubblica e chiave privata
+$clientId 	= 'AeEgHdt7Zf1MJk14or6F2IaeIJLaNSLXUoud5BPpQvk9JR3w9fNWPdRYHMky11s0Ay67PMvlnMKBscnB';
+$clientSecret = 'EOEWWww2_SxusFnkeksG-_NFNlWdSLj__Nk7tr6o-UERVxhznk4VcnKjabyFLk7L2jImVT2L0iDVIPWp';
+
+$paypal = new ApiContext(
+	new OAuthTokenCredential(
+		$clientId,
+		$clientSecret
+		)
+	);
+
+$apiContext = getApiContext($clientId, $clientSecret);
+
+function getApiContext($clientId, $clientSecret)
+{
+    // #### SDK configuration
+    // Register the sdk_config.ini file in current directory
+    // as the configuration source.
+    /*
+    if(!defined("PP_CONFIG_PATH")) {
+        define("PP_CONFIG_PATH", __DIR__);
+    }
+    */
+    // ### Api context
+    // Use an ApiContext object to authenticate
+    // API calls. The clientId and clientSecret for the
+    // OAuthTokenCredential class can be retrieved from
+    // developer.paypal.com
+    $apiContext = new ApiContext(
+        new OAuthTokenCredential(
+            $clientId,
+            $clientSecret
+        )
+    );
+    // Comment this line out and uncomment the PP_CONFIG_PATH
+    // 'define' block if you want to use static file
+    // based configuration
+    $apiContext->setConfig(
+        array(
+            'mode' => 'sandbox',
+            //'log.LogEnabled' => true,
+            //'log.FileName' => '../PayPal.log',
+            //'log.LogLevel' => 'DEBUG', // PLEASE USE `INFO` LEVEL FOR LOGGING IN LIVE ENVIRONMENTS
+            //'cache.enabled' => true,
+            'http.CURLOPT_CONNECTTIMEOUT' => 30
+            // 'http.headers.PayPal-Partner-Attribution-Id' => '123123123'
+            //'log.AdapterFactory' => '\PayPal\Log\DefaultLogFactory' // Factory class implementing \PayPal\Log\PayPalLogFactory
+        )
+    );
+    // Partner Attribution Id
+    // Use this header if you are a PayPal partner. Specify a unique BN Code to receive revenue attribution.
+    // To learn more or to request a BN Code, contact your Partner Manager or visit the PayPal Partner Portal
+    // $apiContext->addRequestHeader('PayPal-Partner-Attribution-Id', '123123123');
+    return $apiContext;
+}
+
+function console_log( $data )
+{
+	echo '<script>';
+	echo 'console.log('. json_encode( $data ) .')';
+	echo '</script>';
+}
+
+function alert( $data)
+{
+	echo '<script>';
+	echo 'alert('. json_encode( $data ) .')';
+	echo '</script>';
+}
+
 function db_connection()
 {
 	//connessione al database
@@ -11,9 +100,9 @@ function db_connection()
 	$mysqli = new mysqli($dbhost, $dbuser, $dbpass, $dbname);
 
 	if ($mysqli->connect_errno)
-    	echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 
-    return $mysqli;
+	return $mysqli;
 }
 
 function returnsomething($return)
@@ -536,14 +625,14 @@ function init_status()
 	$item = '';
 
 	$sql = "SELECT  (
-        SELECT COUNT(*)
-        FROM   users
-        ) AS members,
-        (
-        SELECT COUNT(*)
-        FROM   payments
-        ) AS payments
-		FROM    dual";
+	SELECT COUNT(*)
+	FROM   users
+	) AS members,
+	(
+	SELECT COUNT(*)
+	FROM   payments
+	) AS payments
+	FROM    dual";
 
 	$mysqli = db_connection();
 
@@ -598,11 +687,12 @@ function upload_file($id, $file)
 	return $risposta;
 }
 
-function user_payment($id)
+function user_payment($id, $amount, $paymentId, $PayerID, $token)
 {
 	$timestamp = date('Y-m-d G:i:s');
+	$string = "data: ".$timestamp.", amount: ".$amount.", token: ".$token.", paymentId: ".$paymentId.", PayerID: ".$PayerID;
 
-	$sql = "INSERT INTO `payments`(`id`, `id_user`, `data`, `information`) VALUES (null, ".$id.", now(), '".$timestamp."')";
+	$sql = "INSERT INTO `payments`(`id`, `id_user`, `data`, `information`) VALUES (null, ".$id.", '".$timestamp."', '".$string."')";
 
 	$mysqli = db_connection();
 
@@ -630,7 +720,7 @@ function refresh_user_paid($id)
 
 function all_membership_not_paid()
 {
-$risposta = array('response' => 'false');
+	$risposta = array('response' => 'false');
 
 	$user_list = [];
 
@@ -714,6 +804,107 @@ function users_payments_made($id)
 	return $risposta;
 }
 
+function init_paypal_payment($success, $paymentId, $token, $payerId)
+{
+	global $apiContext;
+	
+	$user = '';
+
+	$risposta = array('response' => 'false');
+
+	$payment = Payment::get($paymentId, $apiContext);
+
+    $execution = new PaymentExecution();
+    $execution->setPayerId($payerId);
+
+	try
+	{
+        $result = $payment->execute($execution, $apiContext);
+	}
+	catch(Exception $e)
+	{
+		$data = json_decode($e->getData());
+		echo($data->message);
+		die();
+	}
+
+	$risposta = array('response' => 'true', 'result' => $result);
+
+	return $risposta;
+}
+
+function try_paypal_payment($id)
+{
+	global $apiContext;
+
+	$user = '';
+
+	$risposta = array('response' => 'false');
+
+	$product = "Pagamento quota associativa";
+	$price = "10";
+	$shipping = 2.00;
+
+	$total = $price + $shipping;
+
+	$payer = new Payer();
+	$payer->setPaymentMethod('paypal');
+
+	$item = new Item();
+	$item->setName($product)
+	->setCurrency('EUR')
+	->setQuantity(1)
+	->setPrice($price);
+
+	$itemList = new ItemList();
+	$itemList->setItems([$item]);
+
+	$details = new Details();
+	$details->setShipping($shipping)
+	->setSubtotal($price);
+
+	$amount = new Amount();
+	$amount->setCurrency('EUR')
+	->setTotal($total)
+	->setDetails($details);
+
+	$transaction = new Transaction();
+	$transaction->setAmount($amount)
+	->setItemList($itemList)
+	->setDescription('Quota annuale associativa')
+	->setInvoiceNumber(uniqid());
+
+	$redirectUrls = new RedirectUrls();
+	$redirectUrls->setReturnUrl(SITE_URL . '&amount='.$total.'&success=true')
+	->setCancelUrl(SITE_URL . '&success=false');
+
+	$payment = new Payment();
+	$payment->setIntent('sale')
+	->setPayer($payer)
+	->setRedirectUrls($redirectUrls)
+	->setTransactions([$transaction]);
+
+	try
+	{
+		//print_r($paypal);
+		$payment->create($apiContext);
+
+	}
+	catch(Exception $e)
+	{
+		die($e);
+	}
+
+	$approvalUrl = $payment->getApprovalLink();
+
+	header('Access-Control-Allow-Origin: *, Location: {$approvalUrl}');	
+
+	$risposta = array('response' => 'true', 'test' => $approvalUrl);
+
+	return $risposta;
+
+}
+
 
 //Create a stdClass instance to hold important information
 $return = new stdClass(); 
@@ -733,113 +924,122 @@ $php_object = json_decode($json_object);
 switch ($php_object->r) 
 {
 	case "Login":
-		$return = login($php_object->e, $php_object->p);
-		returnsomething($return);
-		break;
+	$return = login($php_object->e, $php_object->p);
+	returnsomething($return);
+	break;
 	case "Registration":
-		$return = registration($php_object->nome, $php_object->cognome, $php_object->birthday, $php_object->email, $php_object->password, $php_object->website, $php_object->education, $php_object->bio, $php_object->skills, $php_object->avatar, $php_object->id_role, $php_object->id_permission, $php_object->enabled, $php_object->verified, $php_object->paid, $php_object->token);
-		returnsomething($return);
-		break;
+	$return = registration($php_object->nome, $php_object->cognome, $php_object->birthday, $php_object->email, $php_object->password, $php_object->website, $php_object->education, $php_object->bio, $php_object->skills, $php_object->avatar, $php_object->id_role, $php_object->id_permission, $php_object->enabled, $php_object->verified, $php_object->paid, $php_object->token);
+	returnsomething($return);
+	break;
 	case "CheckExistEmail":
-		$return = check_exist_email($php_object->e);
-		returnsomething($return);
-		break;
+	$return = check_exist_email($php_object->e);
+	returnsomething($return);
+	break;
 	case "AllMembership":
-		$return = all_membership();
-		returnsomething($return);
-		break;
+	$return = all_membership();
+	returnsomething($return);
+	break;
 	case "editEnableUser":
-		$return = edit_enable_user($php_object->i, $php_object->t);
-		returnsomething($return);
-		break;
+	$return = edit_enable_user($php_object->i, $php_object->t);
+	returnsomething($return);
+	break;
 	case "MemberById":
-		$return = member_by_id($php_object->i);
-		returnsomething($return);
-		break;
+	$return = member_by_id($php_object->i);
+	returnsomething($return);
+	break;
 	case "removeUser":
-		$return = remove_user_by_id($php_object->i);
-		returnsomething($return);
-		break;
+	$return = remove_user_by_id($php_object->i);
+	returnsomething($return);
+	break;
 	case "EditUser":
-		$return = edit_user($php_object->i, $php_object->z, $php_object->n, $php_object->c, $php_object->b, $php_object->e, $php_object->w, $php_object->d, $php_object->s, $php_object->o);
-		returnsomething($return);
-		break;
+	$return = edit_user($php_object->i, $php_object->z, $php_object->n, $php_object->c, $php_object->b, $php_object->e, $php_object->w, $php_object->d, $php_object->s, $php_object->o);
+	returnsomething($return);
+	break;
 	case "AllMessages":
-		$return = all_messages();
-		returnsomething($return);
-		break;
+	$return = all_messages();
+	returnsomething($return);
+	break;
 	case "sendMessage":
-		$return = send_message($php_object->i, $php_object->l, $php_object->m);
-		returnsomething($return);
-		break;
+	$return = send_message($php_object->i, $php_object->l, $php_object->m);
+	returnsomething($return);
+	break;
 	case "deleteMessage":
-		$return = delete_message($php_object->i);
-		returnsomething($return);
-		break;
+	$return = delete_message($php_object->i);
+	returnsomething($return);
+	break;
 	case "editMessage":
-		$return = edit_message($php_object->i, $php_object->l, $php_object->m);
-		returnsomething($return);
-		break;
+	$return = edit_message($php_object->i, $php_object->l, $php_object->m);
+	returnsomething($return);
+	break;
 	case "findMessageById";
-		$return = find_message_by_id($php_object->i);
-		returnsomething($return);
-		break;
+	$return = find_message_by_id($php_object->i);
+	returnsomething($return);
+	break;
 	case "AllItems":
-		$return = all_items();
-		returnsomething($return);
-		break;
+	$return = all_items();
+	returnsomething($return);
+	break;
 	case "removeItem":
-		$return = remove_item($php_object->i);
-		returnsomething($return);
-		break;
+	$return = remove_item($php_object->i);
+	returnsomething($return);
+	break;
 	case "AllPayments":
-		$return = all_payments();
-		returnsomething($return);
-		break;
+	$return = all_payments();
+	returnsomething($return);
+	break;
 	case "removePayment":
-		$return = remove_payment($php_object->i);
-		returnsomething($return);
-		break;
+	$return = remove_payment($php_object->i);
+	returnsomething($return);
+	break;
 	case "restartAllPayment":
-		$return = restart_all_payment();
-		returnsomething($return);
-		break;
+	$return = restart_all_payment();
+	returnsomething($return);
+	break;
 	case "initMessageDashboard":
-		$return = init_message_dashboard($php_object->i);
-		returnsomething($return);
-		break;
+	$return = init_message_dashboard($php_object->i);
+	returnsomething($return);
+	break;
 	case "InitStatus":
-		$return = init_status();
-		returnsomething($return);
-		break;
+	$return = init_status();
+	returnsomething($return);
+	break;
 	case "changeAvatar":
-		$return = change_avatar($php_object->i, $php_object->a);
-		returnsomething($return);
-		break;
+	$return = change_avatar($php_object->i, $php_object->a);
+	returnsomething($return);
+	break;
 	case "uploadFile":
-		$return = upload_file($php_object->i, $php_object->a);
-		returnsomething($return);
-		break;
+	$return = upload_file($php_object->i, $php_object->a);
+	returnsomething($return);
+	break;
 	case "PaymentWithId":
-		$return = user_payment($php_object->i);
-		returnsomething($return);
-		break;
+	$return = user_payment($php_object->i, $php_object->a, $php_object->y, $php_object->p, $php_object->t);
+	returnsomething($return);
+	break;
 	case "RefreshPaidUserId":
-		$return = refresh_user_paid($php_object->i);
-		returnsomething($return);
-		break;
+	$return = refresh_user_paid($php_object->i);
+	returnsomething($return);
+	break;
 	case "AllUsersNotPaid":
-		$return = all_membership_not_paid();
-		returnsomething($return);
-		break;
+	$return = all_membership_not_paid();
+	returnsomething($return);
+	break;
 	case "UsersPaymentsMade":
-		$return = users_payments_made($php_object->i);
-		returnsomething($return);
-		break;
+	$return = users_payments_made($php_object->i);
+	returnsomething($return);
+	break;
+	case "InitPaypalPayment":
+	$return = init_paypal_payment($php_object->s, $php_object->i, $php_object->t, $php_object->p);
+	returnsomething($return);
+	break;
+	case "TryPaypalPayment":
+	$return = try_paypal_payment($php_object->i);
+	returnsomething($return);
+	break;		
 	default:
-		$return = default_return();
-		returnsomething($return);
-		break;
+	$return = default_return();
+	returnsomething($return);
+	break;
+
 }
 
 ?>

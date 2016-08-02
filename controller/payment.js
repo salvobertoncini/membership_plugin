@@ -1,3 +1,42 @@
+$(function() {
+
+	init_paypal_payment();
+
+});
+
+function init_paypal_payment()
+{
+
+	var success = GetURLParameter("success");
+	var paymentId = GetURLParameter("paymentId");
+	var token = GetURLParameter("token");
+	var PayerID = GetURLParameter("PayerID");
+	var amount = GetURLParameter("amount");
+
+	if(success=="true")
+	{
+		//inserisco i dati in un json
+		object = JSON.stringify({ r: 'InitPaypalPayment', s: true, i: paymentId, t: token, p: PayerID });
+
+		$.post(path+"api/servo.php", {js_object: object},
+			function(response)
+			{
+				console.log(response);
+
+				var resp = jQuery.parseJSON(response);
+
+				if(resp.response=="true")
+				{
+					//registro nel db la transazione
+    				var userLogged = JSON.parse(localStorage.getItem('userLogged'));
+					try_to_pay(userLogged.id, amount, paymentId, PayerID, token);
+				}
+			});
+	}
+	if(success=="false")
+		alert("pagamento non effettuato con successo");
+}
+
 function init_payment_all()
 {
 
@@ -112,11 +151,17 @@ function remember_payment(paid)
 
 function admin_pay_user_payment()
 {
+	var userLogged = JSON.parse(localStorage.getItem('userLogged'));
+	
 	var id = $('#user_select').val();
-	alert(id);
+
+	var amount = "12";
+	var paymentId = "";
+	var PayerID = "";
+	var token = "pagamento effettuato manualmente da admin "+userLogged.name+" "+userLogged.surname;
 
 	//inserisco i dati in un json
-	object = JSON.stringify({ r: 'PaymentWithId', i: id});
+	object = JSON.stringify({ r: 'PaymentWithId', i: id, a: amount, y: paymentId, p: PayerID, t: token});
 
 	$.post(path+"api/servo.php", { js_object: object }, 
 		function(response)
@@ -159,17 +204,10 @@ function admin_pay_user_payment()
 		});
 }
 
-function try_to_pay(id)
+function try_to_pay(id, amount, paymentId, PayerID, token)
 {
-	var check = '';
-
-	if ($('#payment').is(':checked')) 
-		check = 1;
-	else 
-		check = 0;
-
 	//inserisco i dati in un json
-	object = JSON.stringify({ r: 'PaymentWithId', i: id});
+	object = JSON.stringify({ r: 'PaymentWithId', i: id, a: amount, y: paymentId, p: PayerID, t: token});
 
 	$.post(path+"api/servo.php", { js_object: object }, 
 		function(response)
@@ -203,7 +241,8 @@ function try_to_pay(id)
 							//salvo nel localStorage l'Utente
 							localStorage.setItem('userLogged', JSON.stringify(user));
 
-							route();
+							//route();
+							window.location = 'http://127.0.0.1:81/wordpress/wp-admin/options-general.php?page=wpassociazione';
 						}
 									
 					});
@@ -308,4 +347,32 @@ function fill_users_payments_made(list)
 function print_quittance(id)
 {
 	alert("Stai stampando la ricevuta con id: "+id);
+}
+
+
+function try_paypal_payment(id)
+{
+	//inserisco i dati in un json
+	object = JSON.stringify({ r: 'TryPaypalPayment', i:id});
+
+	$.post(path+"api/servo.php", { js_object: object }, 
+		function(response)
+		{
+			console.log(response);
+
+			var resp = jQuery.parseJSON(response);
+			
+			if(resp.response=="true")
+			{
+				//pagamento riuscito
+				window.location = resp.test;
+
+			}
+			else
+			{
+				//pagamento non riuscito
+				alert("errore nel pagamento");
+			}
+						
+		});
 }

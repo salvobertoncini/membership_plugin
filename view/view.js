@@ -174,9 +174,7 @@ function get_payment_view()
 	post += "<div class=\"inside\"><table class=\"form-table\">";
 
 	post += "<tr><td>Vuoi effettuare il pagamento della quota annuale?</td></tr>";
-	post += "<tr><td><label for=\"payment\">Pagamento quota annuale</label></td><td><input type=\"checkbox\" name=\"payment\" id=\"payment\"/><br></td><td>PAYPAL_BANNER</td></tr>";
-
-	post += '<tr><td><button onclick=\"try_to_pay('+user.id+')\">Effettua</button>';
+	post += "<tr><td><label for=\"payment\">Pagamento quota annuale</label></td><td><button onclick=\"try_paypal_payment("+user.id+")\">PAGA CON PAYPAL</button></td></tr>";
 
 	post += "<tr><td><a class=\"pointer\" onclick=\"admin_view()\">Back</a></td></tr></table></form></div>";
 
@@ -252,7 +250,7 @@ function registration_view_3()
 	post += "<div class=\"inside\"><table class=\"form-table\">";
 
 	post += "<tr><td>Vuoi effettuare subito il pagamento della quota annuale?</td></tr>";
-	post += "<tr><td><label for=\"payment\">Pagamento quota annuale</label></td><td><input type=\"checkbox\" name=\"payment\" id=\"payment\"/><br></td><td>PAYPAL_BANNER</td></tr>";
+	post += "<tr><td><label for=\"payment\">Pagamento quota annuale</label></td><td><button onclick=\"try_paypal_payment_registration()\">PAGA CON PAYPAL</button></td></tr>";
 
 	post += "<tr><td><input class=\"button-primary\" type=\"submit\" onclick=\"registration_step_2()\" name=\"reg_2\" value=\"Registrati\" /></td></tr><tr><td>";
 	post += "<a onclick=\"login_view()\">Login</a> | <a onclick=\"donate_view()\">Donate</a> </td></tr></table></form></div>";
@@ -426,6 +424,25 @@ function restart_all_payment_view()
 	post += "Sei sicuro di voler azzerare il flag \"quota annuale\"? <br><br>";
 	post += "<tr><td><button onclick=\"payment_management_view()\">Annulla</button></td> ";
 	post += "<td><button onclick=\"restart_all_payment()\">Procedi</td></tr>";
+
+	post += "</div>";
+
+	$("#maindiv").html(post);
+}
+
+function payment_success_view()
+{
+	var post = '';
+
+	post += "<h2 class=\"hndle\"><span>PAYMENT SUCCESS</span></h2>";
+	post += "<div class=\"inside\">";
+	post += "<table class=\"form-table\">";
+
+	post += "PAGAMENTO EFFETTUATO CON SUCCESSO.";
+	post += "<td><button onclick=\"restart_all_payment()\">Procedi</td></tr>";
+
+	post += "<table class=\"form-table\">";
+	post += "</table>";
 
 	post += "</div>";
 
@@ -710,7 +727,7 @@ function delete_item_view(id)
 
 function actual_view()
 {
-	registration_view_2();
+	registration_view_3();
 }
 
 function test_function()

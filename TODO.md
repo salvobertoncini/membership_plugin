@@ -50,30 +50,27 @@
 		- Permessi (editor, author, subscriber) ????
 	- Gestione pagamenti
 
+* GITHUB
+
+###1 agosto 2016
+
+* pagamento paypal
+
+###2 agosto 2016
+
+* fixato pagamento paypal
+* fixata registrazione
+
 ##COSE DA FARE
 
-* Registrazione:
-	- Possibilità di pagamento quota associativa attraverso PayPal
-
-* Gestione e personalizzazione ruoli (es. socio ordinario, socio sostenitore, socio onorario, direttivo)
-
-* Gestione e personalizzazione pagine plug-in base:
-	- Login
-	- Registrazione
-	- Pagina Account Personale
-	- Termini e Condizioni
-	- Password Smarrita
-	- 404
-
-* Possibilità di inserimento e gestione contenuti (es. documenti, immagini, video) da mostrare (o bloccare) solo ad utenti che hanno un determinato ruolo
-
-* Pagina profilo utente:
-	- Dashboard con info
-	- Modifica profilo
-	- Pagamenti effettuati
-	- Ricevuta associazione per pagamento
-
-
-* range anno associativo (solitamente solare)
-
 * prefisso di wordpress, e "subprefisso" configurabile manualmente
+* setting iniziale associazione per:
+	- intestazione associazione
+	- quota associativa annuale
+	- gestione e personalizzazione ruoli
+	- range anno associativo per il pagamento (solitamente anno solare)
+
+* ricevuta del pagamento
+* email per conferma per l'iscrizione
+* email per password smarrita
+* inserimento contenuti

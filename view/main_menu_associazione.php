@@ -5,7 +5,6 @@
 
 ?>
 
-
 <link <?php echo "href=\"".$plugin_url."\style.css\"" ?> rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css">
 
@@ -25,7 +24,7 @@
 				<div class="meta-box-sortables ui-sortable">
 
 					<div class="postbox" id="maindiv">
-						LOL
+						<?php /* MAIN DIV, GESTITO DA JS */ ?>
 					</div>
 					<!-- .postbox -->
 
@@ -41,8 +40,7 @@
 				<div class="meta-box-sortables">
 
 					<div class="postbox" id="secdiv">
-						ASD
-						<?php //require __DIR__ . '/../view/sidebar.php'; ?>
+						<?php /* DIV SECONDARIO, GESTITO DA JS */ ?>
 
 					</div>
 					<!-- .postbox -->

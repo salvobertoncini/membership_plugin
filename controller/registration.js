@@ -79,7 +79,7 @@ function registration_step_1()
 
 		localStorage.setItem('regstep2', JSON.stringify(user));
 
-		registration_view_3();
+		registration_step_2();
 
 	}
 	else
@@ -91,19 +91,12 @@ function registration_step_1()
 function registration_step_2()
 {
 
-	var check = '';
-
-	if ($('#payment').is(':checked')) 
-		check = 1;
-	else 
-		check = 0;
-
 	//recupero dati salvati durante la registrazione
 	var user = JSON.parse(localStorage.getItem('regstep1'));
 	var user2 = JSON.parse(localStorage.getItem('regstep2'));
 
 	//inserisco i dati in un json
-	object = JSON.stringify({ r: 'Registration', nome:  user.name, cognome: user.surname, email: user.email , password: user.password, birthday: user.birthday, website: user2.website, education: user2.education, avatar: user2.avatar, bio: user2.bio, skills: user2.skills, verified: 0, enabled: 1, paid: check, id_role: 1, id_permission: 3 , token: token});
+	object = JSON.stringify({ r: 'Registration', nome:  user.name, cognome: user.surname, email: user.email , password: user.password, birthday: user.birthday, website: user2.website, education: user2.education, avatar: user2.avatar, bio: user2.bio, skills: user2.skills, verified: 0, enabled: 1, paid: 0, id_role: 1, id_permission: 3 , token: token});
 
 	$.post(path+"api/servo.php", { js_object: object }, 
 		function(response)
