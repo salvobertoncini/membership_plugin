@@ -74,6 +74,97 @@ function membership_management()
 
 	$("#maindiv").html(post);
 }
+
+function manage_roles_view()
+{
+	var post = '';
+
+	post += "<h2 class=\"hndle\"><span>ROLES MANAGEMENT</span></h2>";
+	post += "<div class=\"inside\"><table class=\"form-table\">";
+
+	extra_post = init_roles();
+
+	post += extra_post;
+	
+	post += "</table></form></div>";
+
+
+	$("#maindiv").html(post);
+
+}
+
+function add_roles_view()
+{
+		var post = '';
+
+	post += "<h2 class=\"hndle\"><span>ADD ROLES</span></h2>";
+	post += "<div class=\"inside\"><table class=\"form-table\">";
+
+	post += "<tr><td><b>Ruolo</b></td><td><input type=\"text\" name=\"name\" id=\"name\" value=\"\" class=\"regular-text\" /></td></tr>";
+	
+	post += "<tr><td><b>Permessi Wordpress: </b></td><td>";
+
+		post += "<select id=\"permission_select\"><option value=\"1\">Edithor</option>";
+		post += "<option value=\"2\">Author</option>";
+		post += "<option value=\"3\">Subscriber</option>";
+		post += "</select>";
+
+	post += "<tr><td><input class=\"button-primary\" type=\"submit\" onclick=\"add_roles()\" name=\"add_roles\" value=\"Aggiungi\" /></td></tr>";
+	post += "<tr><td><a class=\"pointer\" onclick=\"manage_roles_view()\">Back</a></td></tr>";
+	post += "</table></form></div>";
+
+
+	$("#maindiv").html(post);
+}
+
+function edit_roles_view(id)
+{
+	var post = '';
+
+	var role = role_by_id(id);
+
+	post += "<h2 class=\"hndle\"><span>EDIT ROLES</span></h2>";
+	post += "<div class=\"inside\"><table class=\"form-table\">";
+
+	post += "<tr><td><b>Ruolo</b></td><td><input type=\"text\" name=\"name\" id=\"name\" value=\""+role.name+"\" class=\"regular-text\" /></td></tr>";
+	
+	post += "<tr><td><b>Permessi Wordpress: </b></td><td>";
+
+		post += "<select id=\"permission_select\"><option value=\"1\">Edithor</option>";
+		post += "<option value=\"2\">Author</option>";
+		post += "<option value=\"3\">Subscriber</option>";
+		post += "</select>";
+
+		$("#permission_select").val(role.id_permission);
+
+	post += "<tr><td><input class=\"button-primary\" type=\"submit\" onclick=\"edit_roles("+role.id+")\" name=\"edit_roles\" value=\"Modifica\" /></td></tr>";
+	post += "<tr><td><a class=\"pointer\" onclick=\"manage_roles_view()\">Back</a></td></tr>";
+	post += "</table></form></div>";
+
+
+	$("#maindiv").html(post);
+}
+
+function remove_roles_view(id)
+{
+	var post = '';
+
+	var role = role_by_id(id);
+
+	post += "<h2 class=\"hndle\"><span>DELETE ROLES</span></h2>";
+	post += "<div class=\"inside\"><table class=\"form-table\">";
+
+	post += "<tr><td>Sei sicuro di voler eliminare il ruolo "+role.name+"?</td></tr>";
+
+	post += "<tr><td><input class=\"button-danger\" type=\"submit\" onclick=\"delete_roles("+role.id+")\" name=\"edit_roles\" value=\"Elimina\" /></td></tr>";
+	post += "<tr><td><button onclick=\"manage_roles_view()\">Annulla</button></td></tr>";
+
+	post += "</table></form></div>";
+
+
+	$("#maindiv").html(post);
+}
+
 function member_by_id_view(id)
 {
 	var post = '';

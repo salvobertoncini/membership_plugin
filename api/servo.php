@@ -1112,6 +1112,138 @@ function delete_membership_forever()
 	return $risposta;
 }
 
+function all_roles()
+{
+	$risposta = array('response' => 'false');
+
+	$item_list = [];
+	$item = '';
+
+	$sql = "SELECT * FROM `roles`";
+
+	$mysqli = db_connection();
+
+    //eseguo la query
+	$query = $mysqli->query($sql);
+	
+
+	//verifichiamo che siano presenti records
+	if($query->data_seek(0))
+	{
+		while($row = $query->fetch_assoc())
+		{  
+
+			$id        		= $row['id'];
+			$id_permission	= $row['id_permission'];
+			$name			= $row['name'];
+			$editable		= $row['editable'];
+
+			$item = array('id'=> $id, 'id_permission' => $id_permission, 'name' => $name, 'editable' => $editable);
+
+			array_push($item_list, $item);
+		}
+
+		$risposta = array('response' => 'true', 'roles' => $item_list);
+	}
+
+	return $risposta;
+}
+
+function add_roles($name, $permission)
+{
+	$sql = "SELECT * FROM `roles` WHERE name = '".$name."'";
+
+	$mysqli = db_connection();
+
+    //eseguo la query
+	$query = $mysqli->query($sql);
+	
+
+	//verifichiamo che siano presenti records
+	if($query->data_seek(0))
+	{
+		return $risposta;
+	}
+	else
+	{
+		$sql = "INSERT INTO `roles`(`id`, `name`, `id_permission`, `editable`) VALUES (null,'".$name."',".$permission.",1)";
+
+		$mysqli = db_connection();
+
+	    //eseguo la query
+		$query = $mysqli->query($sql);
+
+		$risposta = array('response' => 'true');
+
+		return $risposta;
+	}
+}
+
+function edit_roles($id, $name, $permission)
+{
+	$sql = "UPDATE `roles` SET `name` = '".$name."', `id_permission` = ".$permission." WHERE id= ".$id;
+
+	$mysqli = db_connection();
+
+    //eseguo la query
+	$query = $mysqli->query($sql);
+
+	$risposta = array('response' => 'true');
+
+	return $risposta;
+}
+
+function delete_roles($id)
+{
+	$sql = "DELETE FROM `roles` WHERE id =".$id;
+
+	$mysqli = db_connection();
+
+    //eseguo la query
+	$query = $mysqli->query($sql);
+
+	$risposta = array('response' => 'true');
+
+	return $risposta;
+}
+
+function roles_by_id($id)
+{
+	$risposta = array('response' => 'false');
+
+	$item_list = [];
+	$item = '';
+
+	$sql = "SELECT * FROM `roles` WHERE id= ".$id;
+
+	$mysqli = db_connection();
+
+    //eseguo la query
+	$query = $mysqli->query($sql);
+	
+
+	//verifichiamo che siano presenti records
+	if($query->data_seek(0))
+	{
+		while($row = $query->fetch_assoc())
+		{  
+
+			$id_permission	= $row['id'];
+			$id_permission 	= $row['id_permission'];
+			$name			= $row['name'];
+			$editable		= $row['editable'];
+
+			$item = array('id'=> $id, 'id_permission' => $id_permission, 'name' => $name, 'editable' => $editable);
+
+		}
+
+		$risposta = array('response' => 'true', 'role' => $item);
+	}
+
+	return $risposta;
+}
+
+
 
 //Create a stdClass instance to hold important information
 $return = new stdClass(); 
@@ -1264,6 +1396,26 @@ switch ($php_object->r)
 		break;
 	case "TryPaypalPayment":
 		$return = try_paypal_payment($php_object->i);
+		returnsomething($return);
+		break;
+	case "AllRoles":
+		$return = all_roles();
+		returnsomething($return);
+		break;
+	case "AddRoles":
+		$return = add_roles($php_object->n, $php_object->p);
+		returnsomething($return);
+		break;
+	case "EditRoles":
+		$return = edit_roles($php_object->i, $php_object->n, $php_object->p);
+		returnsomething($return);
+		break;
+	case "RolesById":
+		$return = roles_by_id($php_object->i);
+		returnsomething($return);
+		break;
+	case "DeleteRoles":
+		$return = delete_roles($php_object->i);
 		returnsomething($return);
 		break;
 	default:

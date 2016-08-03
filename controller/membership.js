@@ -74,11 +74,165 @@ function registration_membership()
 
 }
 
+function add_roles()
+{
+	var name = $("#name").val();
+	var permission = $("#permission_select").val();
+
+	if(check_something(name))
+	{
+		//inserisco i dati in un json
+		object = JSON.stringify({ r: 'AddRoles' , n: name, p: permission });
+
+		$.post(path+"api/servo.php", { js_object: object }, 
+			function(response)
+			{
+				console.log(response);
+
+				var resp = jQuery.parseJSON(response);
+				
+				if(resp.response=="true")
+				{
+					alert("ruolo inserito con successo.");
+					manage_roles_view();
+				}
+				else
+				{
+					alert("ruolo già presente nel database.");
+				}							
+			});
+	}
+	else
+		alert("campi vuoti.");
+}
+
+function edit_roles(id)
+{
+	var name = $("#name").val();
+	var permission = $("#permission_select").val();
+
+	if(check_something(name))
+	{
+		//inserisco i dati in un json
+		object = JSON.stringify({ r: 'EditRoles' , i: id, n: name, p: permission });
+		console.log("obj: ");
+		console.log(object);
+
+		$.post(path+"api/servo.php", { js_object: object }, 
+			function(response)
+			{
+				console.log(response);
+
+				var resp = jQuery.parseJSON(response);
+				
+				if(resp.response=="true")
+				{
+					alert("ruolo modificato con successo.");
+					manage_roles_view();
+				}
+			});
+	}
+	else
+		alert("campi vuoti.");
+}
+
+function role_by_id(id)
+{
+	//inserisco i dati in un json
+	object = JSON.stringify({ r: 'RolesById', i:id });
+
+	$.post(path+"api/servo.php", { js_object: object }, 
+		function(response)
+		{
+			console.log(response);
+
+			var resp = jQuery.parseJSON(response);
+			
+			if(resp.response=="true")
+			{
+				localStorage.setItem('role', JSON.stringify(resp.role));
+			}
+						
+		});
+
+	var test = JSON.parse(localStorage.getItem('role'));
+
+	return test;
+
+}
+
+function delete_roles(id)
+{
+	//inserisco i dati in un json
+	object = JSON.stringify({ r: 'DeleteRoles', i:id });
+
+	$.post(path+"api/servo.php", { js_object: object }, 
+		function(response)
+		{
+			console.log(response);
+
+			var resp = jQuery.parseJSON(response);
+			
+			if(resp.response=="true")
+			{
+				alert("ruolo rimosso con successo");
+				manage_roles_view();
+			}
+						
+		});
+
+}
+
+function init_roles()
+{
+	var post = '';
+
+	//inserisco i dati in un json
+	object = JSON.stringify({ r: 'AllRoles'});
+
+	$.post(path+"api/servo.php", { js_object: object }, 
+		function(response)
+		{
+			console.log(response);
+
+			var resp = jQuery.parseJSON(response);
+			
+			if(resp.response=="true")
+			{
+				post = '';
+				post += "<tr><td><button onclick=\"add_roles_view()\">Add Roles <i class=\"zmdi zmdi-accounts-add\"></i></button></td></tr>";
+				post += "<tr><td><b>#</b></td><td><b>Ruolo</b></td><td><b>Edit</b></td><td><b>Delete</b></td></tr>";
+
+				for(var i in resp.roles)
+				{
+					post += "<tr>";
+					post += "<td>"+i+"</td><td>"+resp.roles[i].name+"</td>";
+					if(resp.roles[i].editable == "1")
+					{
+						post += "<td><button onclick=\"edit_roles_view("+resp.roles[i].id+")\"><i class=\"zmdi zmdi-edit\"></i></button></td>";
+						post += "<td><button onclick=\"remove_roles_view("+resp.roles[i].id+")\"><i class=\"zmdi zmdi-delete\"></i></button></td>";
+					}
+					post += "</tr>";
+				}
+
+				post += "<tr><td><a class=\"pointer\" onclick=\"membership_management()\">Back</a></td></tr>";
+
+				localStorage.setItem('roles', post);
+			}
+						
+		});
+
+	var test = localStorage.getItem('roles');
+
+	return test;
+}
+
 function fill_membership_table(userList)
 {
 	var post = '';
 
 	post += "<table class=\"form-table\">";
+	post += "<button onclick=\"manage_roles_view()\">GESTISCI RUOLI</button>";
 	post += "<tr><td><b>#</b></td><td><b>Nome</b></td><td><b>Cognome</b></td><td><b>Ruolo</b></td><td><b>Pagato</b></td><td><b>View</b></td><td><b>Status</b></td><td><b>Edit</b></td><td><b>Delete</b></td></tr>";
 	
 

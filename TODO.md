@@ -72,10 +72,14 @@
 * email per conferma per l'iscrizione
 * email per password smarrita
 
+###3 agosto 
+
+* gestione e personalizzazione ruoli
+
 ##COSE DA FARE
 
-* prefisso di wordpress, e "subprefisso" configurabile manualmente
-* gestione e personalizzazione ruoli
+* gestione quote anno solare
 * ricevuta del pagamento
 * inserimento contenuti
+* prefisso di wordpress, e "subprefisso" configurabile manualmente
 * creazione widget per visualizzare funzioni e contenuti direttamente da sito web, e non da dashboard.
