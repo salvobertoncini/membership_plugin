@@ -6,6 +6,8 @@ $(function() {
 
 function init_the_plugin()
 {
+    today();
+
     var test = if_membership_exist();
 
     if(test == "true")

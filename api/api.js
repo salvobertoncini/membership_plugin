@@ -103,3 +103,56 @@ function GetURLParameter(sParam)
             return decodeURIComponent(sParameterName[1]);
     }
 }
+
+function today()
+{
+	//se oggi è l'ultimo giorno del mese prestabilito per pagare la quota annuale,
+	//allora azzera in automatico il paid di ogni users, così appare la notifica.
+
+	//curyear()
+	//if (curyear, mese) == true, azzera pagamento, curyear++
+
+	//inserisco i dati in un json
+	object = JSON.stringify({ r: 'Today' });
+
+	$.post(path+"api/servo.php", { js_object: object }, 
+		function(response)
+		{
+			console.log(response);
+
+			var resp = jQuery.parseJSON(response);
+			
+			if(resp.response=="true")
+			{
+				var d = new Date();
+				if(isLastDay(resp.paid, resp.range_fee, d))
+				{
+					update_today(resp.paid);
+					restart_all_payment();
+				}
+					
+			}
+						
+		});
+}
+
+function update_today(year)
+{
+	//inserisco i dati in un json
+	object = JSON.stringify({ r: 'UpdateToday', y: year });
+
+	$.post(path+"api/servo.php", { js_object: object }, 
+		function(response)
+		{
+			console.log(response);
+
+			var resp = jQuery.parseJSON(response);						
+		});
+}
+
+function isLastDay(y, m, d)
+{
+    var d1 = (m < 11) ? new Date(y, m + 1, 0) : new Date(y, 0, 0);
+    var d2 = new Date(y, m, d);
+    return (d1.getTime() === d2.getTime());
+}

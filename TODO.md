@@ -76,10 +76,11 @@
 
 * gestione e personalizzazione ruoli
 
+* gestione quote anno solare
+
 ##COSE DA FARE
 
-* gestione quote anno solare
-* ricevuta del pagamento
 * inserimento contenuti
+* ricevuta del pagamento
 * prefisso di wordpress, e "subprefisso" configurabile manualmente
 * creazione widget per visualizzare funzioni e contenuti direttamente da sito web, e non da dashboard.

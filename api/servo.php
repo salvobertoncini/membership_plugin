@@ -126,6 +126,53 @@ function default_return()
 	return $risposta;
 }
 
+function today()
+{
+	$risposta = array('response' => 'false');
+
+	$sql = "SELECT paid, range_fee FROM membership";
+
+	$mysqli = db_connection();
+
+    //eseguo la query
+	$query = $mysqli->query($sql);
+	
+
+	//verifichiamo che siano presenti records
+	if($query->data_seek(0))
+	{
+		while($row = $query->fetch_assoc())
+		{  
+			$range_fee	= $row['range_fee'];
+			$paid		= $row['paid'];
+			
+			$date = array('range_fee'=> $range_fee, 'paid' => $paid);
+
+			$risposta = array('response' => 'true', 'date' => $date);
+
+		}
+	}
+
+	return $risposta;
+
+
+}
+
+function update_today($year)
+{
+	$a = $year + 1;
+	$sql = "UPDATE `membership` SET paid = ".$a;
+
+	$mysqli = db_connection();
+
+    //eseguo la query
+	$query = $mysqli->query($sql);
+
+	$risposta = array('response' => 'true');
+
+	return $risposta;
+}
+
 function email_sender($token, $email, $password)
 {
 	$risposta = array('response' => 'false');
@@ -1416,6 +1463,10 @@ switch ($php_object->r)
 		break;
 	case "DeleteRoles":
 		$return = delete_roles($php_object->i);
+		returnsomething($return);
+		break;
+	case "Today":
+		$return = today();
 		returnsomething($return);
 		break;
 	default:

@@ -349,7 +349,6 @@ function print_quittance(id)
 	alert("Stai stampando la ricevuta con id: "+id);
 }
 
-
 function try_paypal_payment(id)
 {
 	//inserisco i dati in un json
