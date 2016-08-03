@@ -1,3 +1,63 @@
+/****************************************************************************************/
+
+$(document).on('submit','form',function(e){
+	e.preventDefault();
+	$form = $(this);
+	uploadImage($form);
+});
+
+function uploadImage($form){
+	$form.find('.progress-bar').removeClass('progress-bar-success')
+								.removeClass('progress-bar-danger');
+	var formdata = new FormData($form[0]); //formelement
+	var request = new XMLHttpRequest();
+	//progress event...
+	request.upload.addEventListener('progress',function(e){
+		var percent = Math.round(e.loaded/e.total * 100);
+		$form.find('.progress-bar').width(percent+'%').html(percent+'%');
+	});
+	//progress completed load event
+	request.addEventListener('load',function(e){
+		$form.find('.progress-bar').addClass('progress-bar-success').html('upload completed....');
+	});
+	request.open('post', 'contents/uploader.php');
+	request.send(formdata);
+	$form.on('click','.cancel',function(){
+		request.abort();
+		$form.find('.progress-bar')
+			.addClass('progress-bar-danger')
+			.removeClass('progress-bar-success')
+			.html('upload aborted...');
+	});
+}
+
+function fill_upload_button()
+{
+	var post = '';
+
+	post += "<form action=\"#\"><input type=\"file\" name=\"image\" >";
+	post += "<button bclass=\"btn btn-sm btn-info upload\" type=\"submit\">Upload</button>";
+	post += "<button type=\"button\" class=\"btn btn-sm btn-danger cancel\">Cancel</button>";
+	post += "<div class=\"progress progress-striped active\"><div class=\"progress-bar\" style=\"width:0%\"></div></div>";
+	post += "</form>";
+
+	return post;
+}
+
+function fill_contents_table(userList)
+{
+	var post = '';
+
+	post += fill_upload_button();
+
+	post += fill_items_table(userList);
+
+	return post;
+
+}
+
+/****************************************************************************************/
+
 function init_items_all()
 {
 	var post = '';
@@ -14,7 +74,7 @@ function init_items_all()
 			
 			if(resp.response=="true")
 			{
-				post = fill_items_table(resp.items);
+				post = fill_contents_table(resp.items);
 				localStorage.setItem('items', post);
 			}
 			else
@@ -33,33 +93,6 @@ function init_items_all()
 function fill_items_table(userList)
 {
 	var post = '';
-
-	var img = '';
-
-    img = " <button class=\"btn btn-success waves-effect\" id=\"confirmButton\" onclick=\"upload_file()\">Upload</button> ";
-
-    $('#pmo-contact').append(img);
-    $('#confirmButton').hide();
-    $('#deleteButton').hide();
-
-
-$('#f').on('change', function(ev) {
-    var f = ev.target.files[0];
-    var fr = new FileReader();
-    
-    fr.onload = function(ev2) {
-        console.dir(ev2);
-        localStorage.setItem('tmpItem', ev2.target.result);
-
-        console.log("tmpItem: ");
-		console.log(ev2.target.result);
-    };
-    
-    fr.readAsDataURL(f);
-
-    $('#confirmButton').show();
-    $('#deleteButton').show();
-});
 
 	post += "<table class=\"form-table\">";
 	post += "<tr><td><b>#</b></td><td><b>Nome</b></td><td><b>Proprietario</b></td><td><b>Ruolo</b></td><td><b>Tipo</b></td><td><b>Contenuto</b></td><td><b>Delete</b></td></tr>";
@@ -167,4 +200,3 @@ function download_item(path)
 {
 	alert("download file");
 }
-

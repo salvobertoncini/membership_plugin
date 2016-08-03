@@ -5,12 +5,6 @@ function items_view()
 	post += "<h2 class=\"hndle\"><span>ITEMS MANAGEMENT</span></h2>";
 	post += "<div class=\"inside\"><table class=\"form-table\">";
 
-	//post += "<tr><td><button onclick=\"new_item_upload()\">Upload Item <i class=\"zmdi zmdi-upload\"></i></button></td></tr>";
-
-	post += "<tr><td><div class=\"pmo-contact\" id=\"pmo-contact\"><ul  id=\"profilePhoto\"> </ul><span><img id=\"i\" /></span><br><br><input id=\"f\" type=\"file\" /></div></td></tr>";
-
-
-
 	extra_post = init_items_all();
 
 	post += extra_post;
