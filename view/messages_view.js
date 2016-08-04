@@ -107,6 +107,7 @@ function init_latest_news(id)
 	var post = '';
 
 	post += "<tr><td><h3>Latest News</h3></td></tr>";
+	post += "<tr><td><b>User</b></td><td><b>Message</b></td></tr>";
 	
 	//bacheca
 	var extra_post = init_message_dashboard(id);

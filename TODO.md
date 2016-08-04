@@ -86,7 +86,7 @@
 
 * visualizzazione contenuti in base ai permessi
 
-* creazione widget per visualizzare funzioni e contenuti direttamente da sito web, e non da dashboard.
+* creazione shortcode [wpardeek] per visualizzare contenuti homepage direttamente da sito web, e non da dashboard.
 
 ##COSE DA FARE
 

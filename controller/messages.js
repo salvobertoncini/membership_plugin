@@ -202,8 +202,6 @@ function init_message_dashboard(id)
 function fill_message_by_id_role(message)
 {
 	var post = '';
-
-	post += "<tr><td><b>User</b><td><td><b>Message</b><td></tr>";
 	
 	for(var i in message)
 		post += "<tr><td>"+message[i].name+" "+message[i].surname+"</td><td><i>"+message[i].message+"</i></td></tr>";
