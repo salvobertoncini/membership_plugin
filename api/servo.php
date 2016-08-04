@@ -666,6 +666,45 @@ function all_items()
 	return $risposta;
 }
 
+function items_by_role($id_role)
+{
+	$risposta = array('response' => 'false');
+
+	$item_list = [];
+	$item = '';
+
+	$sql = "SELECT contents.id, contents.id_role, contents.name as onome, users.name as name, surname, type, path FROM `contents` JOIN `users` ON (contents.id_user = users.id) WHERE contents.id_role <= ".$id_role;
+
+	$mysqli = db_connection();
+
+    //eseguo la query
+	$query = $mysqli->query($sql);
+	
+
+	//verifichiamo che siano presenti records
+	if($query->data_seek(0))
+	{
+		while($row = $query->fetch_assoc())
+		{  
+
+			$id             = $row['id'];
+			$name    	    = $row['name'];
+			$surname    	= $row['surname'];
+			$id_role        = $row['id_role'];
+			$oname			= $row['onome'];
+			$type  			= $row['type'];
+			$path	  		= $row['path'];
+
+			$item = array('id'=> $id, 'id_role' => $id_role, 'name' => $name, 'surname' => $surname, 'oname' => $oname, 'type' => $type, 'path' => $path);
+			array_push($item_list, $item);
+		}
+
+		$risposta = array('response' => 'true', 'items' => $item_list);
+	}
+
+	return $risposta;
+}
+
 function remove_item($id)
 {
 	$sql = "SELECT name, path FROM `contents` WHERE id =".$id;
@@ -1425,6 +1464,10 @@ switch ($php_object->r)
 		break;
 	case "AllItems":
 		$return = all_items();
+		returnsomething($return);
+		break;
+	case "ItemsByRole":
+		$return = items_by_role($php_object->i);
 		returnsomething($return);
 		break;
 	case "removeItem":

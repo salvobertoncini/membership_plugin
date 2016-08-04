@@ -234,3 +234,74 @@ function download_item(path)
 {
 	alert("download file");
 }
+
+function init_items_by_role(id_role)
+{
+	var post = '';
+
+	//inserisco i dati in un json
+	object = JSON.stringify({ r: 'ItemsByRole' , i: id_role });
+
+	$.post(path+"api/servo.php", { js_object: object }, 
+		function(response)
+		{
+			console.log(response);
+
+			var resp = jQuery.parseJSON(response);
+			
+			if(resp.response=="true")
+			{
+				post = fill_contents_by_role_table(resp.items);
+				localStorage.setItem('items', post);
+			}
+			else
+			{
+				post = "Nessun Contenuto da Visualizzare";
+				localStorage.setItem('items', post);
+			}
+						
+		});
+
+	post = localStorage.getItem('items');
+
+	return post;	
+}
+
+function fill_contents_by_role_table(userList)
+{
+	var post = '';
+
+	post += "<table class=\"form-table\">";
+	post += "<tr><td><b>#</b></td><td><b>Nome</b></td><td><b>Proprietario</b></td><td><b>Ruolo</b></td><td><b>Tipo</b></td><td><b>Contenuto</b></td></tr>";
+
+	for (var i in userList) 
+	{
+		var utente = userList[i];
+
+		switch(userList[i].id_role)
+		{
+			case "1":
+				var ruolo = "Socio Ordinario";
+				break;
+			case "2":
+				var ruolo = "Socio Sostenitore";
+				break;
+			case "3":
+				var ruolo = "Socio Onorario";
+				break;
+			case "4":
+				var ruolo = "Direttivo";
+				break;
+			default:
+				var ruolo = "BOH";
+				break;
+		}
+
+		post += "<tr id="+userList[i].id+"><td>"+i+"</td><td>"+userList[i].oname+"</td><td>"+userList[i].name+" "+userList[i].surname+"</td><td>"+ruolo+"</td><td>"+userList[i].type+"</td><td><a href=\""+path+"/"+userList[i].path+"\">Download <i class=\"zmdi zmdi-download\"></i></a></td></tr>";
+
+	}
+
+	post += "</table>"
+
+	return post;
+}

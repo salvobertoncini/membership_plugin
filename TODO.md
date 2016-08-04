@@ -84,9 +84,11 @@
 
 * fixato caricamento immagine personale, adattato a nuovo inserimento contenuti
 
+* visualizzazione contenuti in base ai permessi
+
 ##COSE DA FARE
 
+* creazione widget per visualizzare funzioni e contenuti direttamente da sito web, e non da dashboard.
 * ricevuta del pagamento
 * prefisso di wordpress, e "subprefisso" configurabile manualmente
-* creazione widget per visualizzare funzioni e contenuti direttamente da sito web, e non da dashboard.
 * abbellire app

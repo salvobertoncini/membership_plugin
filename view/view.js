@@ -105,7 +105,7 @@ function user_view()
 	var post = '';
 
 	post += "<h2 class=\"hndle\"><span>USER PANEL</span></h2>";
-	post += "<div class=\"inside\"><ul><li class=\"pointer\" onclick=\"route()\">Home</li><li class=\"pointer\" onclick=\"edit_member_view("+user.id+")\">Modifica Profilo</li><li class=\"pointer\" onclick=\"payments_made_view("+user.id+")\">Pagamenti Effettuati</li><br>";
+	post += "<div class=\"inside\"><ul><li class=\"pointer\" onclick=\"route()\">Home</li><li class=\"pointer\" onclick=\"edit_member_view("+user.id+")\">Modifica Profilo</li><li class=\"pointer\" onclick=\"content_by_role_view("+user.id_role+")\">Contenuti</li><li class=\"pointer\" onclick=\"payments_made_view("+user.id+")\">Pagamenti Effettuati</li><br>";
 	post += "<hr><li class=\"pointer\" onclick=\"logout()\">Logout</li></div>";
 
 	$("#secdiv").show();

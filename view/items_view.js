@@ -32,3 +32,17 @@ function delete_item_view(id)
 	$("#maindiv").html(post);
 
 }
+
+function content_by_role_view(id_role)
+{
+	var post = '';
+
+	post += "<h2 class=\"hndle\"><span>ITEMS</span></h2>";
+	post += "<div class=\"inside\"><table class=\"form-table\">";
+
+	post += init_items_by_role(id_role);
+
+	post += "</table></div>";
+
+	$("#maindiv").html(post);
+}
