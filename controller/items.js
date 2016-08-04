@@ -1,96 +1,96 @@
 /****************************************************************************************/
+function _(el)
+{
+	return document.getElementById(el);
+}
 
-$(document).on('submit','form',function(e){
-	e.preventDefault();
-	$form = $(this);
-	uploadImage($form);
-});
+function uploadFile()
+{
+	var id_role = $("#role_select").val();
 
-function uploadImage($form){
-	$form.find('.progress-bar').removeClass('progress-bar-success')
-								.removeClass('progress-bar-danger');
-	var formdata = new FormData($form[0]); //formelement
-	var request = new XMLHttpRequest();
-	//progress event...
-	request.upload.addEventListener('progress',function(e){
-		var percent = Math.round(e.loaded/e.total * 100);
-		$form.find('.progress-bar').width(percent+'%').html(percent+'%');
-	});
-	//progress completed load event
-	request.addEventListener('load',function(e){
-		$form.find('.progress-bar').addClass('progress-bar-success').html('upload completed....');
-	});
-	request.open('post', 'contents/uploader.php');
-	request.send(formdata);
-	$form.on('click','.cancel',function(){
-		request.abort();
-		$form.find('.progress-bar')
-			.addClass('progress-bar-danger')
-			.removeClass('progress-bar-success')
-			.html('upload aborted...');
-	});
+	$('#progressBar').show();
+	var userLogged = JSON.parse(localStorage.getItem('userLogged'));
+	var file = _("file1").files[0];
+	// alert(file.name+" | "+file.size+" | "+file.type);
+	var formdata = new FormData();
+	formdata.append("file1", file);
+	formdata.append("id_user", userLogged.id);
+	formdata.append("id_role", id_role);
+	var ajax = new XMLHttpRequest();
+	ajax.upload.addEventListener("progress", progressHandler, false);
+	ajax.addEventListener("load", completeHandler, false);
+	ajax.addEventListener("error", errorHandler, false);
+	ajax.addEventListener("abort", abortHandler, false);
+	ajax.open("POST", "../wp-content/plugins/wpassociazione/uploader.php");
+	ajax.send(formdata);
+}
+
+function uploadAvatar(id)
+{
+	var userLogged = JSON.parse(localStorage.getItem('userLogged'));
+	var file = _("file1").files[0];
+	// alert(file.name+" | "+file.size+" | "+file.type);
+	var formdata = new FormData();
+	formdata.append("file1", file);
+	formdata.append("id", id);
+	var ajax = new XMLHttpRequest();
+	ajax.upload.addEventListener("progress", progressHandler, false);
+	ajax.addEventListener("load", completeHandler, false);
+	ajax.addEventListener("error", errorHandler, false);
+	ajax.addEventListener("abort", abortHandler, false);
+	ajax.open("POST", "../wp-content/plugins/wpassociazione/changeAvatar.php");
+	ajax.send(formdata);
+}
+
+function progressHandler(event)
+{
+	_("loaded_n_total").innerHTML = "Uploaded "+event.loaded+" bytes of "+event.total;
+	var percent = (event.loaded / event.total) * 100;
+	_("progressBar").value = Math.round(percent);
+	_("status").innerHTML = Math.round(percent)+"% uploaded... please wait";
+}
+
+function completeHandler(event)
+{
+	_("status").innerHTML = event.target.responseText;
+	_("progressBar").value = 0;
+}
+
+function errorHandler(event)
+{
+	_("status").innerHTML = "Upload Failed";
+}
+
+function abortHandler(event)
+{
+	_("status").innerHTML = "Upload Aborted";
 }
 
 function fill_upload_button()
 {
 	var post = '';
 
-	post += "<form action=\"#\"><input type=\"file\" name=\"image\" >";
-	post += "<button bclass=\"btn btn-sm btn-info upload\" type=\"submit\">Upload</button>";
-	post += "<button type=\"button\" class=\"btn btn-sm btn-danger cancel\">Cancel</button>";
-	post += "<div class=\"progress progress-striped active\"><div class=\"progress-bar\" style=\"width:0%\"></div></div>";
+	post += "<form id=\"upload_form\" enctype=\"multipart/form-data\" method=\"post\">";
+  	post += "<input type=\"file\" name=\"file1\" id=\"file1\">";
+  	
+  	post += " <b>Visibilità: </b><select id=\"role_select\">";
+		post += "<option value=\"1\">Socio Ordinario</option>";
+		post += "<option value=\"2\">Socio Sostenitore</option>";
+		post += "<option value=\"3\">Socio Onorario</option>";
+		post += "<option value=\"4\">Direttivo</option>";
+		post += "</select> ";
+	
+	post += "<br><br><input type=\"button\" class=\"button-primary\" value=\"Upload File\" onclick=\"uploadFile()\"><br>";
+  	post += "<br><progress id=\"progressBar\" value=\"0\" max=\"100\" style=\"width:300px;\"></progress>";
+  	post += "<h3 id=\"status\"></h3>";
+  	post += "<p id=\"loaded_n_total\"></p>";
+	
 	post += "</form>";
 
 	return post;
 }
 
 function fill_contents_table(userList)
-{
-	var post = '';
-
-	post += fill_upload_button();
-
-	post += fill_items_table(userList);
-
-	return post;
-
-}
-
-/****************************************************************************************/
-
-function init_items_all()
-{
-	var post = '';
-
-	//inserisco i dati in un json
-	object = JSON.stringify({ r: 'AllItems' });
-
-	$.post(path+"api/servo.php", { js_object: object }, 
-		function(response)
-		{
-			console.log(response);
-
-			var resp = jQuery.parseJSON(response);
-			
-			if(resp.response=="true")
-			{
-				post = fill_contents_table(resp.items);
-				localStorage.setItem('items', post);
-			}
-			else
-			{
-				post = "Nessun Contenuto da Visualizzare";
-				localStorage.setItem('items', post);
-			}
-						
-		});
-
-	post = localStorage.getItem('items');
-
-	return post;
-}
-
-function fill_items_table(userList)
 {
 	var post = '';
 
@@ -128,6 +128,40 @@ function fill_items_table(userList)
 
 	return post;
 
+}
+
+/****************************************************************************************/
+
+function init_items_all()
+{
+	var post = '';
+
+	//inserisco i dati in un json
+	object = JSON.stringify({ r: 'AllItems' });
+
+	$.post(path+"api/servo.php", { js_object: object }, 
+		function(response)
+		{
+			console.log(response);
+
+			var resp = jQuery.parseJSON(response);
+			
+			if(resp.response=="true")
+			{
+				post = fill_contents_table(resp.items);
+				localStorage.setItem('items', post);
+			}
+			else
+			{
+				post = "Nessun Contenuto da Visualizzare";
+				localStorage.setItem('items', post);
+			}
+						
+		});
+
+	post = localStorage.getItem('items');
+
+	return post;
 }
 
 function remove_item(id)

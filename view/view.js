@@ -122,7 +122,7 @@ function init_personal_profile()
 
 
     if (localStorage['fotoProfilo'] != "undefined")
-        var immagineProfilo = "data:image/png;base64, "+ localStorage['fotoProfilo']+"";   
+        var immagineProfilo = path+localStorage['fotoProfilo']+"";   
     else 
         var immagineProfilo = "http://placehold.it/350x350";
 

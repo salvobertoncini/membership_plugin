@@ -668,12 +668,32 @@ function all_items()
 
 function remove_item($id)
 {
+	$sql = "SELECT name, path FROM `contents` WHERE id =".$id;
+
+	$mysqli = db_connection();
+
+    //eseguo la query
+	$query = $mysqli->query($sql);
+	
+	//verifichiamo che siano presenti records
+	if($query->data_seek(0))
+	{
+		while($row = $query->fetch_assoc())
+		{  
+			$name 			= $row['name'];
+			$path    	    = $row['path'];
+		}
+	}
+
 	$sql = "DELETE FROM `contents` WHERE id = ".$id.";";
 
 	$mysqli = db_connection();
 
     //eseguo la query
 	$query = $mysqli->query($sql);
+
+		
+	unlink("../contents/".$name);
 	
 	$risposta = array('response' => 'true');
 
@@ -837,9 +857,11 @@ function change_avatar($id, $avatar)
 	return $risposta;
 }
 
-function upload_file($id, $file)
+function upload_file($id, $id_role, $fileName, $fileType, $path)
 {
-	$sql = "INSERT INTO `contents`(`id`, `id_user`, `id_role`, `type`, `name`, `path`) VALUES (null, ".$id.", 1, 'document', 'LeL', '".$file."')";
+	$type = checkTypeUploadedFile($fileType);
+
+	$sql = "INSERT INTO `contents`(`id`, `id_user`, `id_role`, `type`, `name`, `path`) VALUES (null, ".$id.", ".$id_role.", '".$type."', '".$fileName."', '".$path."')";
 
 	$mysqli = db_connection();
 
@@ -848,8 +870,24 @@ function upload_file($id, $file)
 
 	$risposta = array('response' => 'true');
 
-	return $risposta;
+	return $risposta;	
 }
+
+function checkTypeUploadedFile($fileType)
+{	
+	$type = '';
+
+	if (strpos($fileType, 'image') !== false)
+		$type = 'image';
+	else
+		if(strpos($fileType, 'video') !== false )
+			$type = 'video';
+		else
+			$type = 'document';
+
+	echo "tipo: ".$type." ";
+}
+
 
 function user_payment($id, $amount, $paymentId, $PayerID, $token)
 {
@@ -1418,7 +1456,7 @@ switch ($php_object->r)
 		returnsomething($return);
 		break;
 	case "uploadFile":
-		$return = upload_file($php_object->i, $php_object->a);
+		$return = upload_file($php_object->i, $php_object->l, $php_object->n, $php_object->t, $php_object->p);
 		returnsomething($return);
 		break;
 	case "PaymentWithId":

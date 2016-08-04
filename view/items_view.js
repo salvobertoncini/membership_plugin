@@ -5,13 +5,13 @@ function items_view()
 	post += "<h2 class=\"hndle\"><span>ITEMS MANAGEMENT</span></h2>";
 	post += "<div class=\"inside\"><table class=\"form-table\">";
 
-	extra_post = init_items_all();
+	post += fill_upload_button();
 
-	post += extra_post;
+	post += init_items_all();
 	
 	post += "</table></form></div>";
 
-
+	$('#progressBar').hide();
 	$("#maindiv").html(post);
 
 }

@@ -72,15 +72,20 @@
 * email per conferma per l'iscrizione
 * email per password smarrita
 
-###3 agosto 
+###3 agosto 2016
 
 * gestione e personalizzazione ruoli
 
 * gestione quote anno solare
 
-##COSE DA FARE
+###4 agosto 2016
 
 * inserimento contenuti
+
+* fixato caricamento immagine personale, adattato a nuovo inserimento contenuti
+
+##COSE DA FARE
+
 * ricevuta del pagamento
 * prefisso di wordpress, e "subprefisso" configurabile manualmente
 * creazione widget per visualizzare funzioni e contenuti direttamente da sito web, e non da dashboard.
