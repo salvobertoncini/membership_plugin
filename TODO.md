@@ -86,9 +86,10 @@
 
 * visualizzazione contenuti in base ai permessi
 
+* creazione widget per visualizzare funzioni e contenuti direttamente da sito web, e non da dashboard.
+
 ##COSE DA FARE
 
-* creazione widget per visualizzare funzioni e contenuti direttamente da sito web, e non da dashboard.
 * ricevuta del pagamento
 * prefisso di wordpress, e "subprefisso" configurabile manualmente
 * abbellire app
