@@ -187,14 +187,20 @@ function fill_member_view(user)
 {
 	var post = '';
 
-	post += "<tr><td><b>Nome: </b>"+user.name+"</td></tr>";
-	post += "<tr><td><b>Cognome: </b>"+user.surname+"</td></tr>";
-	post += "<tr><td><b>Email: </b>"+user.email+"</td></tr>";
-	post += "<tr><td><b>Data di Nascita: </b>"+user.birthday+"</td></tr>";
-	post += "<tr><td><b>Sito Web: </b>"+user.website+"</td></tr>";
-	post += "<tr><td><b>Titolo: </b>"+user.education+"</td></tr>";
-	post += "<tr><td><b>Skills: </b>"+user.skills+"</td></tr>";
-	post += "<tr><td><b>Bio: </b>"+user.bio+"</td></tr>";
+	if (user.avatar != "undefined")
+        var immagineProfilo = path + user.avatar +"";   
+    else 
+        var immagineProfilo = "http://placehold.it/350x350";
+
+    post += "<tr><td><img id=\"img-settings\" src=\"" + immagineProfilo +"\" class=\"pv-main\"/></td><td></td></tr>";
+	post += "<tr><td><b>Nome: </b></td><td>"+user.name+"</td></tr>";
+	post += "<tr><td><b>Cognome: </b></td><td>"+user.surname+"</td></tr>";
+	post += "<tr><td><b>Email: </b></td><td>"+user.email+"</td></tr>";
+	post += "<tr><td><b>Data di Nascita: </b></td><td>"+user.birthday+"</td></tr>";
+	post += "<tr><td><b>Sito Web: </b></td><td><a href='"+user.website+"'>"+user.website+"</a></td></tr>";
+	post += "<tr><td><b>Titolo: </b></td><td>"+user.education+"</td></tr>";
+	post += "<tr><td><b>Skills: </b></td><td>"+user.skills+"</td></tr>";
+	post += "<tr><td><b>Bio: </b></td><td>"+user.bio+"</td></tr>";
 
 	return post;
 }

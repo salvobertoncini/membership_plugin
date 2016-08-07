@@ -90,6 +90,7 @@
 
 ##COSE DA FARE
 
-* ricevuta del pagamento
+* e.preventDefault()
 * prefisso di wordpress, e "subprefisso" configurabile manualmente
+* ricevuta del pagamento
 * abbellire app

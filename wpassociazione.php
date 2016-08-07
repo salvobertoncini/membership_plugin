@@ -14,6 +14,9 @@
  * WORDPRESS PLUGIN
 */
 
+$plugin_prefix = 'wpassociazione';
+
+
 function wpassociazione_menu()
 {
 	add_options_page(
@@ -57,16 +60,20 @@ class wpb_widget extends WP_Widget
 
 	public function widget( $args, $instance ) 
 	{
-		$title = apply_filters( 'widget_title', $instance['title'] );
+		$title 		= apply_filters( 'widget_title', $instance['title'] );
+		$output 	= 'Ciaone da Ardeek Inc.';
 
 		// before and after widget arguments are defined by themes
 		echo $args['before_widget'];
 
 		if ( ! empty( $title ) )
+		{
 			echo $args['before_title'] . $title . $args['after_title'];
+			$output = 'Ciaone '.$title.'!!';
+		}
 
 		// This is where you run the code and display the output
-		echo __( 'Hello, World!', 'wpb_widget_domain' );
+		echo __( $output, 'wpb_widget_domain' );
 		echo $args['after_widget'];
 	}
 			
@@ -216,8 +223,17 @@ function fill_shortcode_page()
 
 	$post .= '</table>';
 
+	$url = plugins_url();
+
 	//personal profile
+	$post .= '<style>
+				.img-avatar {
+				    width-max: auto;
+				    height: 200px;
+				}
+				</style>';
 	$post .= '<h3>Personal Profile</h3>';
+	$post .= '<img class="img-avatar" src="'.$url.'/wpassociazione/'.$user["avatar"].'"><br>';
 	$post .= '<b>Nome: </b> '.$user["name"].'<br>';
 	$post .= '<b>Cognome: </b> '.$user["surname"].'<br>';
 	$post .= '<b>Data di Nascita: </b> '.$user["birthday"].'<br>';

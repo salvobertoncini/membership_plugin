@@ -27,7 +27,7 @@ function admin_view()
 	post += "<div class=\"inside\">";
 
 	post += "<table class=\"form-table\">";
-	post += "<tr><td>Benvenuto "+user.name+" "+user.surname+", il tuo ruolo è: <b>"+ruolo+"</b>. </td></tr>";
+	post += "<tr></td><td><td>Benvenuto "+user.name+" "+user.surname+", il tuo ruolo è: <b>"+ruolo+"</b>. </td></tr>";
 
 	//remember payment
 	post += remember_payment(user.paid);
@@ -36,8 +36,6 @@ function admin_view()
 	post += init_latest_news(user.id_role);
 
 	//membership status
-	post += "<tr><td><h3>Membership Status</h3></td></tr>";
-
 	extra_post = init_membership_status();
 	post += extra_post;
 
@@ -120,18 +118,7 @@ function init_personal_profile()
 
 	post += "<tr><td><h3>Personal Profile</h3></td></tr>";
 
-
-    if (localStorage['fotoProfilo'] != "undefined")
-        var immagineProfilo = path+localStorage['fotoProfilo']+"";   
-    else 
-        var immagineProfilo = "http://placehold.it/350x350";
-
-    post += "<tr><td><img id=\"img-settings\" src=\"" + immagineProfilo +"\" class=\"pv-main\"/></td></tr>";
-
-	
-	var extra_post = init_member_by_id(user.id);
-
-	post += extra_post;
+	post += init_member_by_id(user.id);
 
 	return post;
 }

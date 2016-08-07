@@ -467,8 +467,10 @@ function fill_membership_status(status)
 {
 	var post = '';
 
+	post += "<tr><td><h3>Membership Status</h3></td></tr>";
+
 	for(var i in status)
-		post += "<tr><td><b>Tot Member:</b> "+status[i].members+"</td></tr><tr><td><b>Tot Payment:</b> "+status[i].payments+"</td><td></td></tr>";
+		post += "<tr><td><b>Tot Member:</b> "+status[i].members+"</td><td><b>Tot Payment:</b> "+status[i].payments+"</td><td></td></tr>";
 
 	return post;
 }
