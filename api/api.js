@@ -1,5 +1,35 @@
 var path = '../wp-content/plugins/wpassociazione/';
 
+function ajaxPost(url, data, success)
+{
+	$.ajax({
+		type: 'POST',
+		url: url,
+		data: data,
+		success: success,
+		async:false
+	});
+}
+
+function testing()
+{
+    //inserisco i dati in un json
+    object = JSON.stringify({ r: 'Testing' });
+
+    ajaxPost(path+"api/servo.php", {js_object: object},
+        function(response)
+        {
+            console.log(response);
+
+            var resp = jQuery.parseJSON(response);
+
+            if(resp.response=="true")
+            {
+                alert(resp.data);
+            }
+        });
+}
+
 function check_something(value)
 {
 	if(value != '' && value != null)
@@ -14,7 +44,7 @@ function check_if_exist_email(email)
 	object = JSON.stringify({ r: 'CheckExistEmail', e: email });
 
 	//verifico tramite db la mail
-	$.post(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object }, 
 		function(response)
 		{
 			console.log(response);
@@ -115,7 +145,7 @@ function today()
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'Today' });
 
-	$.post(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object }, 
 		function(response)
 		{
 			var resp = jQuery.parseJSON(response);
@@ -139,7 +169,7 @@ function update_today(year)
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'UpdateToday', y: year });
 
-	$.post(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object }, 
 		function(response)
 		{
 			console.log(response);

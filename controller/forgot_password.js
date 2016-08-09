@@ -7,7 +7,7 @@ function forgot_password()
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'ForgotPassword', t:  token, e: email, p: password });
 
-	$.post(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object }, 
 		function(response)
 		{
 			console.log(response);

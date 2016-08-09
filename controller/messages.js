@@ -5,7 +5,7 @@ function init_admin_messages()
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'AllMessages' });
 
-	$.post(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object }, 
 		function(response)
 		{
 			console.log(response);
@@ -40,7 +40,7 @@ function send_message(id)
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'sendMessage' , i: id, l: parseInt(role), m: message });
 
-	$.post(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object }, 
 		function(response)
 		{
 			console.log(response);
@@ -66,7 +66,7 @@ function remove_message(id)
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'deleteMessage' , i: id });
 
-	$.post(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object }, 
 		function(response)
 		{
 			console.log(response);
@@ -94,7 +94,7 @@ function edit_message(id)
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'editMessage' , i: id, l: parseInt(role), m: message });
 
-	$.post(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object }, 
 		function(response)
 		{
 			console.log(response);
@@ -119,7 +119,7 @@ function init_message_by_id(id)
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'findMessageById' , i: id });
 
-	$.post(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object }, 
 		function(response)
 		{
 			console.log(response);
@@ -173,7 +173,7 @@ function init_message_dashboard(id)
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'initMessageDashboard' , i: id });
 
-	$.post(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object }, 
 		function(response)
 		{
 

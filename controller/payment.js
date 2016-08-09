@@ -18,7 +18,7 @@ function init_paypal_payment()
 		//inserisco i dati in un json
 		object = JSON.stringify({ r: 'InitPaypalPayment', s: true, i: paymentId, t: token, p: PayerID });
 
-		$.post(path+"api/servo.php", {js_object: object},
+		ajaxPost(path+"api/servo.php", {js_object: object},
 			function(response)
 			{
 				console.log(response);
@@ -45,7 +45,7 @@ function init_payment_all()
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'AllPayments' });
 
-	$.post(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object }, 
 		function(response)
 		{
 			console.log(response);
@@ -94,7 +94,7 @@ function remove_payment(id)
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'removePayment', i: id });
 
-	$.post(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object }, 
 		function(response)
 		{
 			console.log(response);
@@ -119,7 +119,7 @@ function restart_all_payment()
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'restartAllPayment' });
 
-	$.post(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object }, 
 		function(response)
 		{
 			console.log(response);
@@ -163,7 +163,7 @@ function admin_pay_user_payment()
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'PaymentWithId', i: id, a: amount, y: paymentId, p: PayerID, t: token});
 
-	$.post(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object }, 
 		function(response)
 		{
 			console.log(response);
@@ -177,7 +177,7 @@ function admin_pay_user_payment()
 				//inserisco i dati in un json
 				object = JSON.stringify({ r: 'RefreshPaidUserId', i: id});
 
-				$.post(path+"api/servo.php", { js_object: object }, 
+				ajaxPost(path+"api/servo.php", { js_object: object }, 
 					function(response)
 					{
 						console.log(response);
@@ -209,7 +209,7 @@ function try_to_pay(id, amount, paymentId, PayerID, token)
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'PaymentWithId', i: id, a: amount, y: paymentId, p: PayerID, t: token});
 
-	$.post(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object }, 
 		function(response)
 		{
 			console.log(response);
@@ -223,7 +223,7 @@ function try_to_pay(id, amount, paymentId, PayerID, token)
 				//inserisco i dati in un json
 				object = JSON.stringify({ r: 'RefreshPaidUserId', i: id});
 
-				$.post(path+"api/servo.php", { js_object: object }, 
+				ajaxPost(path+"api/servo.php", { js_object: object }, 
 					function(response)
 					{
 						console.log(response);
@@ -256,7 +256,7 @@ function init_user_for_payment()
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'AllUsersNotPaid'});
 
-	$.post(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object }, 
 		function(response)
 		{
 			console.log(response);
@@ -302,7 +302,7 @@ function payments_made(id)
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'UsersPaymentsMade', i:id});
 
-	$.post(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object }, 
 		function(response)
 		{
 			console.log(response);
@@ -354,7 +354,7 @@ function try_paypal_payment(id)
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'TryPaypalPayment', i:id});
 
-	$.post(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object }, 
 		function(response)
 		{
 			console.log(response);

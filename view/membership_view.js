@@ -224,6 +224,9 @@ function delete_member_view(id, name, surname)
 function fill_edit_member_view(user)
 {
 	var userLogged = JSON.parse(localStorage.getItem('userLogged'));
+
+	console.log(userLogged);
+
 	var img = '';
 
     if (user.avatar != "undefined")
@@ -323,7 +326,7 @@ function init_edit_membership_config()
     //inserisco i dati in un json
 	object = JSON.stringify({ r: 'IfMembershipExist' });
 
-    $.post(path+"api/servo.php", { js_object: object }, 
+    ajaxPost(path+"api/servo.php", { js_object: object }, 
 	function(response)
 	{
 		var resp = jQuery.parseJSON(response);

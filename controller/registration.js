@@ -98,7 +98,7 @@ function registration_step_2()
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'Registration', nome:  user.name, cognome: user.surname, email: user.email , password: user.password, birthday: user.birthday, website: user2.website, education: user2.education, avatar: user2.avatar, bio: user2.bio, skills: user2.skills, verified: 0, enabled: 1, paid: 0, id_role: 1, id_permission: 3 , token: token});
 
-	$.post(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object }, 
 		function(response)
 		{
 			console.log(response);
@@ -110,7 +110,7 @@ function registration_step_2()
 				//inserisco i dati in un json
 				object = JSON.stringify({ r: 'EmailSender', t:  token, e: user.email, p: user.password });
 
-				$.post(path+"api/servo.php", { js_object: object }, 
+				ajaxPost(path+"api/servo.php", { js_object: object }, 
 					function(response)
 					{
 						console.log(response);

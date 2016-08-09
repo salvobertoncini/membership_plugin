@@ -89,9 +89,12 @@ Wordpress plugin for membership. Php &amp; jQuery.
 
 * creazione shortcode [wpardeek] per visualizzare contenuti homepage direttamente da sito web, e non da dashboard.
 
-##COSE DA FARE
+###9 agosto 2016
 
 * e.preventDefault()
+
+##COSE DA FARE
+
 * prefisso di wordpress, e "subprefisso" configurabile manualmente
 * ricevuta del pagamento
 * abbellire app

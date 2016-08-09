@@ -1,28 +1,7 @@
-$(function() {
-
-    testing();
-    init_the_plugin();
-
-});
-
-function testing()
+$(function()
 {
-    //inserisco i dati in un json
-    object = JSON.stringify({ r: 'Testing' });
-
-    $.post(path+"api/servo.php", {js_object: object},
-        function(response)
-        {
-            console.log(response);
-
-            var resp = jQuery.parseJSON(response);
-
-            if(resp.response=="true")
-            {
-                alert(resp.data);
-            }
-        });
-}
+    init_the_plugin();
+});
 
 function init_the_plugin()
 {
@@ -74,7 +53,7 @@ function if_membership_exist()
     //inserisco i dati in un json
     var object = JSON.stringify({ r: 'IfMembershipExist' });
 
-    $.post(path+"api/servo.php", { js_object: object }, 
+    ajaxPost(path+"api/servo.php", { js_object: object }, 
         function(response)
         {
             var resp = jQuery.parseJSON(response);

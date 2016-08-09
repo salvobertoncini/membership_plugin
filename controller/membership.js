@@ -5,8 +5,7 @@ function init_membership_all()
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'AllMembership' });
 
-	$.post(path+"api/servo.php", { js_object: object }, 
-		function(response)
+	ajaxPost(path+"api/servo.php", { js_object: object }, function(response)
 		{
 			var resp = jQuery.parseJSON(response);
 			
@@ -54,7 +53,7 @@ function registration_membership()
 		object = JSON.stringify({ r: 'RegistrationMembership', n: name, d: registered_office, o: op_headquarter, v: VAT, e: email, f: fee, g: range_fee, w: website, c: clientId, k: clientSecret, u: url_plugin });
 		console.log(object);
 
-		$.post(path+"api/servo.php", { js_object: object }, 
+		ajaxPost(path+"api/servo.php", { js_object: object }, 
 			function(response)
 			{
 				console.log(response);
@@ -68,6 +67,7 @@ function registration_membership()
 				}
 							
 			});
+
 	}
 	else
 		alert("riempi tutti i campi richiesti");
@@ -84,7 +84,7 @@ function add_roles()
 		//inserisco i dati in un json
 		object = JSON.stringify({ r: 'AddRoles' , n: name, p: permission });
 
-		$.post(path+"api/servo.php", { js_object: object }, 
+		ajaxPost(path+"api/servo.php", { js_object: object }, 
 			function(response)
 			{
 				console.log(response);
@@ -118,7 +118,7 @@ function edit_roles(id)
 		console.log("obj: ");
 		console.log(object);
 
-		$.post(path+"api/servo.php", { js_object: object }, 
+		ajaxPost(path+"api/servo.php", { js_object: object }, 
 			function(response)
 			{
 				console.log(response);
@@ -141,7 +141,7 @@ function role_by_id(id)
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'RolesById', i:id });
 
-	$.post(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object }, 
 		function(response)
 		{
 			console.log(response);
@@ -166,7 +166,7 @@ function delete_roles(id)
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'DeleteRoles', i:id });
 
-	$.post(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object }, 
 		function(response)
 		{
 			console.log(response);
@@ -190,7 +190,7 @@ function init_roles()
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'AllRoles'});
 
-	$.post(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object }, 
 		function(response)
 		{
 			console.log(response);
@@ -286,7 +286,7 @@ function remove_member(id)
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'removeUser', i: id });
 
-	$.post(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object }, 
 		function(response)
 		{
 			console.log(response);
@@ -320,7 +320,7 @@ function approve_member(id)
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'editEnableUser', i: id, t: test });
 
-	$.post(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object }, 
 		function(response)
 		{
 			console.log(response);
@@ -343,7 +343,7 @@ function init_member_by_id(id)
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'MemberById' , i: id});
 
-	$.post(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object }, 
 		function(response)
 		{
 			var resp = jQuery.parseJSON(response);
@@ -373,24 +373,29 @@ function init_edit_member_by_id(id)
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'MemberById' , i: id});
 
-	$.post(path+"api/servo.php", { js_object: object }, 
-		function(response)
-		{
+	$.ajax({
+		type: 'POST',
+		url: path+"api/servo.php",
+		data: { js_object: object },
+		success: function(response)
+			{
 
-			var resp = jQuery.parseJSON(response);
-			
-			if(resp.response=="true")
-			{
-				post = fill_edit_member_view(resp.user);
-				localStorage.setItem('member', post);
-			}
-			else
-			{
-				post = "Nessun Socio da Visualizzare";
-				localStorage.setItem('member', post);
-			}
-						
-		});
+				var resp = jQuery.parseJSON(response);
+				
+				if(resp.response=="true")
+				{
+					post = fill_edit_member_view(resp.user);
+					localStorage.setItem('member', post);
+				}
+				else
+				{
+					post = "Nessun Socio da Visualizzare";
+					localStorage.setItem('member', post);
+				}
+							
+			},
+		async:false
+	});
 
 	post = localStorage.getItem('member');
 
@@ -420,7 +425,7 @@ function edit_member(id)
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'EditUser' , i: id, z: id_role, n: name, c: surname, b: birthday, e: email, w: website, d: education, s: skills, o: bio });
 
-	$.post(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object }, 
 		function(response)
 		{
 			console.log("response: ");
@@ -445,7 +450,7 @@ function init_membership_status()
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'InitStatus' });
 
-	$.post(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object }, 
 		function(response)
 		{
 			var resp = jQuery.parseJSON(response);
@@ -488,7 +493,7 @@ function change_profile_image(id)
     //inserisco i dati in un json
 	object = JSON.stringify({ r: 'changeAvatar' , i: id, a: stringa });
 
-    $.post(path+"api/servo.php", { js_object: object }, 
+    ajaxPost(path+"api/servo.php", { js_object: object }, 
 		function(response)
 		{
 			var resp = jQuery.parseJSON(response);
@@ -533,7 +538,7 @@ function edit_membership_config()
 		object = JSON.stringify({ r: 'UpdateMembership', n: name, d: registered_office, o: op_headquarter, v: VAT, e: email, f: fee, g: range_fee, w: website, c: clientId, k: clientSecret, u: url_plugin });
 		console.log(object);
 
-		$.post(path+"api/servo.php", { js_object: object }, 
+		ajaxPost(path+"api/servo.php", { js_object: object }, 
 			function(response)
 			{
 				console.log(response);
@@ -558,7 +563,7 @@ function delete_membership_forever()
 	object = JSON.stringify({ r: 'DeleteMembershipForever' });
 	console.log(object);
 
-	$.post(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object }, 
 		function(response)
 		{
 			console.log(response);

@@ -3,12 +3,18 @@
 require_once '../vendor/autoload.php';
 
 $plugin_path = $_SERVER['DOCUMENT_ROOT'] . '/wordpress';
-/*
-include_once $plugin_path . '/wp-config.php';
-include_once $plugin_path . '/wp-load.php';
-include_once $plugin_path . '/wp-includes/wp-db.php';
-include_once $plugin_path . '/wp-includes/pluggable.php';
-*/
+
+
+global $wpdb;
+
+if(!isset($wpdb)){
+require_once( $plugin_path . '/wp-config.php' );
+//include_once $plugin_path . '/wp-load.php';
+
+require_once( $plugin_path . '/wp-includes/wp-db.php' );
+//include_once $plugin_path . '/wp-includes/pluggable.php';
+}
+
 define('SITE_URL', 'http://127.0.0.1:81/wordpress/wp-admin/options-general.php?page=wpassociazione');
 
 use PayPal\Api\Amount;
@@ -85,11 +91,11 @@ function getApiContext($clientId, $clientSecret)
 function testing()
 {
 	global $wpdb;
-
+	
 	//wpdb object test
 	$wpdb->query( "SELECT * FROM {$wpdb->prefix}posts" );
 
-	$risposta = array('response' => 'true', 'data' => $wpbd);
+	$risposta = array('response' => 'true', 'data' => $wpdb);
 
 	return $risposta;
 }
@@ -1398,11 +1404,12 @@ $method = $_POST;
 
 //Sanitize the string and json strings received from the front-end
 //Corresponds to 'data:{ js_string: val , js_array: arr,  js_object: obj }' in $.ajax
-if(isset($method['js_object'])) $json_object = sanitize($method['js_object']); 
-
+//if(isset($method['js_object'])) $json_object = sanitize($method['js_object']); 
+$json_object = stripslashes( $method['js_object']);
+//var_dump($json_object);
 //Decode the json to get workable PHP variables
 $php_object = json_decode($json_object);
-
+//var_dump ($php_object);
 switch ($php_object->r) 
 {
 	case "Testing":

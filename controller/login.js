@@ -11,7 +11,7 @@ function try_login()
 		//verifico tramite db email e password
 		//se funzione successo, verifico se admin o utente normale
 		//se funzione fallimento, alert con messaggio errore e pulisco i campi email e password
-		$.post(path+"api/servo.php", { js_object: object }, 
+		ajaxPost(path+"api/servo.php", { js_object: object }, 
 			function(response)
 			{
 				var resp = jQuery.parseJSON(response);

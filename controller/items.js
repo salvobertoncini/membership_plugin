@@ -139,7 +139,7 @@ function init_items_all()
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'AllItems' });
 
-	$.post(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object }, 
 		function(response)
 		{
 			console.log(response);
@@ -169,7 +169,7 @@ function remove_item(id)
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'removeItem', i: id });
 
-	$.post(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object }, 
 		function(response)
 		{
 			console.log(response);
@@ -214,7 +214,7 @@ function upload_file()
     //inserisco i dati in un json
 	object = JSON.stringify({ r: 'uploadFile' , i: userLogged["id"], a: string });
 
-    $.post(path+"api/servo.php", { js_object: object }, 
+    ajaxPost(path+"api/servo.php", { js_object: object }, 
 		function(response)
 		{
 			var resp = jQuery.parseJSON(response);
@@ -242,7 +242,7 @@ function init_items_by_role(id_role)
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'ItemsByRole' , i: id_role });
 
-	$.post(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object }, 
 		function(response)
 		{
 			console.log(response);
