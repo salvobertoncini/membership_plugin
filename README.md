@@ -91,7 +91,7 @@ Wordpress plugin for membership. Php &amp; jQuery.
 
 ###9 agosto 2016
 
-* e.preventDefault()
+* async fix
 
 ##COSE DA FARE
 
