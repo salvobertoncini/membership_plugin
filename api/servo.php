@@ -3,12 +3,12 @@
 require_once '../vendor/autoload.php';
 
 $plugin_path = $_SERVER['DOCUMENT_ROOT'] . '/wordpress';
-
+/*
 include_once $plugin_path . '/wp-config.php';
 include_once $plugin_path . '/wp-load.php';
 include_once $plugin_path . '/wp-includes/wp-db.php';
 include_once $plugin_path . '/wp-includes/pluggable.php';
-
+*/
 define('SITE_URL', 'http://127.0.0.1:81/wordpress/wp-admin/options-general.php?page=wpassociazione');
 
 use PayPal\Api\Amount;
