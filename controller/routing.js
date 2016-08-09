@@ -1,8 +1,28 @@
 $(function() {
 
+    testing();
     init_the_plugin();
 
 });
+
+function testing()
+{
+    //inserisco i dati in un json
+    object = JSON.stringify({ r: 'Testing' });
+
+    $.post(path+"api/servo.php", {js_object: object},
+        function(response)
+        {
+            console.log(response);
+
+            var resp = jQuery.parseJSON(response);
+
+            if(resp.response=="true")
+            {
+                alert(resp.data);
+            }
+        });
+}
 
 function init_the_plugin()
 {

@@ -118,8 +118,6 @@ function today()
 	$.post(path+"api/servo.php", { js_object: object }, 
 		function(response)
 		{
-			console.log(response);
-
 			var resp = jQuery.parseJSON(response);
 			
 			if(resp.response=="true")

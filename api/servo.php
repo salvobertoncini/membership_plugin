@@ -1,6 +1,13 @@
 <?php
 
-require '../vendor/autoload.php';
+require_once '../vendor/autoload.php';
+
+$plugin_path = $_SERVER['DOCUMENT_ROOT'] . '/wordpress';
+
+include_once $plugin_path . '/wp-config.php';
+include_once $plugin_path . '/wp-load.php';
+include_once $plugin_path . '/wp-includes/wp-db.php';
+include_once $plugin_path . '/wp-includes/pluggable.php';
 
 define('SITE_URL', 'http://127.0.0.1:81/wordpress/wp-admin/options-general.php?page=wpassociazione');
 
@@ -73,6 +80,18 @@ function getApiContext($clientId, $clientSecret)
     // To learn more or to request a BN Code, contact your Partner Manager or visit the PayPal Partner Portal
     // $apiContext->addRequestHeader('PayPal-Partner-Attribution-Id', '123123123');
     return $apiContext;
+}
+
+function testing()
+{
+	global $wpdb;
+
+	//wpdb object test
+	$wpdb->query( "SELECT * FROM {$wpdb->prefix}posts" );
+
+	$risposta = array('response' => 'true', 'data' => $wpbd);
+
+	return $risposta;
 }
 
 function console_log( $data )
@@ -1386,6 +1405,10 @@ $php_object = json_decode($json_object);
 
 switch ($php_object->r) 
 {
+	case "Testing":
+		$return = testing();
+		returnsomething($return);
+		break;
 	case "IfMembershipExist":
 		$return = if_membership_exist();
 		returnsomething($return);

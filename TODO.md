@@ -94,3 +94,5 @@
 * prefisso di wordpress, e "subprefisso" configurabile manualmente
 * ricevuta del pagamento
 * abbellire app
+
+* sistemare routing => GET

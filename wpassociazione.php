@@ -4,7 +4,7 @@
  *	Plugin Name: Ardeek 4 Associazioni Plugin
  *	Plugin URI: http://ardeek.com/a4associazioni
  *	Description: Basic membership plugin for all associations.
- *	Version: 1.0
+ *	Version: 0.1
  *	Author: Ardeek S.r.l.
  *	Author URI: http://ardeek.com
  *	License: GPL2
@@ -33,6 +33,30 @@ function wpassociazione_option_page()
 {
 	require ('view/main_menu_associazione.php');
 }
+
+/* FUNZIONE CHE SI ATTIVA QUANDO SI INSTALLA IL PLUGIN */
+
+function wpassociazione_activate()
+{
+    $myfile = fopen("new_file.txt", "w") or die("Unable to open file!");
+	
+	fwrite($myfile, "BUONGIORNO");
+	fclose($myfile);
+}
+
+register_activation_hook( __FILE__, 'wpassociazione_activate' );
+
+/* FUNZIONE CHE SI ATTIVA QUANDO SI DISINSTALLA IL PLUGIN */
+
+function wpassociazione_deactivate()
+{
+    $myfile = fopen("new_file.txt", "w") or die("Unable to open file!");
+	
+	fwrite($myfile, "CIAONE");
+	fclose($myfile);
+}
+
+register_deactivation_hook( __FILE__, 'wpassociazione_deactivate' );
 
 /*
  * WORDPRESS WIDGET
@@ -129,6 +153,9 @@ function fill_shortcode_page()
 	//4. latest news
 	//5. personal profile
 
+	//wp database connection
+	global $wpdb;
+
 	//connessione al database
 	$dbhost = "localhost";
 	$dbname = "wp_ardeekmembership";
@@ -183,6 +210,13 @@ function fill_shortcode_page()
 	//benvenuto
 
 	$post .= 'Benvenuto <b>'.$user["name"].' '.$user["surname"].'</b>, il tuo ruolo è <b>'.$user["role"].'</b>.<br>';
+
+	/*
+	//wpdb object test
+	$wpdb->query( "SELECT * FROM {$wpdb->prefix}posts" );
+	foreach ( $wpdb->last_result as $r)
+		print_r("<h3>".$r->post_title."</h3>".$r->post_content."<br>");
+	*/
 
 	//reminder pagamento
 
@@ -248,5 +282,3 @@ function fill_shortcode_page()
 }
 
 add_shortcode('wpardeek', 'fill_shortcode_page');
-
-?>
