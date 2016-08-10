@@ -186,7 +186,7 @@ function today()
 function update_today($year)
 {
 	$a = $year + 1;
-	$sql = "UPDATE `membership` SET paid = ".$a;
+	$sql = "UPDATE {$wpdb->prefix}ardeek_membership SET paid = ".$a;
 
 	$mysqli = db_connection();
 
@@ -202,7 +202,7 @@ function email_sender($token, $email, $password)
 {
 	$risposta = array('response' => 'false');
 
-	$sql = "SELECT * FROM `membership`";
+	$sql = "SELECT * FROM {$wpdb->prefix}ardeek_membership";
 
 	$mysqli = db_connection();
 
@@ -247,7 +247,7 @@ function forgot_password($token, $email, $password)
 
 
 	//update password cliente
-	$sql = "UPDATE `users` SET `password`='".$password."',`token`='".$token."' WHERE email = '".$email."'";
+	$sql = "UPDATE {$wpdb->prefix}ardeek_users SET `password`='".$password."',`token`='".$token."' WHERE email = '".$email."'";
 
 	$mysqli = db_connection();
 
@@ -256,7 +256,7 @@ function forgot_password($token, $email, $password)
 
 
 	//prelevo le informazioni dell'associazione
-	$sql = "SELECT * FROM `membership`";
+	$sql = "SELECT * FROM {$wpdb->prefix}ardeek_membership";
 
 	$mysqli = db_connection();
 
@@ -298,7 +298,7 @@ function login($email, $password)
 {
 	$risposta = array('response' => 'false');
 
-	$sql = "SELECT * FROM `users` WHERE email = \"".$email."\" AND password = \"".$password."\" ORDER BY id DESC";
+	$sql = "SELECT * FROM {$wpdb->prefix}ardeek_users WHERE email = \"".$email."\" AND password = \"".$password."\" ORDER BY id DESC";
 
 	$mysqli = db_connection();
 
@@ -344,7 +344,7 @@ function registration($name, $surname, $birthday, $email, $password, $website, $
 	$ruolo = $id_role;
 	$permessi = $id_permission;
 
-	$sql = "SELECT * FROM `users`";
+	$sql = "SELECT * FROM {$wpdb->prefix}ardeek_users";
 
 	$mysqli = db_connection();
 
@@ -362,7 +362,7 @@ function registration($name, $surname, $birthday, $email, $password, $website, $
 		$permessi = 1;
 	}
 
-	$sql = "INSERT INTO `users` (id, name, surname, birthday, email, password, website, education, skills, bio, token, id_permission, verified, enabled, paid, id_role, avatar) VALUES (null, '".$name."', '".$surname."', '".$birthday."', '".$email."', '".$password."', '".$website."', '".$education."', '".$skills."', '".$bio."', '".$token."', ".$permessi.", ".$verified.", ".$enabled.", ".$paid.", ".$ruolo.", '".$avatar."');";
+	$sql = "INSERT INTO {$wpdb->prefix}ardeek_users (id, name, surname, birthday, email, password, website, education, skills, bio, token, id_permission, verified, enabled, paid, id_role, avatar) VALUES (null, '".$name."', '".$surname."', '".$birthday."', '".$email."', '".$password."', '".$website."', '".$education."', '".$skills."', '".$bio."', '".$token."', ".$permessi.", ".$verified.", ".$enabled.", ".$paid.", ".$ruolo.", '".$avatar."');";
 
 	$mysqli = db_connection();
 
@@ -378,7 +378,7 @@ function check_exist_email($email)
 {
 	$risposta = array('response' => 'false');
 
-	$sql = "SELECT * FROM `users` WHERE email = \"".$email."\" ORDER BY id DESC";
+	$sql = "SELECT * FROM {$wpdb->prefix}ardeek_users WHERE email = \"".$email."\" ORDER BY id DESC";
 
 	$mysqli = db_connection();
 
@@ -403,7 +403,7 @@ function all_membership()
 
 	$user_list = [];
 
-	$sql = "SELECT * FROM `users` ORDER BY id DESC";
+	$sql = "SELECT * FROM {$wpdb->prefix}ardeek_users ORDER BY id DESC";
 
 	$mysqli = db_connection();
 
@@ -451,7 +451,7 @@ function edit_enable_user($id, $test)
 
 	$user_list = [];
 
-	$sql = "UPDATE `users` SET enabled = ".$test." WHERE id = ".$id.";";
+	$sql = "UPDATE {$wpdb->prefix}ardeek_users SET enabled = ".$test." WHERE id = ".$id.";";
 
 	$mysqli = db_connection();
 
@@ -469,7 +469,7 @@ function member_by_id($id)
 
 	$user_list = [];
 
-	$sql = "SELECT * FROM `users` WHERE id = ".$id.";";
+	$sql = "SELECT * FROM {$wpdb->prefix}ardeek_users WHERE id = ".$id.";";
 
 	$mysqli = db_connection();
 
@@ -512,7 +512,7 @@ function member_by_id($id)
 
 function remove_user_by_id($id)
 {
-	$sql = "DELETE FROM `users` WHERE id = ".$id.";";
+	$sql = "DELETE FROM {$wpdb->prefix}ardeek_users WHERE id = ".$id.";";
 
 	$mysqli = db_connection();
 
@@ -526,7 +526,7 @@ function remove_user_by_id($id)
 
 function edit_user($id, $id_role, $nome, $cognome, $birthday, $email, $website, $education, $skills, $bio)
 {
-	$sql = "UPDATE `users` SET id_role = ".$id_role.", name = '".$nome."' , surname = '".$cognome."' , birthday = '".$birthday."' , email = '".$email."' , website = '".$website."' , education = '".$education."' , skills = '".$skills."' , bio = '".$bio."' WHERE id = ".$id.";";
+	$sql = "UPDATE {$wpdb->prefix}ardeek_users SET id_role = ".$id_role.", name = '".$nome."' , surname = '".$cognome."' , birthday = '".$birthday."' , email = '".$email."' , website = '".$website."' , education = '".$education."' , skills = '".$skills."' , bio = '".$bio."' WHERE id = ".$id.";";
 
 	$mysqli = db_connection();
 
@@ -545,7 +545,7 @@ function all_messages()
 	$msg_list = [];
 	$msg = '';
 
-	$sql = "SELECT messages.id, id_roles, name, surname, message FROM `messages` JOIN `users` ON (messages.id_user = users.id)";
+	$sql = "SELECT messages.id, id_roles, name, surname, message FROM {$wpdb->prefix}ardeek_messages JOIN `users` ON (messages.id_user = users.id)";
 
 	$mysqli = db_connection();
 
@@ -577,7 +577,7 @@ function all_messages()
 
 function send_message($id, $id_role, $message)
 {
-	$sql = "INSERT INTO `messages`(`id`, `id_user`, `id_roles`, `message`) VALUES (null, ".$id.",".$id_role.",'".$message."')";
+	$sql = "INSERT INTO {$wpdb->prefix}ardeek_messages(`id`, `id_user`, `id_roles`, `message`) VALUES (null, ".$id.",".$id_role.",'".$message."')";
 
 	$mysqli = db_connection();
 
@@ -591,7 +591,7 @@ function send_message($id, $id_role, $message)
 
 function edit_message($id, $id_roles, $message)
 {
-	$sql = "UPDATE `messages` SET id_roles = ".$id_roles." , message = '".$message."' WHERE id = ".$id.";";
+	$sql = "UPDATE {$wpdb->prefix}ardeek_messages SET id_roles = ".$id_roles." , message = '".$message."' WHERE id = ".$id.";";
 
 	$mysqli = db_connection();
 
@@ -605,7 +605,7 @@ function edit_message($id, $id_roles, $message)
 
 function delete_message($id)
 {
-	$sql = "DELETE FROM `messages` WHERE id = ".$id.";";
+	$sql = "DELETE FROM {$wpdb->prefix}ardeek_messages WHERE id = ".$id.";";
 
 	$mysqli = db_connection();
 
@@ -623,7 +623,7 @@ function find_message_by_id($id)
 
 	$msg = '';
 
-	$sql = "SELECT messages.id, id_roles, name, surname, message FROM `messages` JOIN `users` ON (messages.id_user = users.id) WHERE messages.id = ".$id.";";
+	$sql = "SELECT messages.id, id_roles, name, surname, message FROM {$wpdb->prefix}ardeek_messages JOIN `users` ON (messages.id_user = users.id) WHERE messages.id = ".$id.";";
 
 	$mysqli = db_connection();
 
@@ -659,7 +659,7 @@ function all_items()
 	$item_list = [];
 	$item = '';
 
-	$sql = "SELECT contents.id, contents.id_role, contents.name as onome, users.name as name, surname, type, path FROM `contents` JOIN `users` ON (contents.id_user = users.id)";
+	$sql = "SELECT contents.id, contents.id_role, contents.name as onome, users.name as name, surname, type, path FROM {$wpdb->prefix}ardeek_contents JOIN {$wpdb->prefix}ardeek_users ON (contents.id_user = users.id)";
 
 	$mysqli = db_connection();
 
@@ -698,7 +698,7 @@ function items_by_role($id_role)
 	$item_list = [];
 	$item = '';
 
-	$sql = "SELECT contents.id, contents.id_role, contents.name as onome, users.name as name, surname, type, path FROM `contents` JOIN `users` ON (contents.id_user = users.id) WHERE contents.id_role <= ".$id_role;
+	$sql = "SELECT contents.id, contents.id_role, contents.name as onome, users.name as name, surname, type, path FROM {$wpdb->prefix}ardeek_contents JOIN {$wpdb->prefix}ardeek_users ON (contents.id_user = users.id) WHERE contents.id_role <= ".$id_role;
 
 	$mysqli = db_connection();
 
@@ -732,7 +732,7 @@ function items_by_role($id_role)
 
 function remove_item($id)
 {
-	$sql = "SELECT name, path FROM `contents` WHERE id =".$id;
+	$sql = "SELECT name, path FROM {$wpdb->prefix}ardeek_contents WHERE id =".$id;
 
 	$mysqli = db_connection();
 
@@ -749,7 +749,7 @@ function remove_item($id)
 		}
 	}
 
-	$sql = "DELETE FROM `contents` WHERE id = ".$id.";";
+	$sql = "DELETE FROM {$wpdb->prefix}ardeek_contents WHERE id = ".$id.";";
 
 	$mysqli = db_connection();
 
@@ -771,7 +771,7 @@ function all_payments()
 	$item_list = [];
 	$item = '';
 
-	$sql = "SELECT payments.id, name, surname, data, information FROM `payments` JOIN `users` ON (payments.id_user = users.id)";
+	$sql = "SELECT payments.id, name, surname, data, information FROM {$wpdb->prefix}ardeek_payment JOIN `users` ON (payments.id_user = users.id)";
 
 	$mysqli = db_connection();
 
@@ -803,7 +803,7 @@ function all_payments()
 
 function remove_payment($id)
 {
-	$sql = "DELETE FROM `payments` WHERE id = ".$id.";";
+	$sql = "DELETE FROM {$wpdb->prefix}ardeek_payments WHERE id = ".$id.";";
 
 	$mysqli = db_connection();
 
@@ -817,7 +817,7 @@ function remove_payment($id)
 
 function restart_all_payment()
 {
-	$sql = "UPDATE `users` SET paid = 0;";
+	$sql = "UPDATE {$wpdb->prefix}ardeek_users SET paid = 0;";
 
 	$mysqli = db_connection();
 
@@ -836,7 +836,7 @@ function init_message_dashboard($id_role)
 	$item_list = [];
 	$item = '';
 
-	$sql = "SELECT messages.id, name, surname, message FROM `messages` JOIN `users` ON (messages.id_user = users.id) WHERE id_roles <= ".$id_role." LIMIT 5;";
+	$sql = "SELECT messages.id, name, surname, message FROM {$wpdb->prefix}ardeek_messages JOIN {$wpdb->prefix}ardeek_users ON ({$wpdb->prefix}ardeek_messages.id_user = {$wpdb->prefix}ardeek_users.id) WHERE id_roles <= ".$id_role." LIMIT 5;";
 
 	$mysqli = db_connection();
 
@@ -874,12 +874,12 @@ function init_status()
 
 	$sql = "SELECT  (
 	SELECT COUNT(*)
-	FROM   users
-	) AS members,
+	FROM   {$wpdb->prefix}ardeek_users
+	) AS {$wpdb->prefix}ardeek_members,
 	(
 	SELECT COUNT(*)
-	FROM   payments
-	) AS payments
+	FROM   {$wpdb->prefix}ardeek_payments
+	) AS {$wpdb->prefix}ardeek_payments
 	FROM    dual";
 
 	$mysqli = db_connection();
@@ -909,7 +909,7 @@ function init_status()
 
 function change_avatar($id, $avatar)
 {
-	$sql = "UPDATE `users` SET avatar = '".$avatar."' WHERE id = ".$id.";";
+	$sql = "UPDATE {$wpdb->prefix}ardeek_users SET avatar = '".$avatar."' WHERE id = ".$id.";";
 
 	$mysqli = db_connection();
 
@@ -925,7 +925,7 @@ function upload_file($id, $id_role, $fileName, $fileType, $path)
 {
 	$type = checkTypeUploadedFile($fileType);
 
-	$sql = "INSERT INTO `contents`(`id`, `id_user`, `id_role`, `type`, `name`, `path`) VALUES (null, ".$id.", ".$id_role.", '".$type."', '".$fileName."', '".$path."')";
+	$sql = "INSERT INTO {$wpdb->prefix}ardeek_contents(`id`, `id_user`, `id_role`, `type`, `name`, `path`) VALUES (null, ".$id.", ".$id_role.", '".$type."', '".$fileName."', '".$path."')";
 
 	$mysqli = db_connection();
 
@@ -958,7 +958,7 @@ function user_payment($id, $amount, $paymentId, $PayerID, $token)
 	$timestamp = date('Y-m-d G:i:s');
 	$string = "data: ".$timestamp.", amount: ".$amount.", token: ".$token.", paymentId: ".$paymentId.", PayerID: ".$PayerID;
 
-	$sql = "INSERT INTO `payments`(`id`, `id_user`, `data`, `information`) VALUES (null, ".$id.", '".$timestamp."', '".$string."')";
+	$sql = "INSERT INTO {$wpdb->prefix}ardeek_payments(`id`, `id_user`, `data`, `information`) VALUES (null, ".$id.", '".$timestamp."', '".$string."')";
 
 	$mysqli = db_connection();
 
@@ -972,7 +972,7 @@ function user_payment($id, $amount, $paymentId, $PayerID, $token)
 
 function refresh_user_paid($id)
 {
-	$sql = "UPDATE `users` SET paid = 1 WHERE id = ".$id.";";
+	$sql = "UPDATE {$wpdb->prefix}ardeek_users SET paid = 1 WHERE id = ".$id.";";
 
 	$mysqli = db_connection();
 
@@ -990,7 +990,7 @@ function all_membership_not_paid()
 
 	$user_list = [];
 
-	$sql = "SELECT * FROM `users` WHERE paid = 0 ORDER BY id DESC";
+	$sql = "SELECT * FROM {$wpdb->prefix}ardeek_users WHERE paid = 0 ORDER BY id DESC";
 
 	$mysqli = db_connection();
 
@@ -1040,7 +1040,7 @@ function users_payments_made($id)
 	$item_list = [];
 	$item = '';
 
-	$sql = "SELECT payments.id, name, surname, data, information FROM `payments` JOIN `users` ON (payments.id_user = users.id) WHERE payments.id_user = ".$id.";";
+	$sql = "SELECT payments.id, name, surname, data, information FROM {$wpdb->prefix}ardeek_payments JOIN {$wpdb->prefix}ardeek_users ON ({$wpdb->prefix}ardeek_payments.id_user = {$wpdb->prefix}ardeek_users.id) WHERE {$wpdb->prefix}ardeek_payments.id_user = ".$id.";";
 
 	$mysqli = db_connection();
 
@@ -1178,7 +1178,7 @@ function if_membership_exist()
 	$item_list = [];
 	$item = '';
 
-	$sql = "SELECT * FROM `membership`";
+	$sql = "SELECT * FROM {$wpdb->prefix}ardeek_membership";
 
 	$mysqli = db_connection();
 
@@ -1221,7 +1221,7 @@ function registration_membership($name, $registered_office, $op_headquarter, $VA
 {
 	$timestamp = date('Y-m-d G:i:s');
 
-	$sql = "INSERT INTO `membership`(`id`, `name`, `registered_office`, `op_headquarter`, `VAT`, `email`, `fee`, `range_fee`, `website`, `clientId`, `clientSecret`, `url_plugin`, `registration_date`) VALUES (null,'".$name."','".$registered_office."','".$op_headquarter."','".$VAT."','".$email."',".$fee.",".$range_fee.",'".$website."','".$clientId."','".$clientSecret."','".$url_plugin."','".$timestamp."')";
+	$sql = "INSERT INTO {$wpdb->prefix}ardeek_membership(`id`, `name`, `registered_office`, `op_headquarter`, `VAT`, `email`, `fee`, `range_fee`, `website`, `clientId`, `clientSecret`, `url_plugin`, `registration_date`) VALUES (null,'".$name."','".$registered_office."','".$op_headquarter."','".$VAT."','".$email."',".$fee.",".$range_fee.",'".$website."','".$clientId."','".$clientSecret."','".$url_plugin."','".$timestamp."')";
 
 	$mysqli = db_connection();
 
@@ -1235,7 +1235,7 @@ function registration_membership($name, $registered_office, $op_headquarter, $VA
 
 function update_membership($name, $registered_office, $op_headquarter, $VAT, $email, $fee, $range_fee, $website, $clientId, $clientSecret, $url_plugin)
 {
-	$sql = "UPDATE `membership` SET `name` = '".$name."', `registered_office` = '".$registered_office."', `op_headquarter` = '".$op_headquarter."', `VAT` = '".$VAT."', `email` = '".$email."', `fee` = ".$fee.", `range_fee` = ".$range_fee.", `website` = '".$website."', `clientId` = '".$clientId."', `clientSecret` = '".$clientSecret."', `url_plugin` = '".$url_plugin."'";
+	$sql = "UPDATE {$wpdb->prefix}ardeek_membership SET `name` = '".$name."', `registered_office` = '".$registered_office."', `op_headquarter` = '".$op_headquarter."', `VAT` = '".$VAT."', `email` = '".$email."', `fee` = ".$fee.", `range_fee` = ".$range_fee.", `website` = '".$website."', `clientId` = '".$clientId."', `clientSecret` = '".$clientSecret."', `url_plugin` = '".$url_plugin."'";
 
 	$mysqli = db_connection();
 
@@ -1249,7 +1249,7 @@ function update_membership($name, $registered_office, $op_headquarter, $VAT, $em
 
 function delete_membership_forever()
 {
-	$sql = "DELETE FROM `membership`";
+	$sql = "DELETE FROM {$wpdb->prefix}ardeek_membership";
 
 	$mysqli = db_connection();
 
@@ -1268,7 +1268,7 @@ function all_roles()
 	$item_list = [];
 	$item = '';
 
-	$sql = "SELECT * FROM `roles`";
+	$sql = "SELECT * FROM {$wpdb->prefix}ardeek_roles";
 
 	$mysqli = db_connection();
 
@@ -1300,7 +1300,7 @@ function all_roles()
 
 function add_roles($name, $permission)
 {
-	$sql = "SELECT * FROM `roles` WHERE name = '".$name."'";
+	$sql = "SELECT * FROM {$wpdb->prefix}ardeek_roles WHERE name = '".$name."'";
 
 	$mysqli = db_connection();
 
@@ -1315,7 +1315,7 @@ function add_roles($name, $permission)
 	}
 	else
 	{
-		$sql = "INSERT INTO `roles`(`id`, `name`, `id_permission`, `editable`) VALUES (null,'".$name."',".$permission.",1)";
+		$sql = "INSERT INTO {$wpdb->prefix}ardeek_roles(`id`, `name`, `id_permission`, `editable`) VALUES (null,'".$name."',".$permission.",1)";
 
 		$mysqli = db_connection();
 
@@ -1330,7 +1330,7 @@ function add_roles($name, $permission)
 
 function edit_roles($id, $name, $permission)
 {
-	$sql = "UPDATE `roles` SET `name` = '".$name."', `id_permission` = ".$permission." WHERE id= ".$id;
+	$sql = "UPDATE {$wpdb->prefix}ardeek_roles SET `name` = '".$name."', `id_permission` = ".$permission." WHERE id= ".$id;
 
 	$mysqli = db_connection();
 
@@ -1344,7 +1344,7 @@ function edit_roles($id, $name, $permission)
 
 function delete_roles($id)
 {
-	$sql = "DELETE FROM `roles` WHERE id =".$id;
+	$sql = "DELETE FROM {$wpdb->prefix}ardeek_roles WHERE id =".$id;
 
 	$mysqli = db_connection();
 
@@ -1363,7 +1363,7 @@ function roles_by_id($id)
 	$item_list = [];
 	$item = '';
 
-	$sql = "SELECT * FROM `roles` WHERE id= ".$id;
+	$sql = "SELECT * FROM {$wpdb->prefix}ardeek_roles WHERE id= ".$id;
 
 	$mysqli = db_connection();
 

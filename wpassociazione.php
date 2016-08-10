@@ -14,8 +14,9 @@
  * WORDPRESS PLUGIN
 */
 
-$plugin_prefix = 'wpassociazione';
+$plugin_prefix = 'ardeek';
 
+$plugin_path = $_SERVER['DOCUMENT_ROOT'] . '/wordpress';
 
 function wpassociazione_menu()
 {
@@ -38,10 +39,81 @@ function wpassociazione_option_page()
 
 function wpassociazione_activate()
 {
-    $myfile = fopen("new_file.txt", "w") or die("Unable to open file!");
+    global $wpdb;
+    global $plugin_prefix;
 	
-	fwrite($myfile, "BUONGIORNO");
-	fclose($myfile);
+	$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ardeek_contents;");
+		$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ardeek_membership;");
+			$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ardeek_messages;");
+				$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ardeek_payments;");
+					$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ardeek_permissions;");
+						$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ardeek_roles;");
+							$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ardeek_users;");
+	$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_contents (
+			  `id` int(11) NOT NULL,
+			  `id_user` int(11) NOT NULL,
+			  `id_role` int(11) NOT NULL,
+			  `type` enum('image','video','document') NOT NULL,
+			  `name` varchar(255) NOT NULL,
+			  `path` text NOT NULL
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+		$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_membership (
+				  `id` int(11) NOT NULL,
+				  `name` varchar(255) NOT NULL,
+				  `registered_office` text NOT NULL,
+				  `op_headquarter` text NOT NULL,
+				  `VAT` varchar(255) NOT NULL,
+				  `email` varchar(255) NOT NULL,
+				  `fee` float NOT NULL,
+				  `range_fee` int(2) NOT NULL,
+				  `website` varchar(255) NOT NULL,
+				  `clientId` text NOT NULL,
+				  `clientSecret` text NOT NULL,
+				  `url_plugin` text NOT NULL,
+				  `registration_date` date NOT NULL,
+				  `paid` int(4) NOT NULL
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+			$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_messages (
+					  `id` int(11) NOT NULL,
+					  `id_user` int(11) NOT NULL,
+					  `id_roles` int(11) NOT NULL,
+					  `message` text NOT NULL
+					) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+				$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_payments (
+						  `id` int(11) NOT NULL,
+						  `id_user` int(11) NOT NULL,
+						  `data` date NOT NULL,
+						  `information` text NOT NULL
+						) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+					$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_permissions (
+							  `id` int(11) NOT NULL,
+							  `name` varchar(255) NOT NULL
+							) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+						$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_roles (
+								  `id` int(11) NOT NULL,
+								  `id_permission` int(11) NOT NULL,
+								  `name` varchar(255) NOT NULL,
+								  `editable` tinyint(4) NOT NULL
+								) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+							$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_users (
+									  `id` int(11) NOT NULL,
+									  `name` varchar(255) NOT NULL,
+									  `surname` varchar(255) NOT NULL,
+									  `birthday` date NOT NULL,
+									  `email` varchar(255) NOT NULL,
+									  `password` varchar(255) NOT NULL,
+									  `website` varchar(255) NOT NULL,
+									  `education` text NOT NULL,
+									  `skills` text NOT NULL,
+									  `bio` text NOT NULL,
+									  `token` varchar(255) NOT NULL,
+									  `id_permission` int(11) NOT NULL,
+									  `verified` tinyint(4) NOT NULL,
+									  `enabled` tinyint(4) NOT NULL,
+									  `paid` tinyint(4) NOT NULL,
+									  `id_role` int(11) NOT NULL,
+									  `avatar` text NOT NULL
+									) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 }
 
 register_activation_hook( __FILE__, 'wpassociazione_activate' );
@@ -50,10 +122,16 @@ register_activation_hook( __FILE__, 'wpassociazione_activate' );
 
 function wpassociazione_deactivate()
 {
-    $myfile = fopen("new_file.txt", "w") or die("Unable to open file!");
+	global $wpdb;
 	
-	fwrite($myfile, "CIAONE");
-	fclose($myfile);
+	$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ardeek_contents;");
+		$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ardeek_membership;");
+			$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ardeek_messages;");
+				$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ardeek_payments;");
+					$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ardeek_permissions;");
+						$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ardeek_roles;");
+							$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ardeek_users;");
+
 }
 
 register_deactivation_hook( __FILE__, 'wpassociazione_deactivate' );
