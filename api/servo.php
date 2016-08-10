@@ -7,12 +7,10 @@ $plugin_path = $_SERVER['DOCUMENT_ROOT'] . '/wordpress';
 
 global $wpdb;
 
-if(!isset($wpdb)){
-require_once( $plugin_path . '/wp-config.php' );
-//include_once $plugin_path . '/wp-load.php';
-
-require_once( $plugin_path . '/wp-includes/wp-db.php' );
-//include_once $plugin_path . '/wp-includes/pluggable.php';
+if(!isset($wpdb))
+{
+	require_once( $plugin_path . '/wp-config.php' );
+	require_once( $plugin_path . '/wp-includes/wp-db.php' );
 }
 
 define('SITE_URL', 'http://127.0.0.1:81/wordpress/wp-admin/options-general.php?page=wpassociazione');
@@ -155,7 +153,7 @@ function today()
 {
 	$risposta = array('response' => 'false');
 
-	$sql = "SELECT paid, range_fee FROM membership";
+	$sql = "SELECT paid, range_fee FROM {$wpdb->prefix}ardeek_membership";
 
 	$mysqli = db_connection();
 
@@ -545,7 +543,7 @@ function all_messages()
 	$msg_list = [];
 	$msg = '';
 
-	$sql = "SELECT messages.id, id_roles, name, surname, message FROM {$wpdb->prefix}ardeek_messages JOIN `users` ON (messages.id_user = users.id)";
+	$sql = "SELECT {$wpdb->prefix}ardeek_messages.id, id_roles, name, surname, message FROM {$wpdb->prefix}ardeek_messages JOIN {$wpdb->prefix}ardeek_users ON ({$wpdb->prefix}ardeek_messages.id_user = {$wpdb->prefix}ardeek_users.id)";
 
 	$mysqli = db_connection();
 
@@ -623,7 +621,7 @@ function find_message_by_id($id)
 
 	$msg = '';
 
-	$sql = "SELECT messages.id, id_roles, name, surname, message FROM {$wpdb->prefix}ardeek_messages JOIN `users` ON (messages.id_user = users.id) WHERE messages.id = ".$id.";";
+	$sql = "SELECT {$wpdb->prefix}ardeek_messages.id, id_roles, name, surname, message FROM {$wpdb->prefix}ardeek_messages JOIN {$wpdb->prefix}ardeek_users ON ({$wpdb->prefix}ardeek_messages.id_user = {$wpdb->prefix}ardeek_users.id) WHERE {$wpdb->prefix}ardeek_messages.id = ".$id.";";
 
 	$mysqli = db_connection();
 
@@ -659,7 +657,7 @@ function all_items()
 	$item_list = [];
 	$item = '';
 
-	$sql = "SELECT contents.id, contents.id_role, contents.name as onome, users.name as name, surname, type, path FROM {$wpdb->prefix}ardeek_contents JOIN {$wpdb->prefix}ardeek_users ON (contents.id_user = users.id)";
+	$sql = "SELECT {$wpdb->prefix}ardeek_contents.id, {$wpdb->prefix}ardeek_contents.id_role, {$wpdb->prefix}ardeek_contents.name as onome, {$wpdb->prefix}ardeek_users.name as name, surname, type, path FROM {$wpdb->prefix}ardeek_contents JOIN {$wpdb->prefix}ardeek_users ON ({$wpdb->prefix}ardeek_contents.id_user = {$wpdb->prefix}ardeek_users.id)";
 
 	$mysqli = db_connection();
 
@@ -698,7 +696,7 @@ function items_by_role($id_role)
 	$item_list = [];
 	$item = '';
 
-	$sql = "SELECT contents.id, contents.id_role, contents.name as onome, users.name as name, surname, type, path FROM {$wpdb->prefix}ardeek_contents JOIN {$wpdb->prefix}ardeek_users ON (contents.id_user = users.id) WHERE contents.id_role <= ".$id_role;
+	$sql = "SELECT {$wpdb->prefix}ardeek_contents.id, {$wpdb->prefix}ardeek_contents.id_role, {$wpdb->prefix}ardeek_contents.name as onome, {$wpdb->prefix}ardeek_users.name as name, surname, type, path FROM {$wpdb->prefix}ardeek_contents JOIN {$wpdb->prefix}ardeek_users ON ({$wpdb->prefix}ardeek_contents.id_user = {$wpdb->prefix}ardeek_users.id) WHERE {$wpdb->prefix}ardeek_contents.id_role <= ".$id_role;
 
 	$mysqli = db_connection();
 
@@ -771,7 +769,7 @@ function all_payments()
 	$item_list = [];
 	$item = '';
 
-	$sql = "SELECT payments.id, name, surname, data, information FROM {$wpdb->prefix}ardeek_payment JOIN `users` ON (payments.id_user = users.id)";
+	$sql = "SELECT {$wpdb->prefix}ardeek_payments.id, name, surname, data, information FROM {$wpdb->prefix}ardeek_payment JOIN `users` ON ({$wpdb->prefix}ardeek_payments.id_user = {$wpdb->prefix}ardeek_users.id)";
 
 	$mysqli = db_connection();
 
@@ -836,7 +834,7 @@ function init_message_dashboard($id_role)
 	$item_list = [];
 	$item = '';
 
-	$sql = "SELECT messages.id, name, surname, message FROM {$wpdb->prefix}ardeek_messages JOIN {$wpdb->prefix}ardeek_users ON ({$wpdb->prefix}ardeek_messages.id_user = {$wpdb->prefix}ardeek_users.id) WHERE id_roles <= ".$id_role." LIMIT 5;";
+	$sql = "SELECT {$wpdb->prefix}ardeek_messages.id, name, surname, message FROM {$wpdb->prefix}ardeek_messages JOIN {$wpdb->prefix}ardeek_users ON ({$wpdb->prefix}ardeek_messages.id_user = {$wpdb->prefix}ardeek_users.id) WHERE id_roles <= ".$id_role." LIMIT 5;";
 
 	$mysqli = db_connection();
 
@@ -1040,7 +1038,7 @@ function users_payments_made($id)
 	$item_list = [];
 	$item = '';
 
-	$sql = "SELECT payments.id, name, surname, data, information FROM {$wpdb->prefix}ardeek_payments JOIN {$wpdb->prefix}ardeek_users ON ({$wpdb->prefix}ardeek_payments.id_user = {$wpdb->prefix}ardeek_users.id) WHERE {$wpdb->prefix}ardeek_payments.id_user = ".$id.";";
+	$sql = "SELECT {$wpdb->prefix}ardeek_payments.id, name, surname, data, information FROM {$wpdb->prefix}ardeek_payments JOIN {$wpdb->prefix}ardeek_users ON ({$wpdb->prefix}ardeek_payments.id_user = {$wpdb->prefix}ardeek_users.id) WHERE {$wpdb->prefix}ardeek_payments.id_user = ".$id.";";
 
 	$mysqli = db_connection();
 
