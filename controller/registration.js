@@ -3,7 +3,6 @@ function registration_step_0()
 	var name = $("#name").val();
 	var surname = $("#surname").val();
 
-	$("#birthday").datepicker({ dateFormat: 'yyyy, mm, dd' });
 	var birthday = $("#birthday").val();
 
 	var email = $("#email").val();

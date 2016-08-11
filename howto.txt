@@ -1,0 +1,75 @@
+/*****************************************************************************************************************/
+/****************************************************WORDPRESS****************************************************/
+
+/*****************************************************************************************************************/
+/****************************************************WORDPRESS****************************************************/
+
+function $wpdb->SELECT()
+{
+	global $wpdb;
+
+	$item_list = [];
+	$item = '';
+
+	$risposta = array('response' => 'false');
+
+	$myrows = $wpdb->get_row($wpdb->prepare("SELECT paid, range_fee FROM {$wpdb->prefix}ardeek_membership"));
+	
+	//verifichiamo che siano presenti records
+	foreach ($myrows as $row)
+	{  
+		$range_fee	= $row['range_fee'];
+		$paid		= $row['paid'];
+		
+		$date = array('range_fee'=> $range_fee, 'paid' => $paid);
+
+		$risposta = array('response' => 'true', 'date' => $date);
+
+	}
+
+	return $risposta;
+}
+
+function $wpdb->DELETE()
+{
+	global $wpdb;
+
+	$wpdb->query( 
+	$wpdb->prepare( 
+		"
+		DELETE FROM $wpdb->postmeta
+		WHERE post_id = %d
+		AND meta_key = %s
+		",
+	        13, 'chiave_test' 
+        )
+	);
+}
+
+function $wpdb->UPDATE()
+{
+	$wpdb->query(
+	$wpdb->prepare( 
+	"
+	UPDATE $wpdb->posts 
+	SET post_parent = 7
+	WHERE ID = 15 
+		AND post_status = 'static'
+	"
+	)
+	);
+}
+
+function $wpdb->INSERT()
+{
+$wpdb->query( $wpdb->prepare( 
+	"
+		INSERT INTO tabella
+		( post_id, meta_key, meta_value )
+		VALUES ( %d, %s, %s )
+	", 
+        10, 
+	$metakey, 
+	$metavalue 
+) );
+}

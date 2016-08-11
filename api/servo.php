@@ -4,7 +4,6 @@ require_once '../vendor/autoload.php';
 
 $plugin_path = $_SERVER['DOCUMENT_ROOT'] . '/wordpress';
 
-
 global $wpdb;
 
 if(!isset($wpdb))
@@ -151,45 +150,39 @@ function default_return()
 
 function today()
 {
+	global $wpdb;
+
 	$risposta = array('response' => 'false');
 
-	$sql = "SELECT paid, range_fee FROM {$wpdb->prefix}ardeek_membership";
-
-	$mysqli = db_connection();
-
-    //eseguo la query
-	$query = $mysqli->query($sql);
+	$myrows = $wpdb->get_results("SELECT paid, range_fee FROM {$wpdb->prefix}ardeek_membership");
 	
-
 	//verifichiamo che siano presenti records
-	if($query->data_seek(0))
-	{
-		while($row = $query->fetch_assoc())
-		{  
-			$range_fee	= $row['range_fee'];
-			$paid		= $row['paid'];
-			
-			$date = array('range_fee'=> $range_fee, 'paid' => $paid);
+	foreach ($myrows as $row)
+	{  
+		$range_fee	= $row->range_fee;
+		$paid		= $row->paid;
+		
+		$date = array('range_fee'=> $range_fee, 'paid' => $paid);
 
-			$risposta = array('response' => 'true', 'date' => $date);
+		$risposta = array('response' => 'true', 'date' => $date);
 
-		}
 	}
 
 	return $risposta;
-
 
 }
 
 function update_today($year)
 {
+	global $wpdb;
+
 	$a = $year + 1;
-	$sql = "UPDATE {$wpdb->prefix}ardeek_membership SET paid = ".$a;
 
-	$mysqli = db_connection();
-
-    //eseguo la query
-	$query = $mysqli->query($sql);
+	$wpdb->query(
+	$wpdb->prepare( 
+		"UPDATE {$wpdb->prefix}ardeek_membership SET paid = %d",$a
+		)
+	);
 
 	$risposta = array('response' => 'true');
 
@@ -198,25 +191,18 @@ function update_today($year)
 
 function email_sender($token, $email, $password)
 {
+	global $wpdb;
+
 	$risposta = array('response' => 'false');
 
-	$sql = "SELECT * FROM {$wpdb->prefix}ardeek_membership";
-
-	$mysqli = db_connection();
-
-    //eseguo la query
-	$query = $mysqli->query($sql);
+	$myrows = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}ardeek_membership");
 	
-
 	//verifichiamo che siano presenti records
-	if($query->data_seek(0))
-	{
-		while($row = $query->fetch_assoc())
-		{  
-			$name_membership	= $row['name'];
-			$admin_email		= $row['email'];
-			$url_plugin			= $row['url_plugin'];
-		}
+	foreach ($myrows as $row)
+	{ 
+		$name_membership	= $row->name;
+		$admin_email		= $row->email;
+		$url_plugin			= $row->url_plugin;
 	}
 
 	// email per la conferma
@@ -241,37 +227,30 @@ function email_sender($token, $email, $password)
 
 function forgot_password($token, $email, $password)
 {
+	global $wpdb; 
+
 	$risposta = array('response' => 'false');
 
-
 	//update password cliente
-	$sql = "UPDATE {$wpdb->prefix}ardeek_users SET `password`='".$password."',`token`='".$token."' WHERE email = '".$email."'";
+	$wpdb->query(
+	$wpdb->prepare( 
+		"UPDATE {$wpdb->prefix}ardeek_users SET `password`= %s ,`token`= %s WHERE email = $s", 
+			$password, $token, $email
+		)
+	);
 
-	$mysqli = db_connection();
-
-    //eseguo la query
-	$query = $mysqli->query($sql);
 
 
 	//prelevo le informazioni dell'associazione
-	$sql = "SELECT * FROM {$wpdb->prefix}ardeek_membership";
-
-	$mysqli = db_connection();
-
-    //eseguo la query
-	$query = $mysqli->query($sql);
+	$myrows = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}ardeek_membership");
 
 	//verifichiamo che siano presenti records
-	if($query->data_seek(0))
+	foreach ($myrows as $row)
 	{
-		while($row = $query->fetch_assoc())
-		{  
-			$name_membership	= $row['name'];
-			$admin_email		= $row['email'];
-			$url_plugin			= $row['url_plugin'];
-		}
+		$name_membership	= $row->name;
+		$admin_email		= $row->email;
+		$url_plugin			= $row->url_plugin;
 	}
-
 
 	// email per la conferma
     // intestazioni
@@ -294,44 +273,41 @@ function forgot_password($token, $email, $password)
 
 function login($email, $password)
 {
+	global $wpdb;
+
 	$risposta = array('response' => 'false');
 
-	$sql = "SELECT * FROM {$wpdb->prefix}ardeek_users WHERE email = \"".$email."\" AND password = \"".$password."\" ORDER BY id DESC";
+	$myrows = $wpdb->get_results(
+		$wpdb->prepare("
+			SELECT * FROM {$wpdb->prefix}ardeek_users WHERE email = %s AND password = %s ORDER BY id DESC",
+				$email, $password
+			)
+		);
 
-	$mysqli = db_connection();
-
-    //eseguo la query
-	$query = $mysqli->query($sql);
-	
-
-	//verifichiamo che siano presenti records
-	if($query->data_seek(0))
+	foreach ($myrows as $row) 
 	{
-		while($row = $query->fetch_assoc())
-		{  
 
-			$id             = $row['id'];
-			$id_role        = $row['id_role'];
-			$id_permission  = $row['id_permission'];
-			$name           = $row['name'];
-			$surname        = $row['surname'];
-			$birthday       = $row['birthday'];
-			$email          = $row['email'];
-			$password       = $row['password'];
-			$website        = $row['website'];
-			$education      = $row['education'];
-			$skills         = $row['skills'];
-			$bio            = $row['bio'];
-			$avatar         = $row['avatar'];
-			$token          = $row['token'];
-			$verified       = $row['verified'];
-			$enabled        = $row['enabled'];
-			$paid        	= $row['paid'];
+		$id             = $row->id;
+		$id_role        = $row->id_role;
+		$id_permission  = $row->id_permission;
+		$name           = $row->name;
+		$surname        = $row->surname;
+		$birthday       = $row->birthday;
+		$email          = $row->email;
+		$password       = $row->password;
+		$website        = $row->website;
+		$education      = $row->education;
+		$skills         = $row->skills;
+		$bio            = $row->bio;
+		$avatar         = $row->avatar;
+		$token          = $row->token;
+		$verified       = $row->verified;
+		$enabled        = $row->enabled;
+		$paid        	= $row->paid;
 
-			$user = array('id'=> $id, 'id_role' => $id_role, 'id_permission' => $id_permission, 'name' => $name, 'surname' => $surname, 'birthday' => $birthday, 'email' => $email, 'password' => $password, 'website' => $website, 'education' => $education, 'skills' => $skills, 'bio' => $bio, 'avatar' => $avatar, 'token' => $token, 'verified' => $verified, 'enabled' => $enabled, 'paid' => $paid);
+		$user = array('id'=> $id, 'id_role' => $id_role, 'id_permission' => $id_permission, 'name' => $name, 'surname' => $surname, 'birthday' => $birthday, 'email' => $email, 'password' => $password, 'website' => $website, 'education' => $education, 'skills' => $skills, 'bio' => $bio, 'avatar' => $avatar, 'token' => $token, 'verified' => $verified, 'enabled' => $enabled, 'paid' => $paid);
 
-			$risposta = array('response' => 'true', 'user' => $user);
-		}
+		$risposta = array('response' => 'true', 'user' => $user);
 	}
 
 	return $risposta;
@@ -339,33 +315,27 @@ function login($email, $password)
 
 function registration($name, $surname, $birthday, $email, $password, $website, $education, $bio, $skills, $avatar, $id_role, $id_permission, $enabled, $paid, $verified, $token)
 {
-	$ruolo = $id_role;
-	$permessi = $id_permission;
 
-	$sql = "SELECT * FROM {$wpdb->prefix}ardeek_users";
+	global $wpdb;
 
-	$mysqli = db_connection();
+	$risposta = array('response' => 'false');
 
-    //eseguo la query
-	$query = $mysqli->query($sql);
-	
+	$myrows = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}ardeek_users");
 
 	//verifichiamo che siano presenti records
-	if($query->data_seek(0))
+	if($myrows)
 		$nothing = 0;
 	else
 	{
 		//se è il primo registrato, quindi l'admin
 		$ruolo = 4;
 		$permessi = 1;
+		$verified = 1;
 	}
 
-	$sql = "INSERT INTO {$wpdb->prefix}ardeek_users (id, name, surname, birthday, email, password, website, education, skills, bio, token, id_permission, verified, enabled, paid, id_role, avatar) VALUES (null, '".$name."', '".$surname."', '".$birthday."', '".$email."', '".$password."', '".$website."', '".$education."', '".$skills."', '".$bio."', '".$token."', ".$permessi.", ".$verified.", ".$enabled.", ".$paid.", ".$ruolo.", '".$avatar."');";
-
-	$mysqli = db_connection();
-
-    //eseguo la query
-	$query = $mysqli->query($sql);
+	$wpdb->query( 
+		$wpdb->prepare( 
+			"INSERT INTO {$wpdb->prefix}ardeek_users (name, surname, birthday, email, password, website, education, skills, bio, token, id_permission, verified, enabled, paid, id_role, avatar) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %d, %d, %d, %d, %d, %s)", $name, $surname, $birthday, $email, $password, $website, $education, $skills, $bio, $token, $permessi, $verified, $enabled, $paid, $ruolo, $avatar));
 
 	$risposta = array('response' => 'true');
 
@@ -374,69 +344,58 @@ function registration($name, $surname, $birthday, $email, $password, $website, $
 
 function check_exist_email($email)
 {
+	global $wpdb;
+
 	$risposta = array('response' => 'false');
 
-	$sql = "SELECT * FROM {$wpdb->prefix}ardeek_users WHERE email = \"".$email."\" ORDER BY id DESC";
+	$myrows = $wpdb->get_results(
+		$wpdb->prepare("SELECT * FROM {$wpdb->prefix}ardeek_users WHERE email = %s ORDER BY id DESC", 
+			$email
+			)
+		);
 
-	$mysqli = db_connection();
-
-    //eseguo la query
-	$query = $mysqli->query($sql);
-	
 	//verifichiamo che siano presenti records
-	if($query->data_seek(0))
-	{
-		while($row = $query->fetch_assoc())
-		{
-			$risposta = array('response' => 'true');
-		}
-	}
+	if($myrows)
+		$risposta = array('response' => 'true');
 
 	return $risposta;
 }
 
 function all_membership()
 {
-	$risposta = array('response' => 'false');
+	global $wpdb;
 
 	$user_list = [];
 
-	$sql = "SELECT * FROM {$wpdb->prefix}ardeek_users ORDER BY id DESC";
+	$risposta = array('response' => 'false');
 
-	$mysqli = db_connection();
-
-    //eseguo la query
-	$query = $mysqli->query($sql);
-	
+	$myrows = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}ardeek_users ORDER BY id DESC");
 
 	//verifichiamo che siano presenti records
-	if($query->data_seek(0))
-	{
-		while($row = $query->fetch_assoc())
-		{  
+	foreach ($myrows as $row)
+	{   
 
-			$id             = $row['id'];
-			$id_role        = $row['id_role'];
-			$id_permission  = $row['id_permission'];
-			$name           = $row['name'];
-			$surname        = $row['surname'];
-			$birthday       = $row['birthday'];
-			$email          = $row['email'];
-			$password       = $row['password'];
-			$website        = $row['website'];
-			$education      = $row['education'];
-			$skills         = $row['skills'];
-			$bio            = $row['bio'];
-			$avatar         = $row['avatar'];
-			$token          = $row['token'];
-			$verified       = $row['verified'];
-			$enabled        = $row['enabled'];
-			$paid        	= $row['paid'];
+		$id             = $row->id;
+		$id_role        = $row->id_role;
+		$id_permission  = $row->id_permission;
+		$name           = $row->name;
+		$surname        = $row->surname;
+		$birthday       = $row->birthday;
+		$email          = $row->email;
+		$password       = $row->password;
+		$website        = $row->website;
+		$education      = $row->education;
+		$skills         = $row->skills;
+		$bio            = $row->bio;
+		$avatar         = $row->avatar;
+		$token          = $row->token;
+		$verified       = $row->verified;
+		$enabled        = $row->enabled;
+		$paid        	= $row->paid;
 
-			$user = array('id'=> $id, 'id_role' => $id_role, 'id_permission' => $id_permission, 'name' => $name, 'surname' => $surname, 'birthday' => $birthday, 'email' => $email, 'password' => $password, 'website' => $website, 'education' => $education, 'skills' => $skills, 'bio' => $bio, 'avatar' => $avatar, 'token' => $token, 'verified' => $verified, 'enabled' => $enabled, 'paid' => $paid);
+		$user = array('id'=> $id, 'id_role' => $id_role, 'id_permission' => $id_permission, 'name' => $name, 'surname' => $surname, 'birthday' => $birthday, 'email' => $email, 'password' => $password, 'website' => $website, 'education' => $education, 'skills' => $skills, 'bio' => $bio, 'avatar' => $avatar, 'token' => $token, 'verified' => $verified, 'enabled' => $enabled, 'paid' => $paid);
 
-			array_push($user_list, $user);
-		}
+		array_push($user_list, $user);
 
 		$risposta = array('response' => 'true', 'userList' => $user_list);
 	}
@@ -446,16 +405,15 @@ function all_membership()
 
 function edit_enable_user($id, $test)
 {
+	global $wpdb;
 
 	$user_list = [];
 
-	$sql = "UPDATE {$wpdb->prefix}ardeek_users SET enabled = ".$test." WHERE id = ".$id.";";
+	$risposta = array('response' => 'false');
 
-	$mysqli = db_connection();
+	$wpdb->query(
+		$wpdb->prepare("UPDATE {$wpdb->prefix}ardeek_users SET enabled = %d WHERE id = %d;", $test, $id));
 
-    //eseguo la query
-	$query = $mysqli->query($sql);
-	
 	$risposta = array('response' => 'true');
 
 	return $risposta;
@@ -463,44 +421,37 @@ function edit_enable_user($id, $test)
 
 function member_by_id($id)
 {
-	$risposta = array('response' => 'false');
+	global $wpdb;
 
 	$user_list = [];
 
-	$sql = "SELECT * FROM {$wpdb->prefix}ardeek_users WHERE id = ".$id.";";
+	$risposta = array('response' => 'false');
 
-	$mysqli = db_connection();
-
-    //eseguo la query
-	$query = $mysqli->query($sql);
-	
+	$myrows = $wpdb->get_results(
+		$wpdb->prepare("SELECT * FROM {$wpdb->prefix}ardeek_users WHERE id = %d",$id));
 
 	//verifichiamo che siano presenti records
-	if($query->data_seek(0))
+	foreach ($myrows as $row)
 	{
-		while($row = $query->fetch_assoc())
-		{  
+		$id             = $row->id;
+		$id_role        = $row->id_role;
+		$id_permission  = $row->id_permission;
+		$name           = $row->name;
+		$surname        = $row->surname;
+		$birthday       = $row->birthday;
+		$email          = $row->email;
+		$password       = $row->password;
+		$website        = $row->website;
+		$education      = $row->education;
+		$skills         = $row->skills;
+		$bio            = $row->bio;
+		$avatar         = $row->avatar;
+		$token          = $row->token;
+		$verified       = $row->verified;
+		$enabled        = $row->enabled;
+		$paid        	= $row->paid;
 
-			$id             = $row['id'];
-			$id_role        = $row['id_role'];
-			$id_permission  = $row['id_permission'];
-			$name           = $row['name'];
-			$surname        = $row['surname'];
-			$birthday       = $row['birthday'];
-			$email          = $row['email'];
-			$password       = $row['password'];
-			$website        = $row['website'];
-			$education      = $row['education'];
-			$skills         = $row['skills'];
-			$bio            = $row['bio'];
-			$avatar         = $row['avatar'];
-			$token          = $row['token'];
-			$verified       = $row['verified'];
-			$enabled        = $row['enabled'];
-			$paid        	= $row['paid'];
-
-			$user = array('id'=> $id, 'id_role' => $id_role, 'id_permission' => $id_permission, 'name' => $name, 'surname' => $surname, 'birthday' => $birthday, 'email' => $email, 'password' => $password, 'website' => $website, 'education' => $education, 'skills' => $skills, 'bio' => $bio, 'avatar' => $avatar, 'token' => $token, 'verified' => $verified, 'enabled' => $enabled, 'paid' => $paid);
-		}
+		$user = array('id'=> $id, 'id_role' => $id_role, 'id_permission' => $id_permission, 'name' => $name, 'surname' => $surname, 'birthday' => $birthday, 'email' => $email, 'password' => $password, 'website' => $website, 'education' => $education, 'skills' => $skills, 'bio' => $bio, 'avatar' => $avatar, 'token' => $token, 'verified' => $verified, 'enabled' => $enabled, 'paid' => $paid);
 
 		$risposta = array('response' => 'true', 'user' => $user);
 	}
@@ -510,13 +461,15 @@ function member_by_id($id)
 
 function remove_user_by_id($id)
 {
-	$sql = "DELETE FROM {$wpdb->prefix}ardeek_users WHERE id = ".$id.";";
+	global $wpdb;
 
-	$mysqli = db_connection();
+	$user_list = [];
 
-    //eseguo la query
-	$query = $mysqli->query($sql);
-	
+	$risposta = array('response' => 'false');
+
+	$wpdb->query(
+		$wpdb->prepare("DELETE FROM {$wpdb->prefix}ardeek_users WHERE id = %d",$id));
+
 	$risposta = array('response' => 'true');
 
 	return $risposta;
@@ -524,13 +477,15 @@ function remove_user_by_id($id)
 
 function edit_user($id, $id_role, $nome, $cognome, $birthday, $email, $website, $education, $skills, $bio)
 {
-	$sql = "UPDATE {$wpdb->prefix}ardeek_users SET id_role = ".$id_role.", name = '".$nome."' , surname = '".$cognome."' , birthday = '".$birthday."' , email = '".$email."' , website = '".$website."' , education = '".$education."' , skills = '".$skills."' , bio = '".$bio."' WHERE id = ".$id.";";
+	global $wpdb;
 
-	$mysqli = db_connection();
+	$user_list = [];
 
-    //eseguo la query
-	$query = $mysqli->query($sql);
-	
+	$risposta = array('response' => 'false');
+
+	$wpdb->query(
+		$wpdb->prepare("UPDATE {$wpdb->prefix}ardeek_users SET id_role = %d, name = %s surname = %s, birthday = %s, email =%s, website = %s, education = %s, skills = %s, bio = %s WHERE id = %d", $id_role, $nome, $cognome, $birthday, $email, $website, $education, $skills, $bio, $id));
+
 	$risposta = array('response' => 'true');
 
 	return $risposta;
@@ -538,36 +493,29 @@ function edit_user($id, $id_role, $nome, $cognome, $birthday, $email, $website, 
 
 function all_messages()
 {
-	$risposta = array('response' => 'false');
+	global $wpdb;
 
 	$msg_list = [];
 	$msg = '';
 
-	$sql = "SELECT {$wpdb->prefix}ardeek_messages.id, id_roles, name, surname, message FROM {$wpdb->prefix}ardeek_messages JOIN {$wpdb->prefix}ardeek_users ON ({$wpdb->prefix}ardeek_messages.id_user = {$wpdb->prefix}ardeek_users.id)";
+	$risposta = array('response' => 'false');
 
-	$mysqli = db_connection();
-
-    //eseguo la query
-	$query = $mysqli->query($sql);
-	
+	$myrows = $wpdb->get_results("SELECT {$wpdb->prefix}ardeek_messages.id, id_roles, name, surname, message FROM {$wpdb->prefix}ardeek_messages JOIN {$wpdb->prefix}ardeek_users ON ({$wpdb->prefix}ardeek_messages.id_user = {$wpdb->prefix}ardeek_users.id)");
 
 	//verifichiamo che siano presenti records
-	if($query->data_seek(0))
-	{
-		while($row = $query->fetch_assoc())
-		{  
+	foreach ($myrows as $row)
+	{ 
 
-			$id             = $row['id'];
-			$name    	    = $row['name'];
-			$surname    	= $row['surname'];
-			$id_role        = $row['id_roles'];
-			$message  		= $row['message'];
+			$id             = $row->id;
+			$name    	    = $row->name;
+			$surname    	= $row->surname;
+			$id_role        = $row->id_roles;
+			$message  		= $row->message;
 
 			$msg = array('id'=> $id, 'id_role' => $id_role, 'name' => $name, 'surname' => $surname, 'message' => $message);
 			array_push($msg_list, $msg);
-		}
-
-		$risposta = array('response' => 'true', 'messages' => $msg_list);
+			
+			$risposta = array('response' => 'true', 'messages' => $msg_list);
 	}
 
 	return $risposta;
@@ -575,12 +523,12 @@ function all_messages()
 
 function send_message($id, $id_role, $message)
 {
-	$sql = "INSERT INTO {$wpdb->prefix}ardeek_messages(`id`, `id_user`, `id_roles`, `message`) VALUES (null, ".$id.",".$id_role.",'".$message."')";
+	global $wpdb;
 
-	$mysqli = db_connection();
+	$risposta = array('response' => 'false');
 
-    //eseguo la query
-	$query = $mysqli->query($sql);
+	$wpdb->query(
+		$wpdb->prepare("INSERT INTO {$wpdb->prefix}ardeek_messages(`id`, `id_user`, `id_roles`, `message`) VALUES (null, %d, %d, %s)", $id, $id_role, $message));
 
 	$risposta = array('response' => 'true');
 
@@ -589,13 +537,13 @@ function send_message($id, $id_role, $message)
 
 function edit_message($id, $id_roles, $message)
 {
-	$sql = "UPDATE {$wpdb->prefix}ardeek_messages SET id_roles = ".$id_roles." , message = '".$message."' WHERE id = ".$id.";";
+	global $wpdb;
 
-	$mysqli = db_connection();
+	$risposta = array('response' => 'false');
 
-    //eseguo la query
-	$query = $mysqli->query($sql);
-	
+	$wpdb->query(
+		$wpdb->prepare("UPDATE {$wpdb->prefix}ardeek_messages SET id_roles = %d, message = %s WHERE id = %d", $id_roles, $message, $id));
+
 	$risposta = array('response' => 'true');
 
 	return $risposta;
@@ -603,13 +551,11 @@ function edit_message($id, $id_roles, $message)
 
 function delete_message($id)
 {
-	$sql = "DELETE FROM {$wpdb->prefix}ardeek_messages WHERE id = ".$id.";";
+	global $wpdb;
 
-	$mysqli = db_connection();
+	$wpdb->query(
+		$wpdb->prepare("DELETE FROM {$wpdb->prefix}ardeek_messages WHERE id = %d",$id));
 
-    //eseguo la query
-	$query = $mysqli->query($sql);
-	
 	$risposta = array('response' => 'true');
 
 	return $risposta;
@@ -617,34 +563,26 @@ function delete_message($id)
 
 function find_message_by_id($id)
 {
+	global $wpdb;
+
 	$risposta = array('response' => 'false');
 
 	$msg = '';
 
-	$sql = "SELECT {$wpdb->prefix}ardeek_messages.id, id_roles, name, surname, message FROM {$wpdb->prefix}ardeek_messages JOIN {$wpdb->prefix}ardeek_users ON ({$wpdb->prefix}ardeek_messages.id_user = {$wpdb->prefix}ardeek_users.id) WHERE {$wpdb->prefix}ardeek_messages.id = ".$id.";";
+	$myrows = $wpdb->get_results(
+		$wpdb->prepare("SELECT {$wpdb->prefix}ardeek_messages.id, id_roles, name, surname, message FROM {$wpdb->prefix}ardeek_messages JOIN {$wpdb->prefix}ardeek_users ON ({$wpdb->prefix}ardeek_messages.id_user = {$wpdb->prefix}ardeek_users.id) WHERE {$wpdb->prefix}ardeek_messages.id = %d",$id));
 
-	$mysqli = db_connection();
-
-    //eseguo la query
-	$query = $mysqli->query($sql);
-	
 	//verifichiamo che siano presenti records
-	if($query->data_seek(0))
+	foreach ($myrows as $row)
 	{
-		while($row = $query->fetch_assoc())
-		{  
+		$id             = $row->id;
+		$name    	    = $row->name;
+		$surname    	= $row->surname;
+		$id_role        = $row->id_roles;
+		$message  		= $row->message;
 
-			$id             = $row['id'];
-			$name    	    = $row['name'];
-			$surname    	= $row['surname'];
-			$id_role        = $row['id_roles'];
-			$message  		= $row['message'];
-
-			$msg = array('id'=> $id, 'id_role' => $id_role, 'name' => $name, 'surname' => $surname, 'message' => $message);
-			$risposta = array('response' => 'true', 'messages' => $msg);
-		}
-
-		
+		$msg = array('id'=> $id, 'id_role' => $id_role, 'name' => $name, 'surname' => $surname, 'message' => $message);
+		$risposta = array('response' => 'true', 'messages' => $msg);	
 	}
 
 	return $risposta;
@@ -652,36 +590,28 @@ function find_message_by_id($id)
 
 function all_items()
 {
-	$risposta = array('response' => 'false');
+	global $wpdb;
 
 	$item_list = [];
 	$item = '';
 
-	$sql = "SELECT {$wpdb->prefix}ardeek_contents.id, {$wpdb->prefix}ardeek_contents.id_role, {$wpdb->prefix}ardeek_contents.name as onome, {$wpdb->prefix}ardeek_users.name as name, surname, type, path FROM {$wpdb->prefix}ardeek_contents JOIN {$wpdb->prefix}ardeek_users ON ({$wpdb->prefix}ardeek_contents.id_user = {$wpdb->prefix}ardeek_users.id)";
+	$risposta = array('response' => 'false');
 
-	$mysqli = db_connection();
-
-    //eseguo la query
-	$query = $mysqli->query($sql);
-	
+	$myrows = $wpdb->get_results($wpdb->prepare("SELECT {$wpdb->prefix}ardeek_contents.id, {$wpdb->prefix}ardeek_contents.id_role, {$wpdb->prefix}ardeek_contents.name as onome, {$wpdb->prefix}ardeek_users.name as name, surname, type, path FROM {$wpdb->prefix}ardeek_contents JOIN {$wpdb->prefix}ardeek_users ON ({$wpdb->prefix}ardeek_contents.id_user = {$wpdb->prefix}ardeek_users.id)"));
 
 	//verifichiamo che siano presenti records
-	if($query->data_seek(0))
-	{
-		while($row = $query->fetch_assoc())
-		{  
+	foreach ($myrows as $row)
+	{  
+		$id             = $row->id;
+		$name    	    = $row->name;
+		$surname    	= $row->surname;
+		$id_role        = $row->id_role;
+		$oname			= $row->onome;
+		$type  			= $row->type;
+		$path	  		= $row->path;
 
-			$id             = $row['id'];
-			$name    	    = $row['name'];
-			$surname    	= $row['surname'];
-			$id_role        = $row['id_role'];
-			$oname			= $row['onome'];
-			$type  			= $row['type'];
-			$path	  		= $row['path'];
-
-			$item = array('id'=> $id, 'id_role' => $id_role, 'name' => $name, 'surname' => $surname, 'oname' => $oname, 'type' => $type, 'path' => $path);
-			array_push($item_list, $item);
-		}
+		$item = array('id'=> $id, 'id_role' => $id_role, 'name' => $name, 'surname' => $surname, 'oname' => $oname, 'type' => $type, 'path' => $path);
+		array_push($item_list, $item);
 
 		$risposta = array('response' => 'true', 'items' => $item_list);
 	}
@@ -691,37 +621,29 @@ function all_items()
 
 function items_by_role($id_role)
 {
-	$risposta = array('response' => 'false');
+	global $wpdb;
 
 	$item_list = [];
 	$item = '';
 
-	$sql = "SELECT {$wpdb->prefix}ardeek_contents.id, {$wpdb->prefix}ardeek_contents.id_role, {$wpdb->prefix}ardeek_contents.name as onome, {$wpdb->prefix}ardeek_users.name as name, surname, type, path FROM {$wpdb->prefix}ardeek_contents JOIN {$wpdb->prefix}ardeek_users ON ({$wpdb->prefix}ardeek_contents.id_user = {$wpdb->prefix}ardeek_users.id) WHERE {$wpdb->prefix}ardeek_contents.id_role <= ".$id_role;
+	$risposta = array('response' => 'false');
 
-	$mysqli = db_connection();
-
-    //eseguo la query
-	$query = $mysqli->query($sql);
-	
+	$myrows = $wpdb->get_results($wpdb->prepare("SELECT {$wpdb->prefix}ardeek_contents.id, {$wpdb->prefix}ardeek_contents.id_role, {$wpdb->prefix}ardeek_contents.name as onome, {$wpdb->prefix}ardeek_users.name as name, surname, type, path FROM {$wpdb->prefix}ardeek_contents JOIN {$wpdb->prefix}ardeek_users ON ({$wpdb->prefix}ardeek_contents.id_user = {$wpdb->prefix}ardeek_users.id) WHERE {$wpdb->prefix}ardeek_contents.id_role <= %d",$id_role));
 
 	//verifichiamo che siano presenti records
-	if($query->data_seek(0))
+	foreach ($myrows as $row)
 	{
-		while($row = $query->fetch_assoc())
-		{  
+		$id             = $row->id;
+		$name    	    = $row->name;
+		$surname    	= $row->surname;
+		$id_role        = $row->id_role;
+		$oname			= $row->onome;
+		$type  			= $row->type;
+		$path	  		= $row->path;
 
-			$id             = $row['id'];
-			$name    	    = $row['name'];
-			$surname    	= $row['surname'];
-			$id_role        = $row['id_role'];
-			$oname			= $row['onome'];
-			$type  			= $row['type'];
-			$path	  		= $row['path'];
-
-			$item = array('id'=> $id, 'id_role' => $id_role, 'name' => $name, 'surname' => $surname, 'oname' => $oname, 'type' => $type, 'path' => $path);
-			array_push($item_list, $item);
-		}
-
+		$item = array('id'=> $id, 'id_role' => $id_role, 'name' => $name, 'surname' => $surname, 'oname' => $oname, 'type' => $type, 'path' => $path);
+		array_push($item_list, $item);
+	
 		$risposta = array('response' => 'true', 'items' => $item_list);
 	}
 
@@ -730,31 +652,26 @@ function items_by_role($id_role)
 
 function remove_item($id)
 {
-	$sql = "SELECT name, path FROM {$wpdb->prefix}ardeek_contents WHERE id =".$id;
+	global $wpdb;
 
-	$mysqli = db_connection();
+	$item_list = [];
+	$item = '';
 
-    //eseguo la query
-	$query = $mysqli->query($sql);
-	
+	$risposta = array('response' => 'false');
+
+	$myrows = $wpdb->get_results($wpdb->prepare(
+		"SELECT name, path FROM {$wpdb->prefix}ardeek_contents WHERE id = %d",$id));
+
 	//verifichiamo che siano presenti records
-	if($query->data_seek(0))
-	{
-		while($row = $query->fetch_assoc())
-		{  
-			$name 			= $row['name'];
-			$path    	    = $row['path'];
-		}
+	foreach ($myrows as $row)
+	{   
+		$name 			= $row->name;
+		$path    	    = $row->path;
 	}
 
-	$sql = "DELETE FROM {$wpdb->prefix}ardeek_contents WHERE id = ".$id.";";
+	$wpdb->query(
+		$wpdb->prepare("DELETE FROM {$wpdb->prefix}ardeek_contents WHERE id = %d",$id));
 
-	$mysqli = db_connection();
-
-    //eseguo la query
-	$query = $mysqli->query($sql);
-
-		
 	unlink("../contents/".$name);
 	
 	$risposta = array('response' => 'true');
@@ -764,34 +681,27 @@ function remove_item($id)
 
 function all_payments()
 {
-	$risposta = array('response' => 'false');
+	global $wpdb;
 
 	$item_list = [];
 	$item = '';
 
-	$sql = "SELECT {$wpdb->prefix}ardeek_payments.id, name, surname, data, information FROM {$wpdb->prefix}ardeek_payment JOIN `users` ON ({$wpdb->prefix}ardeek_payments.id_user = {$wpdb->prefix}ardeek_users.id)";
+	$risposta = array('response' => 'false');
 
-	$mysqli = db_connection();
-
-    //eseguo la query
-	$query = $mysqli->query($sql);
-	
+	$myrows = $wpdb->get_results($wpdb->prepare("SELECT {$wpdb->prefix}ardeek_payments.id, name, surname, data, information FROM {$wpdb->prefix}ardeek_payment JOIN `users` ON ({$wpdb->prefix}ardeek_payments.id_user = {$wpdb->prefix}ardeek_users.id)"));
 
 	//verifichiamo che siano presenti records
-	if($query->data_seek(0))
-	{
-		while($row = $query->fetch_assoc())
-		{  
+	foreach ($myrows as $row)
+	{  
 
-			$id             = $row['id'];
-			$name    	    = $row['name'];
-			$surname    	= $row['surname'];
-			$data  			= $row['data'];
-			$information	= $row['information'];
+		$id             = $row->id;
+		$name    	    = $row->name;
+		$surname    	= $row->surname;
+		$data  			= $row->data;
+		$information	= $row->information;
 
-			$item = array('id'=> $id, 'name' => $name, 'surname' => $surname, 'data' => $data, 'information' => $information);
-			array_push($item_list, $item);
-		}
+		$item = array('id'=> $id, 'name' => $name, 'surname' => $surname, 'data' => $data, 'information' => $information);
+		array_push($item_list, $item);
 
 		$risposta = array('response' => 'true', 'payments' => $item_list);
 	}
@@ -801,13 +711,11 @@ function all_payments()
 
 function remove_payment($id)
 {
-	$sql = "DELETE FROM {$wpdb->prefix}ardeek_payments WHERE id = ".$id.";";
+	global $wpdb;
 
-	$mysqli = db_connection();
+	$wpdb->query( 
+	$wpdb->prepare("DELETE FROM {$wpdb->prefix}ardeek_payments WHERE id = %d",$id));
 
-    //eseguo la query
-	$query = $mysqli->query($sql);
-	
 	$risposta = array('response' => 'true');
 
 	return $risposta;
@@ -815,12 +723,10 @@ function remove_payment($id)
 
 function restart_all_payment()
 {
-	$sql = "UPDATE {$wpdb->prefix}ardeek_users SET paid = 0;";
+	global $wpdb;
 
-	$mysqli = db_connection();
-
-    //eseguo la query
-	$query = $mysqli->query($sql);
+	$wpdb->query( 
+	$wpdb->prepare("UPDATE {$wpdb->prefix}ardeek_users SET paid = 0;"));
 	
 	$risposta = array('response' => 'true');
 
@@ -829,34 +735,26 @@ function restart_all_payment()
 
 function init_message_dashboard($id_role)
 {
+	global $wpdb;
+
 	$risposta = array('response' => 'false');
 
 	$item_list = [];
 	$item = '';
 
-	$sql = "SELECT {$wpdb->prefix}ardeek_messages.id, name, surname, message FROM {$wpdb->prefix}ardeek_messages JOIN {$wpdb->prefix}ardeek_users ON ({$wpdb->prefix}ardeek_messages.id_user = {$wpdb->prefix}ardeek_users.id) WHERE id_roles <= ".$id_role." LIMIT 5;";
-
-	$mysqli = db_connection();
-
-    //eseguo la query
-	$query = $mysqli->query($sql);
-	
+	$myrows = $wpdb->get_results($wpdb->prepare("SELECT {$wpdb->prefix}ardeek_messages.id, name, surname, message FROM {$wpdb->prefix}ardeek_messages JOIN {$wpdb->prefix}ardeek_users ON ({$wpdb->prefix}ardeek_messages.id_user = {$wpdb->prefix}ardeek_users.id) WHERE id_roles <= %d LIMIT 5;", $id_role));
 
 	//verifichiamo che siano presenti records
-	if($query->data_seek(0))
-	{
-		while($row = $query->fetch_assoc())
-		{  
+	foreach ($myrows as $row)
+	{ 
+		$id             = $row->id;
+		$name    	    = $row->name;
+		$surname    	= $row->surname;
+		$message  		= $row->message;
 
-			$id             = $row['id'];
-			$name    	    = $row['name'];
-			$surname    	= $row['surname'];
-			$message  		= $row['message'];
-
-			$item = array('id'=> $id, 'name' => $name, 'surname' => $surname, 'message' => $message);
-			array_push($item_list, $item);
-		}
-
+		$item = array('id'=> $id, 'name' => $name, 'surname' => $surname, 'message' => $message);
+		array_push($item_list, $item);
+		
 		$risposta = array('response' => 'true', 'messages' => $item_list);
 	}
 
@@ -865,12 +763,14 @@ function init_message_dashboard($id_role)
 
 function init_status()
 {
+	global $wpdb;
+
 	$risposta = array('response' => 'false');
 
 	$item_list = [];
 	$item = '';
 
-	$sql = "SELECT  (
+	$myrows = $wpdb->get_results($wpdb->prepare("SELECT  (
 	SELECT COUNT(*)
 	FROM   {$wpdb->prefix}ardeek_users
 	) AS {$wpdb->prefix}ardeek_members,
@@ -878,7 +778,7 @@ function init_status()
 	SELECT COUNT(*)
 	FROM   {$wpdb->prefix}ardeek_payments
 	) AS {$wpdb->prefix}ardeek_payments
-	FROM    dual";
+	FROM    dual"));
 
 	$mysqli = db_connection();
 
@@ -887,18 +787,14 @@ function init_status()
 	
 
 	//verifichiamo che siano presenti records
-	if($query->data_seek(0))
-	{
-		while($row = $query->fetch_assoc())
-		{  
+	foreach ($myrows as $row)
+	{ 
+		$members        = $row->members;
+		$payments    	= $row->payments;
 
-			$members        = $row['members'];
-			$payments    	= $row['payments'];
-
-			$item = array('members'=> $members, 'payments' => $payments);
-			array_push($item_list, $item);
-		}
-
+		$item = array('members'=> $members, 'payments' => $payments);
+		array_push($item_list, $item);
+		
 		$risposta = array('response' => 'true', 'status' => $item_list);
 	}
 
@@ -907,13 +803,11 @@ function init_status()
 
 function change_avatar($id, $avatar)
 {
-	$sql = "UPDATE {$wpdb->prefix}ardeek_users SET avatar = '".$avatar."' WHERE id = ".$id.";";
+	global $wpdb;
 
-	$mysqli = db_connection();
+	$wpdb->query( 
+	$wpdb->prepare( "UPDATE {$wpdb->prefix}ardeek_users SET avatar = %s WHERE id = %d",$avatar, $id));
 
-    //eseguo la query
-	$query = $mysqli->query($sql);
-	
 	$risposta = array('response' => 'true');
 
 	return $risposta;
@@ -921,14 +815,12 @@ function change_avatar($id, $avatar)
 
 function upload_file($id, $id_role, $fileName, $fileType, $path)
 {
+	global $wpdb;
+
 	$type = checkTypeUploadedFile($fileType);
 
-	$sql = "INSERT INTO {$wpdb->prefix}ardeek_contents(`id`, `id_user`, `id_role`, `type`, `name`, `path`) VALUES (null, ".$id.", ".$id_role.", '".$type."', '".$fileName."', '".$path."')";
-
-	$mysqli = db_connection();
-
-    //eseguo la query
-	$query = $mysqli->query($sql);
+	$wpdb->query( 
+	$wpdb->prepare("INSERT INTO {$wpdb->prefix}ardeek_contents(`id`, `id_user`, `id_role`, `type`, `name`, `path`) VALUES (null, %d, %d, %s, %s, %s)", $id, $id_role, $type, $fileName, $path));
 
 	$risposta = array('response' => 'true');
 
@@ -956,12 +848,10 @@ function user_payment($id, $amount, $paymentId, $PayerID, $token)
 	$timestamp = date('Y-m-d G:i:s');
 	$string = "data: ".$timestamp.", amount: ".$amount.", token: ".$token.", paymentId: ".$paymentId.", PayerID: ".$PayerID;
 
-	$sql = "INSERT INTO {$wpdb->prefix}ardeek_payments(`id`, `id_user`, `data`, `information`) VALUES (null, ".$id.", '".$timestamp."', '".$string."')";
+	global $wpdb;
 
-	$mysqli = db_connection();
-
-    //eseguo la query
-	$query = $mysqli->query($sql);
+	$wpdb->query( 
+	$wpdb->prepare( "INSERT INTO {$wpdb->prefix}ardeek_payments(`id`, `id_user`, `data`, `information`) VALUES (null, %d, %s, $s)", $id, $timestamp, $string));
 
 	$risposta = array('response' => 'true');
 
@@ -970,12 +860,10 @@ function user_payment($id, $amount, $paymentId, $PayerID, $token)
 
 function refresh_user_paid($id)
 {
-	$sql = "UPDATE {$wpdb->prefix}ardeek_users SET paid = 1 WHERE id = ".$id.";";
+	global $wpdb;
 
-	$mysqli = db_connection();
-
-    //eseguo la query
-	$query = $mysqli->query($sql);
+	$wpdb->query( 
+	$wpdb->prepare( "UPDATE {$wpdb->prefix}ardeek_users SET paid = 1 WHERE id = %d", $id));
 	
 	$risposta = array('response' => 'true');
 
@@ -988,42 +876,37 @@ function all_membership_not_paid()
 
 	$user_list = [];
 
-	$sql = "SELECT * FROM {$wpdb->prefix}ardeek_users WHERE paid = 0 ORDER BY id DESC";
+	global $wpdb;
 
-	$mysqli = db_connection();
+	$risposta = array('response' => 'false');
 
-    //eseguo la query
-	$query = $mysqli->query($sql);
-	
+	$myrows = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$wpdb->prefix}ardeek_users WHERE paid = 0 ORDER BY id DESC"));
 
 	//verifichiamo che siano presenti records
-	if($query->data_seek(0))
-	{
-		while($row = $query->fetch_assoc())
-		{  
+	foreach ($myrows as $row)
+	{   
+		$id             = $row->id;
+		$id_role        = $row->id_role;
+		$id_permission  = $row->id_permission;
+		$name           = $row->name;
+		$surname        = $row->surname;
+		$birthday       = $row->birthday;
+		$email          = $row->email;
+		$password       = $row->password;
+		$website        = $row->website;
+		$education      = $row->education;
+		$skills         = $row->skills;
+		$bio            = $row->bio;
+		$avatar         = $row->avatar;
+		$token          = $row->token;
+		$verified       = $row->verified;
+		$enabled        = $row->enabled;
+		$paid        	= $row->paid;
 
-			$id             = $row['id'];
-			$id_role        = $row['id_role'];
-			$id_permission  = $row['id_permission'];
-			$name           = $row['name'];
-			$surname        = $row['surname'];
-			$birthday       = $row['birthday'];
-			$email          = $row['email'];
-			$password       = $row['password'];
-			$website        = $row['website'];
-			$education      = $row['education'];
-			$skills         = $row['skills'];
-			$bio            = $row['bio'];
-			$avatar         = $row['avatar'];
-			$token          = $row['token'];
-			$verified       = $row['verified'];
-			$enabled        = $row['enabled'];
-			$paid        	= $row['paid'];
+		$user = array('id'=> $id, 'id_role' => $id_role, 'id_permission' => $id_permission, 'name' => $name, 'surname' => $surname, 'birthday' => $birthday, 'email' => $email, 'password' => $password, 'website' => $website, 'education' => $education, 'skills' => $skills, 'bio' => $bio, 'avatar' => $avatar, 'token' => $token, 'verified' => $verified, 'enabled' => $enabled, 'paid' => $paid);
 
-			$user = array('id'=> $id, 'id_role' => $id_role, 'id_permission' => $id_permission, 'name' => $name, 'surname' => $surname, 'birthday' => $birthday, 'email' => $email, 'password' => $password, 'website' => $website, 'education' => $education, 'skills' => $skills, 'bio' => $bio, 'avatar' => $avatar, 'token' => $token, 'verified' => $verified, 'enabled' => $enabled, 'paid' => $paid);
-
-			array_push($user_list, $user);
-		}
+		array_push($user_list, $user);
+	
 
 		$risposta = array('response' => 'true', 'userList' => $user_list);
 	}
@@ -1038,29 +921,27 @@ function users_payments_made($id)
 	$item_list = [];
 	$item = '';
 
-	$sql = "SELECT {$wpdb->prefix}ardeek_payments.id, name, surname, data, information FROM {$wpdb->prefix}ardeek_payments JOIN {$wpdb->prefix}ardeek_users ON ({$wpdb->prefix}ardeek_payments.id_user = {$wpdb->prefix}ardeek_users.id) WHERE {$wpdb->prefix}ardeek_payments.id_user = ".$id.";";
+	global $wpdb;
+
+	$myrows = $wpdb->get_results($wpdb->prepare("SELECT {$wpdb->prefix}ardeek_payments.id, name, surname, data, information FROM {$wpdb->prefix}ardeek_payments JOIN {$wpdb->prefix}ardeek_users ON ({$wpdb->prefix}ardeek_payments.id_user = {$wpdb->prefix}ardeek_users.id) WHERE {$wpdb->prefix}ardeek_payments.id_user = %d",$id));
 
 	$mysqli = db_connection();
 
     //eseguo la query
 	$query = $mysqli->query($sql);
 	
-
 	//verifichiamo che siano presenti records
-	if($query->data_seek(0))
-	{
-		while($row = $query->fetch_assoc())
-		{  
+	foreach ($myrows as $row)
+	{   
+		$id             = $row->id;
+		$name    	    = $row->name;
+		$surname    	= $row->surname;
+		$data  			= $row->data;
+		$information	= $row->information;
 
-			$id             = $row['id'];
-			$name    	    = $row['name'];
-			$surname    	= $row['surname'];
-			$data  			= $row['data'];
-			$information	= $row['information'];
-
-			$item = array('id'=> $id, 'name' => $name, 'surname' => $surname, 'data' => $data, 'information' => $information);
-			array_push($item_list, $item);
-		}
+		$item = array('id'=> $id, 'name' => $name, 'surname' => $surname, 'data' => $data, 'information' => $information);
+		array_push($item_list, $item);
+		
 
 		$risposta = array('response' => 'true', 'payments' => $item_list);
 	}
@@ -1171,43 +1052,36 @@ function try_paypal_payment($id)
 
 function if_membership_exist()
 {
-	$risposta = array('response' => 'false');
+	global $wpdb;
 
 	$item_list = [];
 	$item = '';
 
-	$sql = "SELECT * FROM {$wpdb->prefix}ardeek_membership";
+	$risposta = array('response' => 'false');
 
-	$mysqli = db_connection();
-
-    //eseguo la query
-	$query = $mysqli->query($sql);
+	$myrows = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}ardeek_membership");
 	
-
 	//verifichiamo che siano presenti records
-	if($query->data_seek(0))
-	{
-		while($row = $query->fetch_assoc())
-		{  
+	foreach ($myrows as $row)
+	{  
+		$id             	= $row->id;
+		$name				= $row->name;
+		$registered_office	= $row->registered_office;
+		$op_headquarter		= $row->op_headquarter;
+		$VAT				= $row->VAT;
+		$email				= $row->email;
+		$fee				= $row->fee;
+		$range_fee			= $row->range_fee;
+		$website			= $row->website;
+		$clientId			= $row->clientId;
+		$clientSecret		= $row->clientSecret;
+		$registration_date	= $row->registration_date;
+		$url_plugin			= $row->url_plugin;
 
-			$id             	= $row['id'];
-			$name				= $row['name'];
-			$registered_office	= $row['registered_office'];
-			$op_headquarter		= $row['op_headquarter'];
-			$VAT				= $row['VAT'];
-			$email				= $row['email'];
-			$fee				= $row['fee'];
-			$range_fee			= $row['range_fee'];
-			$website			= $row['website'];
-			$clientId			= $row['clientId'];
-			$clientSecret		= $row['clientSecret'];
-			$registration_date	= $row['registration_date'];
-			$url_plugin			= $row['url_plugin'];
+		$item = array('id'=> $id, 'name' => $name, 'registered_office' => $registered_office, 'op_headquarter' => $op_headquarter, 'VAT' => $VAT, 'email' => $email, 'fee' => $fee, 'range_fee' => $range_fee,'website' => $website, 'clientId' => $clientId, 'clientSecret' => $clientSecret, 'registration_date' => $registration_date, 'url_plugin' => $url_plugin);
 
-			$item = array('id'=> $id, 'name' => $name, 'registered_office' => $registered_office, 'op_headquarter' => $op_headquarter, 'VAT' => $VAT, 'email' => $email, 'fee' => $fee, 'range_fee' => $range_fee,'website' => $website, 'clientId' => $clientId, 'clientSecret' => $clientSecret, 'registration_date' => $registration_date, 'url_plugin' => $url_plugin);
-
-			array_push($item_list, $item);
-		}
+		array_push($item_list, $item);
+	
 
 		$risposta = array('response' => 'true', 'membership' => $item_list);
 	}
@@ -1219,26 +1093,24 @@ function registration_membership($name, $registered_office, $op_headquarter, $VA
 {
 	$timestamp = date('Y-m-d G:i:s');
 
-	$sql = "INSERT INTO {$wpdb->prefix}ardeek_membership(`id`, `name`, `registered_office`, `op_headquarter`, `VAT`, `email`, `fee`, `range_fee`, `website`, `clientId`, `clientSecret`, `url_plugin`, `registration_date`) VALUES (null,'".$name."','".$registered_office."','".$op_headquarter."','".$VAT."','".$email."',".$fee.",".$range_fee.",'".$website."','".$clientId."','".$clientSecret."','".$url_plugin."','".$timestamp."')";
+	global $wpdb;
 
-	$mysqli = db_connection();
+	$wpdb->query( 
+	$wpdb->prepare( 
+		"INSERT INTO {$wpdb->prefix}ardeek_membership(`name`, `registered_office`, `op_headquarter`, `VAT`, `email`, `fee`, `range_fee`, `website`, `clientId`, `clientSecret`, `url_plugin`, `registration_date`) VALUES (%s,%s,%s,%s,%s,%d,%d,%s,%s,%s,%s,%s)", $name, $registered_office, $op_headquarter, $VAT, $email, $fee, $range_fee, $website, $clientId, $clientSecret, $url_plugin, $timestamp));
 
-    //eseguo la query
-	$query = $mysqli->query($sql);
-
-	$risposta = array('response' => 'true');
+	$risposta = array('response' => 'true', 'data' => $wpdb);
 
 	return $risposta;
 }
 
 function update_membership($name, $registered_office, $op_headquarter, $VAT, $email, $fee, $range_fee, $website, $clientId, $clientSecret, $url_plugin)
 {
-	$sql = "UPDATE {$wpdb->prefix}ardeek_membership SET `name` = '".$name."', `registered_office` = '".$registered_office."', `op_headquarter` = '".$op_headquarter."', `VAT` = '".$VAT."', `email` = '".$email."', `fee` = ".$fee.", `range_fee` = ".$range_fee.", `website` = '".$website."', `clientId` = '".$clientId."', `clientSecret` = '".$clientSecret."', `url_plugin` = '".$url_plugin."'";
+	global $wpdb;
 
-	$mysqli = db_connection();
-
-    //eseguo la query
-	$query = $mysqli->query($sql);
+	$wpdb->query( 
+	$wpdb->prepare( 
+		"UPDATE {$wpdb->prefix}ardeek_membership SET `name` = %s, `registered_office` = %s, `op_headquarter` = %s, `VAT` = %s, `email` = %s, `fee` = %d, `range_fee` = %d, `website` = %s, `clientId` = %d, `clientSecret` = %s, `url_plugin` = %s", $name, $registered_office, $op_headquarter, $VAT, $email, $fee, $range_fee, $website, $clientId, $clientSecret, $url_plugin));
 
 	$risposta = array('response' => 'true');
 
@@ -1247,12 +1119,11 @@ function update_membership($name, $registered_office, $op_headquarter, $VAT, $em
 
 function delete_membership_forever()
 {
-	$sql = "DELETE FROM {$wpdb->prefix}ardeek_membership";
+	global $wpdb;
 
-	$mysqli = db_connection();
-
-    //eseguo la query
-	$query = $mysqli->query($sql);
+	$wpdb->query( 
+	$wpdb->prepare( 
+		"DELETE FROM {$wpdb->prefix}ardeek_membership"));
 
 	$risposta = array('response' => 'true');
 
@@ -1261,35 +1132,27 @@ function delete_membership_forever()
 
 function all_roles()
 {
-	$risposta = array('response' => 'false');
+	global $wpdb;
 
 	$item_list = [];
 	$item = '';
 
-	$sql = "SELECT * FROM {$wpdb->prefix}ardeek_roles";
+	$risposta = array('response' => 'false');
 
-	$mysqli = db_connection();
-
-    //eseguo la query
-	$query = $mysqli->query($sql);
-	
+	$myrows = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$wpdb->prefix}ardeek_roles"));
 
 	//verifichiamo che siano presenti records
-	if($query->data_seek(0))
+	foreach ($myrows as $row)
 	{
-		while($row = $query->fetch_assoc())
-		{  
+		$id        		= $row->id;
+		$id_permission	= $row->id_permission;
+		$name			= $row->name;
+		$editable		= $row->editable;
 
-			$id        		= $row['id'];
-			$id_permission	= $row['id_permission'];
-			$name			= $row['name'];
-			$editable		= $row['editable'];
+		$item = array('id'=> $id, 'id_permission' => $id_permission, 'name' => $name, 'editable' => $editable);
 
-			$item = array('id'=> $id, 'id_permission' => $id_permission, 'name' => $name, 'editable' => $editable);
-
-			array_push($item_list, $item);
-		}
-
+		array_push($item_list, $item);
+	
 		$risposta = array('response' => 'true', 'roles' => $item_list);
 	}
 
@@ -1298,27 +1161,24 @@ function all_roles()
 
 function add_roles($name, $permission)
 {
-	$sql = "SELECT * FROM {$wpdb->prefix}ardeek_roles WHERE name = '".$name."'";
+	global $wpdb;
 
-	$mysqli = db_connection();
+	$item_list = [];
+	$item = '';
 
-    //eseguo la query
-	$query = $mysqli->query($sql);
-	
+	$risposta = array('response' => 'false');
+
+	$myrows = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$wpdb->prefix}ardeek_roles WHERE name = %s",$name));
 
 	//verifichiamo che siano presenti records
-	if($query->data_seek(0))
+	if($myrows)
 	{
 		return $risposta;
 	}
 	else
 	{
-		$sql = "INSERT INTO {$wpdb->prefix}ardeek_roles(`id`, `name`, `id_permission`, `editable`) VALUES (null,'".$name."',".$permission.",1)";
-
-		$mysqli = db_connection();
-
-	    //eseguo la query
-		$query = $mysqli->query($sql);
+		$wpdb->query( 
+			$wpdb->prepare("INSERT INTO {$wpdb->prefix}ardeek_roles(`id`, `name`, `id_permission`, `editable`) VALUES (null,%s,%d,1)", $name, $permission));
 
 		$risposta = array('response' => 'true');
 
@@ -1328,12 +1188,10 @@ function add_roles($name, $permission)
 
 function edit_roles($id, $name, $permission)
 {
-	$sql = "UPDATE {$wpdb->prefix}ardeek_roles SET `name` = '".$name."', `id_permission` = ".$permission." WHERE id= ".$id;
+	global $wpdb;
 
-	$mysqli = db_connection();
-
-    //eseguo la query
-	$query = $mysqli->query($sql);
+	$wpdb->query( 
+		$wpdb->prepare( "UPDATE {$wpdb->prefix}ardeek_roles SET `name` = %s, `id_permission` = %d WHERE id= %d", $name, $permission,$id));
 
 	$risposta = array('response' => 'true');
 
@@ -1342,12 +1200,11 @@ function edit_roles($id, $name, $permission)
 
 function delete_roles($id)
 {
-	$sql = "DELETE FROM {$wpdb->prefix}ardeek_roles WHERE id =".$id;
+	global $wpdb;
 
-	$mysqli = db_connection();
-
-    //eseguo la query
-	$query = $mysqli->query($sql);
+	$wpdb->query( 
+		$wpdb->prepare(
+			"DELETE FROM {$wpdb->prefix}ardeek_roles WHERE id = %d",$id));
 
 	$risposta = array('response' => 'true');
 
@@ -1356,33 +1213,25 @@ function delete_roles($id)
 
 function roles_by_id($id)
 {
-	$risposta = array('response' => 'false');
+	global $wpdb;
 
 	$item_list = [];
 	$item = '';
 
-	$sql = "SELECT * FROM {$wpdb->prefix}ardeek_roles WHERE id= ".$id;
+	$risposta = array('response' => 'false');
 
-	$mysqli = db_connection();
-
-    //eseguo la query
-	$query = $mysqli->query($sql);
-	
+	$myrows = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$wpdb->prefix}ardeek_roles WHERE id= %d",$id));
 
 	//verifichiamo che siano presenti records
-	if($query->data_seek(0))
+	foreach ($myrows as $row)
 	{
-		while($row = $query->fetch_assoc())
-		{  
+		$id_permission	= $row->id;
+		$id_permission 	= $row->id_permission;
+		$name			= $row->name;
+		$editable		= $row->editable;
 
-			$id_permission	= $row['id'];
-			$id_permission 	= $row['id_permission'];
-			$name			= $row['name'];
-			$editable		= $row['editable'];
+		$item = array('id'=> $id, 'id_permission' => $id_permission, 'name' => $name, 'editable' => $editable);
 
-			$item = array('id'=> $id, 'id_permission' => $id_permission, 'name' => $name, 'editable' => $editable);
-
-		}
 
 		$risposta = array('response' => 'true', 'role' => $item);
 	}

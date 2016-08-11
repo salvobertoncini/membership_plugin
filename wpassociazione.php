@@ -132,6 +132,7 @@ function wpassociazione_deactivate()
 						$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ardeek_roles;");
 							$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ardeek_users;");
 
+
 }
 
 register_deactivation_hook( __FILE__, 'wpassociazione_deactivate' );
