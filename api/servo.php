@@ -844,14 +844,15 @@ function checkTypeUploadedFile($fileType)
 function user_payment($id, $amount, $paymentId, $PayerID, $token)
 {
 	$timestamp = date('Y-m-d G:i:s');
-	$string = "data: ".$timestamp.", amount: ".$amount.", token: ".$token.", paymentId: ".$paymentId.", PayerID: ".$PayerID;
+	$string = "data: ".$timestamp." - amount: ".$amount." - token: ".$token." - paymentId: ".$paymentId." - PayerID: ".$PayerID;
 
 	global $wpdb;
 
 	$wpdb->query(
-	$wpdb->prepare( "INSERT INTO {$wpdb->prefix}ardeek_payments(`id_user`, `data`, `information`) VALUES (%d, %s, $s)", $id, $timestamp, $string));
+		$wpdb->prepare( "INSERT INTO {$wpdb->prefix}ardeek_payments(`id_user`, `data`, `information`) VALUES (%d, %s, %s)", $id, $timestamp, $string)
+	);
 
-	$risposta = array('response' => 'true');
+	$risposta = array('response' => 'true', data => $wpdb);
 
 	return $risposta;
 }
