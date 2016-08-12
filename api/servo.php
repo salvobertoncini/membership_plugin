@@ -88,7 +88,7 @@ function getApiContext($clientId, $clientSecret)
 function testing()
 {
 	global $wpdb;
-	
+
 	//wpdb object test
 	$myrows = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}ardeek_users" );
 
@@ -159,13 +159,13 @@ function today()
 	$risposta = array('response' => 'false');
 
 	$myrows = $wpdb->get_results("SELECT paid, range_fee FROM {$wpdb->prefix}ardeek_membership");
-	
+
 	//verifichiamo che siano presenti records
 	foreach ($myrows as $row)
-	{  
+	{
 		$range_fee	= $row->range_fee;
 		$paid		= $row->paid;
-		
+
 		$date = array('range_fee'=> $range_fee, 'paid' => $paid);
 
 		$risposta = array('response' => 'true', 'date' => $date);
@@ -183,7 +183,7 @@ function update_today($year)
 	$a = $year + 1;
 
 	$wpdb->query(
-	$wpdb->prepare( 
+	$wpdb->prepare(
 		"UPDATE {$wpdb->prefix}ardeek_membership SET paid = %d",$a
 		)
 	);
@@ -200,10 +200,10 @@ function email_sender($token, $email, $password)
 	$risposta = array('response' => 'false');
 
 	$myrows = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}ardeek_membership");
-	
+
 	//verifichiamo che siano presenti records
 	foreach ($myrows as $row)
-	{ 
+	{
 		$name_membership	= $row->name;
 		$admin_email		= $row->email;
 		$url_plugin			= $row->url_plugin;
@@ -213,17 +213,17 @@ function email_sender($token, $email, $password)
     // intestazioni
     $headers = "From: $admin_email\nreply-To: noreply\r\n";
     $subject = "Conferma la tua iscrizione.";
-    
+
     //corpo del messaggio
     $messaggio = "Ti ringraziamo per la tua iscrizione a ".$name_membership.". \n";
     $messaggio .= "La tua user è: ".$email."\n";
     $messaggio .= "La tua password è: ".$password."\n";
     $messaggio .= "Per confemare vai alla pagina ".$url_plugin."&approvetoken=".$token;
-    $messaggio .= " \ne inserisci i dati per l'autenticazione.\n"; 
-    
+    $messaggio .= " \ne inserisci i dati per l'autenticazione.\n";
+
     // invio dell'email
     @mail($email, stripslashes($subject),stripslashes($messaggio),$headers);
-    
+
     $risposta = array('response' => 'true');
 
     return $risposta;
@@ -231,14 +231,14 @@ function email_sender($token, $email, $password)
 
 function forgot_password($token, $email, $password)
 {
-	global $wpdb; 
+	global $wpdb;
 
 	$risposta = array('response' => 'false');
 
 	//update password cliente
 	$wpdb->query(
-	$wpdb->prepare( 
-		"UPDATE {$wpdb->prefix}ardeek_users SET `password`= %s ,`token`= %s WHERE email = $s", 
+	$wpdb->prepare(
+		"UPDATE {$wpdb->prefix}ardeek_users SET `password`= %s ,`token`= %s WHERE email = $s",
 			$password, $token, $email
 		)
 	);
@@ -260,16 +260,16 @@ function forgot_password($token, $email, $password)
     // intestazioni
     $headers = "From: $admin_email\nreply-To: noreply\r\n";
     $subject = "Password smarrita.";
-    
+
     //corpo del messaggio
     $messaggio = "Ti ringraziamo per la tua iscrizione a ".$name_membership.". \n";
     $messaggio .= "La tua user è: ".$email."\n";
     $messaggio .= "La tua nuova password è: ".$password."\n";
-    $messaggio .= "Per completare la procedura effettua il login con le nuove credenziali."; 
-    
+    $messaggio .= "Per completare la procedura effettua il login con le nuove credenziali.";
+
     // invio dell'email
     @mail($email, stripslashes($subject),stripslashes($messaggio),$headers);
-    
+
     $risposta = array('response' => 'true');
 
     return $risposta;
@@ -288,7 +288,7 @@ function login($email, $password)
 			)
 		);
 
-	foreach ($myrows as $row) 
+	foreach ($myrows as $row)
 	{
 
 		$id             = $row->id;
@@ -337,8 +337,8 @@ function registration($name, $surname, $birthday, $email, $password, $website, $
 		$verified = 1;
 	}
 
-	$wpdb->query( 
-		$wpdb->prepare( 
+	$wpdb->query(
+		$wpdb->prepare(
 			"INSERT INTO {$wpdb->prefix}ardeek_users (name, surname, birthday, email, password, website, education, skills, bio, token, id_permission, verified, enabled, paid, id_role, avatar) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %d, %d, %d, %d, %d, %s)", $name, $surname, $birthday, $email, $password, $website, $education, $skills, $bio, $token, $permessi, $verified, $enabled, $paid, $ruolo, $avatar));
 
 	$risposta = array('response' => 'true');
@@ -353,7 +353,7 @@ function check_exist_email($email)
 	$risposta = array('response' => 'false');
 
 	$myrows = $wpdb->get_results(
-		$wpdb->prepare("SELECT * FROM {$wpdb->prefix}ardeek_users WHERE email = %s ORDER BY id DESC", 
+		$wpdb->prepare("SELECT * FROM {$wpdb->prefix}ardeek_users WHERE email = %s ORDER BY id DESC",
 			$email
 			)
 		);
@@ -377,7 +377,7 @@ function all_membership()
 
 	//verifichiamo che siano presenti records
 	foreach ($myrows as $row)
-	{   
+	{
 
 		$id             = $row->id;
 		$id_role        = $row->id_role;
@@ -508,7 +508,7 @@ function all_messages()
 
 	//verifichiamo che siano presenti records
 	foreach ($myrows as $row)
-	{ 
+	{
 
 			$id             = $row->id;
 			$name    	    = $row->name;
@@ -518,7 +518,7 @@ function all_messages()
 
 			$msg = array('id'=> $id, 'id_role' => $id_role, 'name' => $name, 'surname' => $surname, 'message' => $message);
 			array_push($msg_list, $msg);
-			
+
 			$risposta = array('response' => 'true', 'messages' => $msg_list);
 	}
 
@@ -586,7 +586,7 @@ function find_message_by_id($id)
 		$message  		= $row->message;
 
 		$msg = array('id'=> $id, 'id_role' => $id_role, 'name' => $name, 'surname' => $surname, 'message' => $message);
-		$risposta = array('response' => 'true', 'messages' => $msg);	
+		$risposta = array('response' => 'true', 'messages' => $msg);
 	}
 
 	return $risposta;
@@ -605,7 +605,7 @@ function all_items()
 
 	//verifichiamo che siano presenti records
 	foreach ($myrows as $row)
-	{  
+	{
 		$id             = $row->id;
 		$name    	    = $row->name;
 		$surname    	= $row->surname;
@@ -647,7 +647,7 @@ function items_by_role($id_role)
 
 		$item = array('id'=> $id, 'id_role' => $id_role, 'name' => $name, 'surname' => $surname, 'oname' => $oname, 'type' => $type, 'path' => $path);
 		array_push($item_list, $item);
-	
+
 		$risposta = array('response' => 'true', 'items' => $item_list);
 	}
 
@@ -668,7 +668,7 @@ function remove_item($id)
 
 	//verifichiamo che siano presenti records
 	foreach ($myrows as $row)
-	{   
+	{
 		$name 			= $row->name;
 		$path    	    = $row->path;
 	}
@@ -677,7 +677,7 @@ function remove_item($id)
 		$wpdb->prepare("DELETE FROM {$wpdb->prefix}ardeek_contents WHERE id = %d",$id));
 
 	unlink("../contents/".$name);
-	
+
 	$risposta = array('response' => 'true');
 
 	return $risposta;
@@ -692,11 +692,11 @@ function all_payments()
 
 	$risposta = array('response' => 'false');
 
-	$myrows = $wpdb->get_results("SELECT {$wpdb->prefix}ardeek_payments.id, name, surname, data, information FROM {$wpdb->prefix}ardeek_payment JOIN `users` ON ({$wpdb->prefix}ardeek_payments.id_user = {$wpdb->prefix}ardeek_users.id)");
+	$myrows = $wpdb->get_results("SELECT {$wpdb->prefix}ardeek_payments.id, name, surname, data, information FROM {$wpdb->prefix}ardeek_payments JOIN {$wpdb->prefix}ardeek_users ON ({$wpdb->prefix}ardeek_payments.id_user = {$wpdb->prefix}ardeek_users.id)");
 
 	//verifichiamo che siano presenti records
 	foreach ($myrows as $row)
-	{  
+	{
 
 		$id             = $row->id;
 		$name    	    = $row->name;
@@ -717,7 +717,7 @@ function remove_payment($id)
 {
 	global $wpdb;
 
-	$wpdb->query( 
+	$wpdb->query(
 	$wpdb->prepare("DELETE FROM {$wpdb->prefix}ardeek_payments WHERE id = %d",$id));
 
 	$risposta = array('response' => 'true');
@@ -730,7 +730,7 @@ function restart_all_payment()
 	global $wpdb;
 
 	$wpdb->query("UPDATE {$wpdb->prefix}ardeek_users SET paid = 0;");
-	
+
 	$risposta = array('response' => 'true');
 
 	return $risposta;
@@ -749,7 +749,7 @@ function init_message_dashboard($id_role)
 
 	//verifichiamo che siano presenti records
 	foreach ($myrows as $row)
-	{ 
+	{
 		$id             = $row->id;
 		$name    	    = $row->name;
 		$surname    	= $row->surname;
@@ -757,7 +757,7 @@ function init_message_dashboard($id_role)
 
 		$item = array('id'=> $id, 'name' => $name, 'surname' => $surname, 'message' => $message);
 		array_push($item_list, $item);
-		
+
 		$risposta = array('response' => 'true', 'messages' => $item_list);
 	}
 
@@ -786,13 +786,13 @@ function init_status()
 
 	//verifichiamo che siano presenti records
 	foreach ($myrows as $row)
-	{ 
+	{
 		$members        = $row->members;
 		$payments    	= $row->payments;
 
 		$item = array('members'=> $members, 'payments' => $payments);
 		array_push($item_list, $item);
-		
+
 		$risposta = array('response' => 'true', 'status' => $item_list);
 	}
 
@@ -803,7 +803,7 @@ function change_avatar($id, $avatar)
 {
 	global $wpdb;
 
-	$wpdb->query( 
+	$wpdb->query(
 	$wpdb->prepare( "UPDATE {$wpdb->prefix}ardeek_users SET avatar = %s WHERE id = %d",$avatar, $id));
 
 	$risposta = array('response' => 'true');
@@ -817,16 +817,16 @@ function upload_file($id, $id_role, $fileName, $fileType, $path)
 
 	$type = checkTypeUploadedFile($fileType);
 
-	$wpdb->query( 
+	$wpdb->query(
 	$wpdb->prepare("INSERT INTO {$wpdb->prefix}ardeek_contents(`id_user`, `id_role`, `type`, `name`, `path`) VALUES (%d, %d, %s, %s, %s)", $id, $id_role, $type, $fileName, $path));
 
 	$risposta = array('response' => 'true');
 
-	return $risposta;	
+	return $risposta;
 }
 
 function checkTypeUploadedFile($fileType)
-{	
+{
 	$type = '';
 
 	if (strpos($fileType, 'image') !== false)
@@ -848,7 +848,7 @@ function user_payment($id, $amount, $paymentId, $PayerID, $token)
 
 	global $wpdb;
 
-	$wpdb->query( 
+	$wpdb->query(
 	$wpdb->prepare( "INSERT INTO {$wpdb->prefix}ardeek_payments(`id_user`, `data`, `information`) VALUES (%d, %s, $s)", $id, $timestamp, $string));
 
 	$risposta = array('response' => 'true');
@@ -860,9 +860,9 @@ function refresh_user_paid($id)
 {
 	global $wpdb;
 
-	$wpdb->query( 
+	$wpdb->query(
 	$wpdb->prepare( "UPDATE {$wpdb->prefix}ardeek_users SET paid = 1 WHERE id = %d", $id));
-	
+
 	$risposta = array('response' => 'true');
 
 	return $risposta;
@@ -882,7 +882,7 @@ function all_membership_not_paid()
 
 	//verifichiamo che siano presenti records
 	foreach ($myrows as $row)
-	{   
+	{
 		$id             = $row->id;
 		$id_role        = $row->id_role;
 		$id_permission  = $row->id_permission;
@@ -904,12 +904,12 @@ function all_membership_not_paid()
 		$user = array('id'=> $id, 'id_role' => $id_role, 'id_permission' => $id_permission, 'name' => $name, 'surname' => $surname, 'birthday' => $birthday, 'email' => $email, 'password' => $password, 'website' => $website, 'education' => $education, 'skills' => $skills, 'bio' => $bio, 'avatar' => $avatar, 'token' => $token, 'verified' => $verified, 'enabled' => $enabled, 'paid' => $paid);
 
 		array_push($user_list, $user);
-	
+
 
 		$risposta = array('response' => 'true', 'userList' => $user_list);
 	}
 
-	return $risposta;	
+	return $risposta;
 }
 
 function users_payments_made($id)
@@ -927,10 +927,10 @@ function users_payments_made($id)
 
     //eseguo la query
 	$query = $mysqli->query($sql);
-	
+
 	//verifichiamo che siano presenti records
 	foreach ($myrows as $row)
-	{   
+	{
 		$id             = $row->id;
 		$name    	    = $row->name;
 		$surname    	= $row->surname;
@@ -939,7 +939,7 @@ function users_payments_made($id)
 
 		$item = array('id'=> $id, 'name' => $name, 'surname' => $surname, 'data' => $data, 'information' => $information);
 		array_push($item_list, $item);
-		
+
 
 		$risposta = array('response' => 'true', 'payments' => $item_list);
 	}
@@ -950,7 +950,7 @@ function users_payments_made($id)
 function init_paypal_payment($success, $paymentId, $token, $payerId)
 {
 	global $apiContext;
-	
+
 	$user = '';
 
 	$risposta = array('response' => 'false');
@@ -1040,7 +1040,7 @@ function try_paypal_payment($id)
 
 	$approvalUrl = $payment->getApprovalLink();
 
-	header('Access-Control-Allow-Origin: *, Location: {$approvalUrl}');	
+	header('Access-Control-Allow-Origin: *, Location: {$approvalUrl}');
 
 	$risposta = array('response' => 'true', 'test' => $approvalUrl);
 
@@ -1058,10 +1058,10 @@ function if_membership_exist()
 	$risposta = array('response' => 'false');
 
 	$myrows = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}ardeek_membership");
-	
+
 	//verifichiamo che siano presenti records
 	foreach ($myrows as $row)
-	{  
+	{
 		$id             	= $row->id;
 		$name				= $row->name;
 		$registered_office	= $row->registered_office;
@@ -1079,7 +1079,7 @@ function if_membership_exist()
 		$item = array('id'=> $id, 'name' => $name, 'registered_office' => $registered_office, 'op_headquarter' => $op_headquarter, 'VAT' => $VAT, 'email' => $email, 'fee' => $fee, 'range_fee' => $range_fee,'website' => $website, 'clientId' => $clientId, 'clientSecret' => $clientSecret, 'registration_date' => $registration_date, 'url_plugin' => $url_plugin);
 
 		array_push($item_list, $item);
-	
+
 
 		$risposta = array('response' => 'true', 'membership' => $item_list);
 	}
@@ -1093,8 +1093,8 @@ function registration_membership($name, $registered_office, $op_headquarter, $VA
 
 	global $wpdb;
 
-	$wpdb->query( 
-	$wpdb->prepare( 
+	$wpdb->query(
+	$wpdb->prepare(
 		"INSERT INTO {$wpdb->prefix}ardeek_membership(`name`, `registered_office`, `op_headquarter`, `VAT`, `email`, `fee`, `range_fee`, `website`, `clientId`, `clientSecret`, `url_plugin`, `registration_date`) VALUES (%s,%s,%s,%s,%s,%d,%d,%s,%s,%s,%s,%s)", $name, $registered_office, $op_headquarter, $VAT, $email, $fee, $range_fee, $website, $clientId, $clientSecret, $url_plugin, $timestamp));
 
 	$risposta = array('response' => 'true', 'data' => $wpdb);
@@ -1106,8 +1106,8 @@ function update_membership($name, $registered_office, $op_headquarter, $VAT, $em
 {
 	global $wpdb;
 
-	$wpdb->query( 
-	$wpdb->prepare( 
+	$wpdb->query(
+	$wpdb->prepare(
 		"UPDATE {$wpdb->prefix}ardeek_membership SET `name` = %s, `registered_office` = %s, `op_headquarter` = %s, `VAT` = %s, `email` = %s, `fee` = %d, `range_fee` = %d, `website` = %s, `clientId` = %d, `clientSecret` = %s, `url_plugin` = %s", $name, $registered_office, $op_headquarter, $VAT, $email, $fee, $range_fee, $website, $clientId, $clientSecret, $url_plugin));
 
 	$risposta = array('response' => 'true');
@@ -1148,7 +1148,7 @@ function all_roles()
 		$item = array('id'=> $id, 'id_permission' => $id_permission, 'name' => $name, 'editable' => $editable);
 
 		array_push($item_list, $item);
-	
+
 		$risposta = array('response' => 'true', 'roles' => $item_list);
 	}
 
@@ -1173,7 +1173,7 @@ function add_roles($name, $permission)
 	}
 	else
 	{
-		$wpdb->query( 
+		$wpdb->query(
 			$wpdb->prepare("INSERT INTO {$wpdb->prefix}ardeek_roles(`name`, `id_permission`, `editable`) VALUES (%s,%d,1)", $name, $permission));
 
 		$risposta = array('response' => 'true');
@@ -1186,7 +1186,7 @@ function edit_roles($id, $name, $permission)
 {
 	global $wpdb;
 
-	$wpdb->query( 
+	$wpdb->query(
 		$wpdb->prepare( "UPDATE {$wpdb->prefix}ardeek_roles SET `name` = %s, `id_permission` = %d WHERE id= %d", $name, $permission,$id));
 
 	$risposta = array('response' => 'true');
@@ -1198,7 +1198,7 @@ function delete_roles($id)
 {
 	global $wpdb;
 
-	$wpdb->query( 
+	$wpdb->query(
 		$wpdb->prepare(
 			"DELETE FROM {$wpdb->prefix}ardeek_roles WHERE id = %d",$id));
 
@@ -1238,7 +1238,7 @@ function roles_by_id($id)
 
 
 //Create a stdClass instance to hold important information
-$return = new stdClass(); 
+$return = new stdClass();
 $return->success = true;
 $return->errorMessage = "";
 $return->data = array();
@@ -1247,13 +1247,13 @@ $method = $_POST;
 
 //Sanitize the string and json strings received from the front-end
 //Corresponds to 'data:{ js_string: val , js_array: arr,  js_object: obj }' in $.ajax
-//if(isset($method['js_object'])) $json_object = sanitize($method['js_object']); 
+//if(isset($method['js_object'])) $json_object = sanitize($method['js_object']);
 $json_object = stripslashes( $method['js_object']);
 //var_dump($json_object);
 //Decode the json to get workable PHP variables
 $php_object = json_decode($json_object);
 //var_dump ($php_object);
-switch ($php_object->r) 
+switch ($php_object->r)
 {
 	case "Testing":
 		$return = testing();

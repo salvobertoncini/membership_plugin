@@ -49,75 +49,101 @@ function wpardeekmembership_activate()
 					$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ardeek_permissions;");
 						$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ardeek_roles;");
 							$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ardeek_users;");
-	$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_contents (
-			  `id` int(11) NOT NULL,
-			  `id_user` int(11) NOT NULL,
-			  `id_role` int(11) NOT NULL,
-			  `type` enum('image','video','document') NOT NULL,
-			  `name` varchar(255) NOT NULL,
-			  `path` text NOT NULL
-			) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
-		$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_membership (
-				  `id` int(11) NOT NULL,
-				  `name` varchar(255) NOT NULL,
-				  `registered_office` text NOT NULL,
-				  `op_headquarter` text NOT NULL,
-				  `VAT` varchar(255) NOT NULL,
-				  `email` varchar(255) NOT NULL,
-				  `fee` float NOT NULL,
-				  `range_fee` int(2) NOT NULL,
-				  `website` varchar(255) NOT NULL,
-				  `clientId` text NOT NULL,
-				  `clientSecret` text NOT NULL,
-				  `url_plugin` text NOT NULL,
-				  `registration_date` date NOT NULL,
-				  `paid` int(4) NOT NULL
-				) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
-			$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_messages (
-					  `id` int(11) NOT NULL,
-					  `id_user` int(11) NOT NULL,
-					  `id_roles` int(11) NOT NULL,
-					  `message` text NOT NULL
-					) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
-				$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_payments (
-						  `id` int(11) NOT NULL,
-						  `id_user` int(11) NOT NULL,
-						  `data` date NOT NULL,
-						  `information` text NOT NULL
-						) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
-					$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_permissions (
-							  `id` int(11) NOT NULL,
-							  `name` varchar(255) NOT NULL
-							) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
-						$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_roles (
-								  `id` int(11) NOT NULL,
-								  `id_permission` int(11) NOT NULL,
-								  `name` varchar(255) NOT NULL,
-								  `editable` tinyint(4) NOT NULL
-								) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
-							$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_users (
-									  `id` int(11) NOT NULL,
-									  `name` varchar(255) NOT NULL,
-									  `surname` varchar(255) NOT NULL,
-									  `birthday` date NOT NULL,
-									  `email` varchar(255) NOT NULL,
-									  `password` varchar(255) NOT NULL,
-									  `website` varchar(255) NOT NULL,
-									  `education` text NOT NULL,
-									  `skills` text NOT NULL,
-									  `bio` text NOT NULL,
-									  `token` varchar(255) NOT NULL,
-									  `id_permission` int(11) NOT NULL,
-									  `verified` tinyint(4) NOT NULL,
-									  `enabled` tinyint(4) NOT NULL,
-									  `paid` tinyint(4) NOT NULL,
-									  `id_role` int(11) NOT NULL,
-									  `avatar` text NOT NULL
-									) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
-										$wpdb->query("INSERT INTO {$wpdb->prefix}ardeek_permissions (`id`, `name`)
-										VALUES (1, 'editor'), (2, 'author'), (3, 'subscriber');");
-													$wpdb->query("INSERT INTO {$wpdb->prefix}ardeek_roles (`id`, `id_permission`, `name`, `editable`)
-													VALUES (1, 3, 'socio ordinario', 0), (2, 2, 'socio sostenitore', 0), (3, 3, 'socio onorario', 0), (4, 1, 'direttivo', 0);");
+
+
+
+$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_permissions (
+`id` int(11) NOT NULL,
+`name` varchar(255) NOT NULL,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+
+$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_roles (
+`id` int(11) NOT NULL,
+`id_permission` int(11) NOT NULL,
+`name` varchar(255) NOT NULL,
+`editable` tinyint(4) NOT NULL,
+PRIMARY KEY (`id`),
+FOREIGN KEY (`id_permission`) REFERENCES {$wpdb->prefix}ardeek_permissions(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+
+$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_users (
+`id` int(11) NOT NULL,
+`id_permission` int(11) NOT NULL,
+`id_role` int(11) NOT NULL,
+`name` varchar(255) NOT NULL,
+`surname` varchar(255) NOT NULL,
+`birthday` date NOT NULL,
+`email` varchar(255) NOT NULL,
+`password` varchar(255) NOT NULL,
+`website` varchar(255) NOT NULL,
+`education` text NOT NULL,
+`skills` text NOT NULL,
+`bio` text NOT NULL,
+`token` varchar(255) NOT NULL,
+`verified` tinyint(4) NOT NULL,
+`enabled` tinyint(4) NOT NULL,
+`paid` tinyint(4) NOT NULL,
+`avatar` text NOT NULL,
+PRIMARY KEY (`id`),
+FOREIGN KEY (`id_permission`) REFERENCES {$wpdb->prefix}ardeek_permissions(`id`),
+FOREIGN KEY (`id_role`) REFERENCES {$wpdb->prefix}ardeek_roles(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+
+$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_contents (
+`id` int(11) NOT NULL,
+`id_user` int(11) NOT NULL,
+`id_role` int(11) NOT NULL,
+`type` enum('image','video','document') NOT NULL,
+`name` varchar(255) NOT NULL,
+`path` text NOT NULL,
+PRIMARY KEY (`id`),
+FOREIGN KEY (`id_user`) REFERENCES {$wpdb->prefix}ardeek_users(`id`)
+FOREIGN KEY (`id_role`) REFERENCES {$wpdb->prefix}ardeek_roles(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+
+$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_membership (
+`id` int(11) NOT NULL,
+`name` varchar(255) NOT NULL,
+`registered_office` text NOT NULL,
+`op_headquarter` text NOT NULL,
+`VAT` varchar(255) NOT NULL,
+`email` varchar(255) NOT NULL,
+`fee` float NOT NULL,
+`range_fee` int(2) NOT NULL,
+`website` varchar(255) NOT NULL,
+`clientId` text NOT NULL,
+`clientSecret` text NOT NULL,
+`url_plugin` text NOT NULL,
+`registration_date` date NOT NULL,
+`paid` int(4) NOT NULL,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+
+$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_messages (
+`id` int(11) NOT NULL,
+`id_user` int(11) NOT NULL,
+`id_roles` int(11) NOT NULL,
+`message` text NOT NULL,
+PRIMARY KEY (`id`),
+FOREIGN KEY (`id_user`) REFERENCES {$wpdb->prefix}ardeek_users(`id`),
+FOREIGN KEY (`id_role`) REFERENCES {$wpdb->prefix}ardeek_roles(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+
+$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_payments (
+`id` int(11) NOT NULL,
+`id_user` int(11) NOT NULL,
+`data` date NOT NULL,
+`information` text NOT NULL,
+PRIMARY KEY (`id`),
+FOREIGN KEY (`id_user`) REFERENCES {$wpdb->prefix}ardeek_users(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+
+
+$wpdb->query("INSERT INTO {$wpdb->prefix}ardeek_permissions (`id`, `name`)
+VALUES (1, 'editor'), (2, 'author'), (3, 'subscriber');");
+	$wpdb->query("INSERT INTO {$wpdb->prefix}ardeek_roles (`id`, `id_permission`, `name`, `editable`)
+	VALUES (1, 3, 'socio ordinario', 0), (2, 2, 'socio sostenitore', 0), (3, 3, 'socio onorario', 0), (4, 1, 'direttivo', 0);");
 
 }
 
