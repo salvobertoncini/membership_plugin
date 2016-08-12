@@ -36,6 +36,7 @@ function wpardeekmembership_option_page()
 }
 
 /* FUNZIONE CHE SI ATTIVA QUANDO SI INSTALLA IL PLUGIN */
+wp_enqueue_script('jquery');
 
 function wpardeekmembership_activate()
 {
@@ -49,7 +50,6 @@ function wpardeekmembership_activate()
 					$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ardeek_permissions;");
 						$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ardeek_roles;");
 							$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ardeek_users;");
-
 
 
 $wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_permissions (
@@ -98,7 +98,7 @@ $wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_contents (
 `name` varchar(255) NOT NULL,
 `path` text NOT NULL,
 PRIMARY KEY (`id`),
-FOREIGN KEY (`id_user`) REFERENCES {$wpdb->prefix}ardeek_users(`id`)
+FOREIGN KEY (`id_user`) REFERENCES {$wpdb->prefix}ardeek_users(`id`),
 FOREIGN KEY (`id_role`) REFERENCES {$wpdb->prefix}ardeek_roles(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 
@@ -127,7 +127,7 @@ $wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_messages (
 `message` text NOT NULL,
 PRIMARY KEY (`id`),
 FOREIGN KEY (`id_user`) REFERENCES {$wpdb->prefix}ardeek_users(`id`),
-FOREIGN KEY (`id_role`) REFERENCES {$wpdb->prefix}ardeek_roles(`id`)
+FOREIGN KEY (`id_roles`) REFERENCES {$wpdb->prefix}ardeek_roles(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 
 $wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_payments (
@@ -163,6 +163,8 @@ function wpardeekmembership_deactivate()
 						$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ardeek_roles;");
 							$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ardeek_users;");
 
+//jQuery goodbye script.
+	echo '<script>alert("ciaone"); console.log("ciaone"); localStorage.clear();</script>';
 
 }
 
@@ -241,7 +243,6 @@ class wpb_widget extends WP_Widget
 	}
 
 }
-
 
 function wpb_load_widget()
 {
