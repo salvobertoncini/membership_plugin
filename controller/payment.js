@@ -242,7 +242,7 @@ function try_to_pay(id, amount, paymentId, PayerID, token)
 							localStorage.setItem('userLogged', JSON.stringify(user));
 
 							//route();
-							window.location = 'http://127.0.0.1:81/wordpress/wp-admin/options-general.php?page=wpassociazione';
+							window.location = 'http://127.0.0.1:81/wordpress/wp-admin/options-general.php?page=wpardeekmembership';
 						}
 									
 					});

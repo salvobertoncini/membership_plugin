@@ -1,5 +1,15 @@
 <?php
 
+	$plugin_path = $_SERVER['DOCUMENT_ROOT'] . '/wordpress';
+
+	global $wpdb;
+
+	if(!isset($wpdb))
+	{
+		require_once( $plugin_path . '/wp-config.php' );
+		require_once( $plugin_path . '/wp-includes/wp-db.php' );
+	}
+
 	$fileName 		= $_FILES["file1"]["name"]; // The file name
 	$fileTmpLoc 	= $_FILES["file1"]["tmp_name"]; // File in the PHP tmp folder
 	$fileType 		= $_FILES["file1"]["type"]; // The type of file it is
@@ -8,12 +18,12 @@
 	$id_user 		= $_POST["id"];
 
 	if (!$fileTmpLoc)
-	{ 
+	{
 		// if file not chosen
 	    echo "ERROR: Please browse for a file before clicking the upload button.";
 	    exit();
 	}
-	
+
 	if(move_uploaded_file($fileTmpLoc, "contents/$fileName")){
 	    upload_file($id_user, 4, $fileName, $fileType, "contents/".$fileName);
 	    change_avatar($id_user, "contents/".$fileName);
@@ -24,40 +34,26 @@
 	    echo "move_uploaded_file function failed";
 	}
 
-	function db_connection()
-	{
-		//connessione al database
-		$dbhost = "localhost";
-		$dbname = "wp_ardeekmembership";
-		$dbuser = "salvo";
-		$dbpass = "salvo";
-
-		$mysqli = new mysqli($dbhost, $dbuser, $dbpass, $dbname);
-
-		if ($mysqli->connect_errno)
-			echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
-
-		return $mysqli;
-	}
 
 	function upload_file($id, $id_role, $fileName, $fileType, $path)
 	{
+
+
 		$type = checkTypeUploadedFile($fileType);
 
-		$sql = "INSERT INTO `contents`(`id`, `id_user`, `id_role`, `type`, `name`, `path`) VALUES (null, ".$id.", ".$id_role.", '".$type."', '".$fileName."', '".$path."')";
+		global $wpdb;
 
-		$mysqli = db_connection();
-
-	    //eseguo la query
-		$query = $mysqli->query($sql);
+		$wpdb->query(
+			$wpdb->prepare(
+				"INSERT INTO {$wpdb->prefix}ardeek_contents (`id_user`, `id_role`, `type`, `name`, `path`) VALUES (%d, %d, %s, %s, %s)",$id,$id_role,$type,$fileName,$path));
 
 		$risposta = array('response' => 'true');
 
-		return $risposta;	
+		return $risposta;
 	}
 
 	function checkTypeUploadedFile($fileType)
-	{	
+	{
 		$type = '';
 
 		if (strpos($fileType, 'image') !== false)
@@ -73,16 +69,13 @@
 
 	function change_avatar($id, $avatar)
 	{
-		$sql = "UPDATE `users` SET avatar = '".$avatar."' WHERE id = ".$id.";";
+		global $wpdb;
 
-		$mysqli = db_connection();
+		$wpdb->query(
+			$wpdb->prepare(
+				"UPDATE {$wpdb->prefix}ardeek_users SET avatar = %s WHERE id = %d",$avatar, $id));
 
-	    //eseguo la query
-		$query = $mysqli->query($sql);
-		
 		$risposta = array('response' => 'true');
 
 		return $risposta;
 	}
-
-?>

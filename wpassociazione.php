@@ -18,30 +18,30 @@ $plugin_prefix = 'ardeek';
 
 $plugin_path = $_SERVER['DOCUMENT_ROOT'] . '/wordpress';
 
-function wpassociazione_menu()
+function wpardeekmembership_menu()
 {
 	add_options_page(
 		'Ardeek 4 Associazioni Plugin',
 		'Ardeek Associazioni',
 		'manage_options',
-		'wpassociazione',
-		'wpassociazione_option_page'
+		'wpardeekmembership',
+		'wpardeekmembership_option_page'
 		);
 }
-add_action('admin_menu', 'wpassociazione_menu');
+add_action('admin_menu', 'wpardeekmembership_menu');
 
-function wpassociazione_option_page()
+function wpardeekmembership_option_page()
 {
 	require ('view/main_menu_associazione.php');
 }
 
 /* FUNZIONE CHE SI ATTIVA QUANDO SI INSTALLA IL PLUGIN */
 
-function wpassociazione_activate()
+function wpardeekmembership_activate()
 {
     global $wpdb;
     global $plugin_prefix;
-	
+
 	$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ardeek_contents;");
 		$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ardeek_membership;");
 			$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ardeek_messages;");
@@ -114,16 +114,21 @@ function wpassociazione_activate()
 									  `id_role` int(11) NOT NULL,
 									  `avatar` text NOT NULL
 									) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+										$wpdb->query("INSERT INTO {$wpdb->prefix}ardeek_permissions (`id`, `name`)
+										VALUES (1, 'editor'), (2, 'author'), (3, 'subscriber');");
+													$wpdb->query("INSERT INTO {$wpdb->prefix}ardeek_roles (`id`, `id_permission`, `name`, `editable`)
+													VALUES (1, 3, 'socio ordinario', 0), (2, 2, 'socio sostenitore', 0), (3, 3, 'socio onorario', 0), (4, 1, 'direttivo', 0);");
+
 }
 
-register_activation_hook( __FILE__, 'wpassociazione_activate' );
+register_activation_hook( __FILE__, 'wpardeekmembership_activate' );
 
 /* FUNZIONE CHE SI ATTIVA QUANDO SI DISINSTALLA IL PLUGIN */
 
-function wpassociazione_deactivate()
+function wpardeekmembership_deactivate()
 {
 	global $wpdb;
-	
+
 	$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ardeek_contents;");
 		$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ardeek_membership;");
 			$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ardeek_messages;");
@@ -135,7 +140,7 @@ function wpassociazione_deactivate()
 
 }
 
-register_deactivation_hook( __FILE__, 'wpassociazione_deactivate' );
+register_deactivation_hook( __FILE__, 'wpardeekmembership_deactivate' );
 
 /*
  * WORDPRESS WIDGET
@@ -143,17 +148,17 @@ register_deactivation_hook( __FILE__, 'wpassociazione_deactivate' );
 
 class wpb_widget extends WP_Widget
 {
-	function __construct() 
+	function __construct()
 	{
 		parent::__construct(
 		// Base ID of your widget
-		'wpb_widget', 
+		'wpb_widget',
 
 		// Widget name will appear in UI
-		__('Ardeek 4 Associazioni Widget', 'wpb_widget_domain'), 
+		__('Ardeek 4 Associazioni Widget', 'wpb_widget_domain'),
 
 		// Widget description
-		array( 'description' => __( 'Widget Ardeek 4 Associazioni...', 'wpb_widget_domain' ), ) 
+		array( 'description' => __( 'Widget Ardeek 4 Associazioni...', 'wpb_widget_domain' ), )
 		);
 	}
 
@@ -161,7 +166,7 @@ class wpb_widget extends WP_Widget
 	 * Widget Frontend
 	*/
 
-	public function widget( $args, $instance ) 
+	public function widget( $args, $instance )
 	{
 		$title 		= apply_filters( 'widget_title', $instance['title'] );
 		$output 	= 'Ciaone da Ardeek Inc.';
@@ -179,7 +184,7 @@ class wpb_widget extends WP_Widget
 		echo __( $output, 'wpb_widget_domain' );
 		echo $args['after_widget'];
 	}
-			
+
 	/*
 	 * Widget Backend
 	*/
@@ -194,25 +199,25 @@ class wpb_widget extends WP_Widget
 		// Widget admin form
 		?>
 		<p>
-		<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?></label> 
+		<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?></label>
 		<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
 		</p>
-		<?php 
+		<?php
 	}
-		
+
 	// Updating widget replacing old instances with new
 	public function update( $new_instance, $old_instance )
 	{
 		$instance = array();
 		$instance['title'] = ( ! empty( $new_instance['title'] ) ) ? strip_tags( $new_instance['title'] ) : '';
-		
+
 		return $instance;
 	}
 
 }
 
 
-function wpb_load_widget() 
+function wpb_load_widget()
 {
 	register_widget( 'wpb_widget' );
 }
@@ -251,13 +256,13 @@ function fill_shortcode_page()
 
     //eseguo la query
 	$query = $mysqli->query($sql);
-	
+
 
 	//verifichiamo che siano presenti records
 	if($query->data_seek(0))
 	{
 		while($row = $query->fetch_assoc())
-		{  
+		{
 
 			$id             = $row['id'];
 			$id_role        = $row['id_role'];
@@ -315,7 +320,7 @@ function fill_shortcode_page()
 	if($query->data_seek(0))
 	{
 		while($row = $query->fetch_assoc())
-		{  
+		{
 
 			$id             = $row['id'];
 			$name    	    = $row['name'];
@@ -346,7 +351,7 @@ function fill_shortcode_page()
 				}
 				</style>';
 	$post .= '<h3>Personal Profile</h3>';
-	$post .= '<img class="img-avatar" src="'.$url.'/wpassociazione/'.$user["avatar"].'"><br>';
+	$post .= '<img class="img-avatar" src="'.$url.'/wpardeekmembership/'.$user["avatar"].'"><br>';
 	$post .= '<b>Nome: </b> '.$user["name"].'<br>';
 	$post .= '<b>Cognome: </b> '.$user["surname"].'<br>';
 	$post .= '<b>Data di Nascita: </b> '.$user["birthday"].'<br>';

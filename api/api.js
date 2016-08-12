@@ -1,4 +1,4 @@
-var path = '../wp-content/plugins/wpassociazione/';
+var path = '../wp-content/plugins/wpardeekmembership/';
 
 function ajaxPost(url, data, success)
 {
@@ -44,7 +44,7 @@ function check_if_exist_email(email)
 	object = JSON.stringify({ r: 'CheckExistEmail', e: email });
 
 	//verifico tramite db la mail
-	ajaxPost(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object },
 		function(response)
 		{
 			console.log(response);
@@ -145,11 +145,11 @@ function today()
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'Today' });
 
-	ajaxPost(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object },
 		function(response)
 		{
 			var resp = jQuery.parseJSON(response);
-			
+
 			if(resp.response=="true")
 			{
 				var d = new Date();
@@ -158,9 +158,9 @@ function today()
 					update_today(resp.paid);
 					restart_all_payment();
 				}
-					
+
 			}
-						
+
 		});
 }
 
@@ -169,12 +169,12 @@ function update_today(year)
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'UpdateToday', y: year });
 
-	ajaxPost(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object },
 		function(response)
 		{
 			console.log(response);
 
-			var resp = jQuery.parseJSON(response);						
+			var resp = jQuery.parseJSON(response);
 		});
 }
 

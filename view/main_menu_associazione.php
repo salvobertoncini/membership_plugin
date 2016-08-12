@@ -1,6 +1,6 @@
 <?php
 
-	$relative_path = '/wpassociazione';
+	$relative_path = '/wpardeekmembership';
 	$plugin_url = WP_PLUGIN_URL . $relative_path;
 
 ?>
