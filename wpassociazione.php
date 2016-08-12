@@ -267,53 +267,32 @@ function fill_shortcode_page()
 	//wp database connection
 	global $wpdb;
 
-	//connessione al database
-	$dbhost = "localhost";
-	$dbname = "wp_ardeekmembership";
-	$dbuser = "salvo";
-	$dbpass = "salvo";
-
-	$mysqli = new mysqli($dbhost, $dbuser, $dbpass, $dbname);
-
-	if ($mysqli->connect_errno)
-		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
-
-
-	$sql = "SELECT *, roles.name AS role, users.name AS nome FROM users JOIN roles ON users.id_role = roles.id WHERE users.id = 1";
-
-    //eseguo la query
-	$query = $mysqli->query($sql);
-
+	$myrows = $wpdb->get_results("SELECT *, {$wpdb->prefix}ardeek_roles.name AS role, {$wpdb->prefix}ardeek_users.name AS nome FROM {$wpdb->prefix}ardeek_users JOIN {$wpdb->prefix}ardeek_roles ON {$wpdb->prefix}ardeek_users.id_role = {$wpdb->prefix}ardeek_roles.id WHERE {$wpdb->prefix}ardeek_users.id = 0");
 
 	//verifichiamo che siano presenti records
-	if($query->data_seek(0))
+	foreach ($myrows as $row)
 	{
-		while($row = $query->fetch_assoc())
-		{
 
-			$id             = $row['id'];
-			$id_role        = $row['id_role'];
-			$id_permission  = $row['id_permission'];
-			$role 			= $row['role'];
-			$name           = $row['nome'];
-			$surname        = $row['surname'];
-			$birthday       = $row['birthday'];
-			$email          = $row['email'];
-			$password       = $row['password'];
-			$website        = $row['website'];
-			$education      = $row['education'];
-			$skills         = $row['skills'];
-			$bio            = $row['bio'];
-			$avatar         = $row['avatar'];
-			$token          = $row['token'];
-			$verified       = $row['verified'];
-			$enabled        = $row['enabled'];
-			$paid        	= $row['paid'];
+			$id             = $row->id;
+			$id_role        = $row->id_role;
+			$id_permission  = $row->id_permission;
+			$role 					= $row->role;
+			$name           = $row->nome;
+			$surname        = $row->surname;
+			$birthday       = $row->birthday;
+			$email          = $row->email;
+			$password       = $row->password;
+			$website        = $row->website;
+			$education      = $row->education;
+			$skills         = $row->skills;
+			$bio            = $row->bio;
+			$avatar         = $row->avatar;
+			$token          = $row->token;
+			$verified       = $row->verified;
+			$enabled        = $row->enabled;
+			$paid        		= $row->paid;
 
 			$user = array('id'=> $id, 'id_role' => $id_role, 'id_permission' => $id_permission, 'role' => $role, 'name' => $name, 'surname' => $surname, 'birthday' => $birthday, 'email' => $email, 'password' => $password, 'website' => $website, 'education' => $education, 'skills' => $skills, 'bio' => $bio, 'avatar' => $avatar, 'token' => $token, 'verified' => $verified, 'enabled' => $enabled, 'paid' => $paid);
-
-		}
-
 	}
 
 	$post = '';
@@ -322,41 +301,28 @@ function fill_shortcode_page()
 
 	$post .= 'Benvenuto <b>'.$user["name"].' '.$user["surname"].'</b>, il tuo ruolo è <b>'.$user["role"].'</b>.<br>';
 
-	/*
-	//wpdb object test
-	$wpdb->query( "SELECT * FROM {$wpdb->prefix}posts" );
-	foreach ( $wpdb->last_result as $r)
-		print_r("<h3>".$r->post_title."</h3>".$r->post_content."<br>");
-	*/
-
 	//reminder pagamento
 
 	if($user["paid"] == 0)
 		$post .= "RICORDA DI EFFETTUARE IL PAGAMENTO DELLA QUOTA ANNUALE. <br>";
 
 	//latest news
-	$sql = "SELECT messages.id, name, surname, message FROM `messages` JOIN `users` ON (messages.id_user = users.id) WHERE id_roles <= ".$user["id_role"]." LIMIT 5;";
-
-    //eseguo la query
-	$query = $mysqli->query($sql);
+	$myrows = $wpdb->get_results("SELECT messages.id, name, surname, message FROM `messages` JOIN `users` ON (messages.id_user = users.id) WHERE id_roles <= ".$user["id_role"]." LIMIT 5;");
 
 	$item = '';
 	$item_list = [];
 
 	//verifichiamo che siano presenti records
-	if($query->data_seek(0))
+	foreach ($myrows as $row)
 	{
-		while($row = $query->fetch_assoc())
-		{
 
-			$id             = $row['id'];
-			$name    	    = $row['name'];
-			$surname    	= $row['surname'];
-			$message  		= $row['message'];
+		$id             = $row['id'];
+		$name    	    = $row['name'];
+		$surname    	= $row['surname'];
+		$message  		= $row['message'];
 
-			$item = array('id'=> $id, 'name' => $name, 'surname' => $surname, 'message' => $message);
-			array_push($item_list, $item);
-		}
+		$item = array('id'=> $id, 'name' => $name, 'surname' => $surname, 'message' => $message);
+		array_push($item_list, $item);
 	}
 
 	$post .= '<h3>Latest News</h3>';
