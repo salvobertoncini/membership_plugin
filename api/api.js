@@ -25,7 +25,7 @@ function testing()
 
             if(resp.response=="true")
             {
-                alert(resp.data);
+                console.log(resp.data);
             }
         });
 }

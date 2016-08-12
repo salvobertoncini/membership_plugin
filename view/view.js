@@ -29,12 +29,13 @@ function admin_view()
 	post += "<table class=\"form-table\">";
 	post += "<tr></td><td><td>Benvenuto "+user.name+" "+user.surname+", il tuo ruolo è: <b>"+ruolo+"</b>. </td></tr>";
 
+
 	//remember payment
 	post += remember_payment(user.paid);
 
 	//latest news
 	post += init_latest_news(user.id_role);
-
+	
 	//membership status
 	extra_post = init_membership_status();
 	post += extra_post;
@@ -45,6 +46,9 @@ function admin_view()
 	post += "</table></div>";
 
 	$("#maindiv").html(post);
+	
+
+	//testing();
 
 	var post = '';
 

@@ -74,9 +74,13 @@ function messages_view()
 	post += "<h2 class=\"hndle\"><span>MESSAGES MANAGER</span></h2>";
 	post += "<div class=\"inside\">";
 
-	extra_post = init_admin_messages();
+	post += "<table class=\"form-table\">";
+	post += "<tr><td><button onclick=\"new_message_view()\">New Message <i class=\"zmdi zmdi-edit\"></i></button></td></tr>";
 
-	post += extra_post;
+	post += init_admin_messages();
+
+	post += "<tr><td><a onclick=\"admin_view()\">Back</a> | ";
+	post +=" </table>";
 
 	post += "</div>";
 
@@ -87,16 +91,10 @@ function fill_all_messages(msg_list)
 {
 	var post = '';
 
-	post += "<table class=\"form-table\">";
-	post += "<tr><td><button onclick=\"new_message_view()\">New Message <i class=\"zmdi zmdi-edit\"></i></button></td></tr>";
-
 	post += "<tr><td><b>#</b></td><td><b>Nome Mittente</b></td><td><b>Messaggio</b></td><td><b>Privilegi</b></td><td><b>Edit</b></td><td><b>Delete</b></td></tr>";
-
+	
 	for(var i in msg_list)
 		post += "<tr><td>"+msg_list[i].id+"</td><td>"+msg_list[i].name+" "+msg_list[i].surname+"</td><td>"+msg_list[i].message+"</td><td>"+msg_list[i].id_role+"</td><td><button onclick=\"edit_message_view("+msg_list[i].id+")\"><i class=\"zmdi zmdi-edit\"></i></button></td><td><button onclick=\"delete_message_view("+msg_list[i].id+", '"+msg_list[i].message+"')\"><i class=\"zmdi zmdi-delete\"></i></button></td></tr>";
-
-	post += "<tr><td><a onclick=\"admin_view()\">Back</a> | ";
-	post +=" </table>";
 
 	return post;
 

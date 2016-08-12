@@ -90,9 +90,13 @@ function testing()
 	global $wpdb;
 	
 	//wpdb object test
-	$wpdb->query( "SELECT * FROM {$wpdb->prefix}posts" );
+	$myrows = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}ardeek_users" );
 
-	$risposta = array('response' => 'true', 'data' => $wpdb);
+	foreach ($myrows as $myrow) {
+		$data = $myrow;
+	}
+
+	$risposta = array('response' => 'true', 'data' => $data);
 
 	return $risposta;
 }
@@ -528,7 +532,7 @@ function send_message($id, $id_role, $message)
 	$risposta = array('response' => 'false');
 
 	$wpdb->query(
-		$wpdb->prepare("INSERT INTO {$wpdb->prefix}ardeek_messages(`id`, `id_user`, `id_roles`, `message`) VALUES (null, %d, %d, %s)", $id, $id_role, $message));
+		$wpdb->prepare("INSERT INTO {$wpdb->prefix}ardeek_messages(`id_user`, `id_roles`, `message`) VALUES (%d, %d, %s)", $id, $id_role, $message));
 
 	$risposta = array('response' => 'true');
 
@@ -597,7 +601,7 @@ function all_items()
 
 	$risposta = array('response' => 'false');
 
-	$myrows = $wpdb->get_results($wpdb->prepare("SELECT {$wpdb->prefix}ardeek_contents.id, {$wpdb->prefix}ardeek_contents.id_role, {$wpdb->prefix}ardeek_contents.name as onome, {$wpdb->prefix}ardeek_users.name as name, surname, type, path FROM {$wpdb->prefix}ardeek_contents JOIN {$wpdb->prefix}ardeek_users ON ({$wpdb->prefix}ardeek_contents.id_user = {$wpdb->prefix}ardeek_users.id)"));
+	$myrows = $wpdb->get_results("SELECT {$wpdb->prefix}ardeek_contents.id, {$wpdb->prefix}ardeek_contents.id_role, {$wpdb->prefix}ardeek_contents.name as onome, {$wpdb->prefix}ardeek_users.name as name, surname, type, path FROM {$wpdb->prefix}ardeek_contents JOIN {$wpdb->prefix}ardeek_users ON ({$wpdb->prefix}ardeek_contents.id_user = {$wpdb->prefix}ardeek_users.id)");
 
 	//verifichiamo che siano presenti records
 	foreach ($myrows as $row)
@@ -688,7 +692,7 @@ function all_payments()
 
 	$risposta = array('response' => 'false');
 
-	$myrows = $wpdb->get_results($wpdb->prepare("SELECT {$wpdb->prefix}ardeek_payments.id, name, surname, data, information FROM {$wpdb->prefix}ardeek_payment JOIN `users` ON ({$wpdb->prefix}ardeek_payments.id_user = {$wpdb->prefix}ardeek_users.id)"));
+	$myrows = $wpdb->get_results("SELECT {$wpdb->prefix}ardeek_payments.id, name, surname, data, information FROM {$wpdb->prefix}ardeek_payment JOIN `users` ON ({$wpdb->prefix}ardeek_payments.id_user = {$wpdb->prefix}ardeek_users.id)");
 
 	//verifichiamo che siano presenti records
 	foreach ($myrows as $row)
@@ -725,8 +729,7 @@ function restart_all_payment()
 {
 	global $wpdb;
 
-	$wpdb->query( 
-	$wpdb->prepare("UPDATE {$wpdb->prefix}ardeek_users SET paid = 0;"));
+	$wpdb->query("UPDATE {$wpdb->prefix}ardeek_users SET paid = 0;");
 	
 	$risposta = array('response' => 'true');
 
@@ -770,21 +773,16 @@ function init_status()
 	$item_list = [];
 	$item = '';
 
-	$myrows = $wpdb->get_results($wpdb->prepare("SELECT  (
+	$myrows = $wpdb->get_results("SELECT  (
 	SELECT COUNT(*)
 	FROM   {$wpdb->prefix}ardeek_users
-	) AS {$wpdb->prefix}ardeek_members,
+	) AS members,
 	(
 	SELECT COUNT(*)
 	FROM   {$wpdb->prefix}ardeek_payments
-	) AS {$wpdb->prefix}ardeek_payments
-	FROM    dual"));
+	) AS payments
+	FROM    dual");
 
-	$mysqli = db_connection();
-
-    //eseguo la query
-	$query = $mysqli->query($sql);
-	
 
 	//verifichiamo che siano presenti records
 	foreach ($myrows as $row)
@@ -820,7 +818,7 @@ function upload_file($id, $id_role, $fileName, $fileType, $path)
 	$type = checkTypeUploadedFile($fileType);
 
 	$wpdb->query( 
-	$wpdb->prepare("INSERT INTO {$wpdb->prefix}ardeek_contents(`id`, `id_user`, `id_role`, `type`, `name`, `path`) VALUES (null, %d, %d, %s, %s, %s)", $id, $id_role, $type, $fileName, $path));
+	$wpdb->prepare("INSERT INTO {$wpdb->prefix}ardeek_contents(`id_user`, `id_role`, `type`, `name`, `path`) VALUES (%d, %d, %s, %s, %s)", $id, $id_role, $type, $fileName, $path));
 
 	$risposta = array('response' => 'true');
 
@@ -851,7 +849,7 @@ function user_payment($id, $amount, $paymentId, $PayerID, $token)
 	global $wpdb;
 
 	$wpdb->query( 
-	$wpdb->prepare( "INSERT INTO {$wpdb->prefix}ardeek_payments(`id`, `id_user`, `data`, `information`) VALUES (null, %d, %s, $s)", $id, $timestamp, $string));
+	$wpdb->prepare( "INSERT INTO {$wpdb->prefix}ardeek_payments(`id_user`, `data`, `information`) VALUES (%d, %s, $s)", $id, $timestamp, $string));
 
 	$risposta = array('response' => 'true');
 
@@ -880,7 +878,7 @@ function all_membership_not_paid()
 
 	$risposta = array('response' => 'false');
 
-	$myrows = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$wpdb->prefix}ardeek_users WHERE paid = 0 ORDER BY id DESC"));
+	$myrows = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}ardeek_users WHERE paid = 0 ORDER BY id DESC");
 
 	//verifichiamo che siano presenti records
 	foreach ($myrows as $row)
@@ -1121,9 +1119,7 @@ function delete_membership_forever()
 {
 	global $wpdb;
 
-	$wpdb->query( 
-	$wpdb->prepare( 
-		"DELETE FROM {$wpdb->prefix}ardeek_membership"));
+	$wpdb->query("DELETE FROM {$wpdb->prefix}ardeek_membership");
 
 	$risposta = array('response' => 'true');
 
@@ -1139,7 +1135,7 @@ function all_roles()
 
 	$risposta = array('response' => 'false');
 
-	$myrows = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$wpdb->prefix}ardeek_roles"));
+	$myrows = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}ardeek_roles");
 
 	//verifichiamo che siano presenti records
 	foreach ($myrows as $row)
@@ -1178,7 +1174,7 @@ function add_roles($name, $permission)
 	else
 	{
 		$wpdb->query( 
-			$wpdb->prepare("INSERT INTO {$wpdb->prefix}ardeek_roles(`id`, `name`, `id_permission`, `editable`) VALUES (null,%s,%d,1)", $name, $permission));
+			$wpdb->prepare("INSERT INTO {$wpdb->prefix}ardeek_roles(`name`, `id_permission`, `editable`) VALUES (%s,%d,1)", $name, $permission));
 
 		$risposta = array('response' => 'true');
 

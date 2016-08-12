@@ -27,8 +27,6 @@ function init_admin_messages()
 
 	post = localStorage.getItem('messages');
 
-	console.log(post);
-
 	return post;
 }
 
