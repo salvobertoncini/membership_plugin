@@ -45,13 +45,13 @@ function init_payment_all()
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'AllPayments' });
 
-	ajaxPost(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object },
 		function(response)
 		{
 			console.log(response);
 
 			var resp = jQuery.parseJSON(response);
-			
+
 			if(resp.response=="true")
 			{
 				post = fill_payments_table(resp.payments);
@@ -64,7 +64,7 @@ function init_payment_all()
 				$('#restart_payment_button').hide();
 				localStorage.setItem('payments', post);
 			}
-						
+
 		});
 
 	post = localStorage.getItem('payments');
@@ -94,13 +94,13 @@ function remove_payment(id)
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'removePayment', i: id });
 
-	ajaxPost(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object },
 		function(response)
 		{
 			console.log(response);
 
 			var resp = jQuery.parseJSON(response);
-			
+
 			if(resp.response=="true")
 			{
 				alert("pagamento rimosso con successo");
@@ -110,7 +110,7 @@ function remove_payment(id)
 			{
 				alert("errore rimozione pagamento");
 			}
-						
+
 		});
 }
 
@@ -119,13 +119,13 @@ function restart_all_payment()
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'restartAllPayment' });
 
-	ajaxPost(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object },
 		function(response)
 		{
 			console.log(response);
 
 			var resp = jQuery.parseJSON(response);
-			
+
 			if(resp.response=="true")
 			{
 				alert("operazione effettuata con successo");
@@ -135,7 +135,7 @@ function restart_all_payment()
 			{
 				alert("errore nell'operazione di azzeramento");
 			}
-						
+
 		});
 }
 
@@ -152,7 +152,7 @@ function remember_payment(paid)
 function admin_pay_user_payment()
 {
 	var userLogged = JSON.parse(localStorage.getItem('userLogged'));
-	
+
 	var id = $('#user_select').val();
 
 	var amount = "12";
@@ -163,27 +163,30 @@ function admin_pay_user_payment()
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'PaymentWithId', i: id, a: amount, y: paymentId, p: PayerID, t: token});
 
-	ajaxPost(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object },
 		function(response)
 		{
 			console.log(response);
 
 			var resp = jQuery.parseJSON(response);
-			
+
 			if(resp.response=="true")
 			{
+
+					console.log("PAGAMENTO: ");
+					console.log(resp.data);
 				//AGGIORNO PAID IN USER
 
 				//inserisco i dati in un json
 				object = JSON.stringify({ r: 'RefreshPaidUserId', i: id});
 
-				ajaxPost(path+"api/servo.php", { js_object: object }, 
+				ajaxPost(path+"api/servo.php", { js_object: object },
 					function(response)
 					{
 						console.log(response);
 
 						var resp = jQuery.parseJSON(response);
-						
+
 						if(resp.response=="true")
 						{
 							alert("pagamento effettuato con successo");
@@ -197,10 +200,10 @@ function admin_pay_user_payment()
 
 							payment_management_view();
 						}
-									
+
 					});
 			}
-						
+
 		});
 }
 
@@ -209,13 +212,13 @@ function try_to_pay(id, amount, paymentId, PayerID, token)
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'PaymentWithId', i: id, a: amount, y: paymentId, p: PayerID, t: token});
 
-	ajaxPost(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object },
 		function(response)
 		{
 			console.log(response);
 
 			var resp = jQuery.parseJSON(response);
-			
+
 			if(resp.response=="true")
 			{
 				//AGGIORNO PAID IN USER
@@ -223,13 +226,13 @@ function try_to_pay(id, amount, paymentId, PayerID, token)
 				//inserisco i dati in un json
 				object = JSON.stringify({ r: 'RefreshPaidUserId', i: id});
 
-				ajaxPost(path+"api/servo.php", { js_object: object }, 
+				ajaxPost(path+"api/servo.php", { js_object: object },
 					function(response)
 					{
 						console.log(response);
 
 						var resp = jQuery.parseJSON(response);
-						
+
 						if(resp.response=="true")
 						{
 							alert("pagamento effettuato con successo");
@@ -244,10 +247,10 @@ function try_to_pay(id, amount, paymentId, PayerID, token)
 							//route();
 							window.location = 'http://127.0.0.1:81/wordpress/wp-admin/options-general.php?page=wpardeekmembership';
 						}
-									
+
 					});
 			}
-						
+
 		});
 }
 
@@ -256,13 +259,13 @@ function init_user_for_payment()
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'AllUsersNotPaid'});
 
-	ajaxPost(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object },
 		function(response)
 		{
 			console.log(response);
 
 			var resp = jQuery.parseJSON(response);
-			
+
 			if(resp.response=="true")
 			{
 				post = fill_user_for_payment(resp.userList);
@@ -275,7 +278,7 @@ function init_user_for_payment()
 				$('#admin_pay_user_payment').hide();
 				localStorage.setItem('tmpPost', post);
 			}
-						
+
 		});
 
 	post = localStorage.getItem('tmpPost');
@@ -302,13 +305,13 @@ function payments_made(id)
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'UsersPaymentsMade', i:id});
 
-	ajaxPost(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object },
 		function(response)
 		{
 			console.log(response);
 
 			var resp = jQuery.parseJSON(response);
-			
+
 			if(resp.response=="true")
 			{
 				post = fill_users_payments_made(resp.payments);
@@ -319,7 +322,7 @@ function payments_made(id)
 				post = "Nessun pagamento effettuato.";
 				localStorage.setItem('tmpPost', post);
 			}
-						
+
 		});
 
 	post = localStorage.getItem('tmpPost');
@@ -341,7 +344,7 @@ function fill_users_payments_made(list)
 
 	post += "</table>"
 
-	return post;	
+	return post;
 }
 
 function print_quittance(id)
@@ -354,13 +357,13 @@ function try_paypal_payment(id)
 	//inserisco i dati in un json
 	object = JSON.stringify({ r: 'TryPaypalPayment', i:id});
 
-	ajaxPost(path+"api/servo.php", { js_object: object }, 
+	ajaxPost(path+"api/servo.php", { js_object: object },
 		function(response)
 		{
 			console.log(response);
 
 			var resp = jQuery.parseJSON(response);
-			
+
 			if(resp.response=="true")
 			{
 				//pagamento riuscito
@@ -372,6 +375,6 @@ function try_paypal_payment(id)
 				//pagamento non riuscito
 				alert("errore nel pagamento");
 			}
-						
+
 		});
 }
