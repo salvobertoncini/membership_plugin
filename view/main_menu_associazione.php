@@ -5,7 +5,7 @@
 
 ?>
 
-<link <?php echo "href=\"".$plugin_url."\style.css\"" ?> rel="stylesheet" type="text/css">
+<link <?php echo "href=\"".$plugin_url."/style.css\"" ?> rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css">
 
 <h2><?php esc_attr_e( 'Ardeek 4 Associazioni Plugin', 'wp_admin_style' ); ?></h2>

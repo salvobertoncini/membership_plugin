@@ -16,7 +16,7 @@
 
 $plugin_prefix = 'ardeek';
 
-$plugin_path = $_SERVER['DOCUMENT_ROOT'] . '/wordpress';
+$plugin_path = $_SERVER['DOCUMENT_ROOT'] . '/ardeek';
 
 function wpardeekmembership_menu()
 {

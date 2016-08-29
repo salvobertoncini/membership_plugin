@@ -2,7 +2,7 @@
 
 require_once '../vendor/autoload.php';
 
-$plugin_path = $_SERVER['DOCUMENT_ROOT'] . '/wordpress';
+$plugin_path = $_SERVER['DOCUMENT_ROOT'] . '/ardeek';
 
 global $wpdb;
 
@@ -12,7 +12,7 @@ if(!isset($wpdb))
 	require_once( $plugin_path . '/wp-includes/wp-db.php' );
 }
 
-define('SITE_URL', 'http://127.0.0.1:81/wordpress/wp-admin/options-general.php?page=wpardeekmembership');
+define('SITE_URL', 'http://127.0.0.1/ardeek/wp-admin/options-general.php?page=wpardeekmembership');
 
 use PayPal\Api\Amount;
 use PayPal\Api\Details;

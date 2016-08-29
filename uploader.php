@@ -8,7 +8,7 @@
 	$id_user 		= $_POST["id_user"];
 	$id_role 		= $_POST["id_role"];
 
-	$plugin_path = $_SERVER['DOCUMENT_ROOT'] . '/wordpress';
+	$plugin_path = $_SERVER['DOCUMENT_ROOT'] . '/ardeek';
 
 	global $wpdb;
 
