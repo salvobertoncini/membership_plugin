@@ -93,16 +93,14 @@ Wordpress plugin for membership. Php &amp; jQuery.
 
 * async fix
 
+###30 agosto 2016
+
+* percorsi da assoluti a relativi
+
 ##COSE DA FARE
 
 * prefisso di wordpress, e "subprefisso" configurabile manualmente
 * ricevuta del pagamento
 * abbellire app
-
 * sistemare routing => GET
-
-* best practice per il naming del plugin
- 
-* accedere alle variabili dell'installazione di wordpress (prefisso database, db_user, db_password, db_host) attraverso le api di wordpress (preferibilmente, in alternativa momentaneamente può essere richiamato ../../../wp-config.php, e FORSE si trova tutto in ../../wp-load.php)
-
 * installazione e disinstallazione plugin, e aggiornamento

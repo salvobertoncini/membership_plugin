@@ -2,17 +2,19 @@
 
 require_once '../vendor/autoload.php';
 
-$plugin_path = $_SERVER['DOCUMENT_ROOT'] . '/ardeek';
+$website_path 	= __DIR__ . '/../../../..';
+$plugin_path 	= __DIR__ . '/..';
+$full_url 		= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
 
 global $wpdb;
 
 if(!isset($wpdb))
 {
-	require_once( $plugin_path . '/wp-config.php' );
-	require_once( $plugin_path . '/wp-includes/wp-db.php' );
+	require_once( $website_path . '/wp-config.php' );
+	require_once( $website_path . '/wp-includes/wp-db.php' );
 }
 
-define('SITE_URL', 'http://127.0.0.1/ardeek/wp-admin/options-general.php?page=wpardeekmembership');
+define('ARDEEK_URL_PLUGIN_SITE', $full_url);
 
 use PayPal\Api\Amount;
 use PayPal\Api\Details;
@@ -113,22 +115,6 @@ function alert( $data)
 	echo '<script>';
 	echo 'alert('. json_encode( $data ) .')';
 	echo '</script>';
-}
-
-function db_connection()
-{
-	//connessione al database
-	$dbhost = "localhost";
-	$dbname = "wp_ardeekmembership";
-	$dbuser = "salvo";
-	$dbpass = "salvo";
-
-	$mysqli = new mysqli($dbhost, $dbuser, $dbpass, $dbname);
-
-	if ($mysqli->connect_errno)
-		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
-
-	return $mysqli;
 }
 
 function returnsomething($return)
@@ -1019,8 +1005,8 @@ function try_paypal_payment($id)
 	->setInvoiceNumber(uniqid());
 
 	$redirectUrls = new RedirectUrls();
-	$redirectUrls->setReturnUrl(SITE_URL . '&amount='.$total.'&success=true')
-	->setCancelUrl(SITE_URL . '&success=false');
+	$redirectUrls->setReturnUrl(ARDEEK_URL_PLUGIN_SITE . '&amount='.$total.'&success=true')
+	->setCancelUrl(ARDEEK_URL_PLUGIN_SITE . '&success=false');
 
 	$payment = new Payment();
 	$payment->setIntent('sale')
@@ -1236,6 +1222,16 @@ function roles_by_id($id)
 	return $risposta;
 }
 
+function get_path_from_server()
+{
+	$plugin_path;
+
+	$risposta = array('response' => 'true', 'value' => $plugin_path);
+	echo $plugin_path;
+	
+	return $risposta;
+}
+
 
 
 //Create a stdClass instance to hold important information
@@ -1422,6 +1418,10 @@ switch ($php_object->r)
 		break;
 	case "Today":
 		$return = today();
+		returnsomething($return);
+		break;
+	case "getPathFromServer":
+		$return = get_path_from_server();
 		returnsomething($return);
 		break;
 	default:

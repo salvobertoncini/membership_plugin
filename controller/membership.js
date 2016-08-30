@@ -411,7 +411,7 @@ function edit_member(id)
 	var name = $("#name").val();
 	var surname = $("#surname").val();
 
-	$("#birthday").datepicker({ dateFormat: 'yyyy, mm, dd' });
+	//$("#birthday").datepicker({ dateFormat: 'yyyy, mm, dd' });
 	var birthday = $("#birthday").val();
 
 	var email = $("#email").val();

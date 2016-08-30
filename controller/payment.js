@@ -245,7 +245,7 @@ function try_to_pay(id, amount, paymentId, PayerID, token)
 							localStorage.setItem('userLogged', JSON.stringify(user));
 
 							//route();
-							window.location = 'http://127.0.0.1/ardeek/wp-admin/options-general.php?page=wpardeekmembership';
+							window.location = full_url;
 						}
 
 					});

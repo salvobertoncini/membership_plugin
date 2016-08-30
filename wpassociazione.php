@@ -14,9 +14,9 @@
  * WORDPRESS PLUGIN
 */
 
-$plugin_prefix = 'ardeek';
-
-$plugin_path = $_SERVER['DOCUMENT_ROOT'] . '/ardeek';
+$plugin_path 	= __DIR__ . '/../../../..';
+$website_path 	= __DIR__ . '/..';
+$full_url 		= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
 
 function wpardeekmembership_menu()
 {
@@ -344,7 +344,9 @@ function fill_shortcode_page()
 				}
 				</style>';
 	$post .= '<h3>Personal Profile</h3>';
-	$post .= '<img class="img-avatar" src="'.$url.'/wpardeekmembership/'.$user["avatar"].'"><br>';
+
+	$post .= '<img class="img-avatar" src="'.$url.'/'.basename(plugin_dir_path( __FILE__ )).'/'.$user["avatar"].'"><br>';
+
 	$post .= '<b>Nome: </b> '.$user["name"].'<br>';
 	$post .= '<b>Cognome: </b> '.$user["surname"].'<br>';
 	$post .= '<b>Data di Nascita: </b> '.$user["birthday"].'<br>';

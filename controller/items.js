@@ -21,7 +21,7 @@ function uploadFile()
 	ajax.addEventListener("load", completeHandler, false);
 	ajax.addEventListener("error", errorHandler, false);
 	ajax.addEventListener("abort", abortHandler, false);
-	ajax.open("POST", "../wp-content/plugins/wpardeekmembership/uploader.php");
+	ajax.open("POST", path+"uploader.php");
 	ajax.send(formdata);
 }
 
@@ -38,7 +38,7 @@ function uploadAvatar(id)
 	ajax.addEventListener("load", completeHandler, false);
 	ajax.addEventListener("error", errorHandler, false);
 	ajax.addEventListener("abort", abortHandler, false);
-	ajax.open("POST", "../wp-content/plugins/wpardeekmembership/changeAvatar.php");
+	ajax.open("POST", path+"changeAvatar.php");
 	ajax.send(formdata);
 }
 

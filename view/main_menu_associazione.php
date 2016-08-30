@@ -1,7 +1,10 @@
 <?php
+	
+	$plugin_name = basename(dirname(__DIR__));
+	$plugin_url = WP_PLUGIN_URL . '/'. $plugin_name;
 
-	$relative_path = '/wpardeekmembership';
-	$plugin_url = WP_PLUGIN_URL . $relative_path;
+	echo "<script>var path = '".$plugin_url."/'; ";
+	echo "var full_url = 'http://' ".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']";</script>";
 
 ?>
 
