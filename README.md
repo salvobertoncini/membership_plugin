@@ -96,6 +96,7 @@ Wordpress plugin for membership. Php &amp; jQuery.
 ###30 agosto 2016
 
 * percorsi da assoluti a relativi
+* bug fixing
 
 ##COSE DA FARE
 
