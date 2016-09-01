@@ -1,17 +1,18 @@
 <?php
 
+//if ( ! defined( 'ABSPATH' ) ) exit; 
+
 require_once '../vendor/autoload.php';
 
-$website_path 	= __DIR__ . '/../../../..';
-$plugin_path 	= __DIR__ . '/..';
+$includes_path 	= __DIR__ . '/../../../..';
 $full_url 		= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
 
 global $wpdb;
 
 if(!isset($wpdb))
 {
-	require_once( $website_path . '/wp-config.php' );
-	require_once( $website_path . '/wp-includes/wp-db.php' );
+	require_once( $includes_path . '/wp-config.php' );
+	require_once( $includes_path . '/wp-includes/wp-db.php' );
 }
 
 define('ARDEEK_URL_PLUGIN_SITE', $full_url);
@@ -154,7 +155,7 @@ function today()
 
 		$date = array('range_fee'=> $range_fee, 'paid' => $paid);
 
-		$risposta = array('response' => 'true', 'date' => $date);
+		$risposta = array('response' => 'true', 'date' => $date, 'ok' => 'ok');
 
 	}
 

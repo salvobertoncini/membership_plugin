@@ -98,10 +98,14 @@ Wordpress plugin for membership. Php &amp; jQuery.
 * percorsi da assoluti a relativi
 * bug fixing
 
+###1 settembre 2016
+
+* path fixing
+* wp_enqueue for script and link
+
 ##COSE DA FARE
 
-* prefisso di wordpress, e "subprefisso" configurabile manualmente
 * ricevuta del pagamento
-* abbellire app
 * sistemare routing => GET
 * installazione e disinstallazione plugin, e aggiornamento
+* abbellire app

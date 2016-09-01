@@ -3,8 +3,8 @@
 	$plugin_name = basename(dirname(__DIR__));
 	$plugin_url = WP_PLUGIN_URL . '/'. $plugin_name;
 
-	echo "<script>var path = '".$plugin_url."/'; ";
-	echo "var full_url = 'http://' ".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']";</script>";
+	echo "<script>var path = '".$plugin_url."/';</script>";
+	echo "<script>var full_url = \"".'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']."\" ;</script>";
 
 ?>
 

@@ -36,25 +36,6 @@ function getPathFromServer()
 	return ret;
 }
 
-function testing()
-{
-    //inserisco i dati in un json
-    object = JSON.stringify({ r: 'Testing' });
-
-    ajaxPost(path+"api/servo.php", {js_object: object},
-        function(response)
-        {
-            console.log(response);
-
-            var resp = jQuery.parseJSON(response);
-
-            if(resp.response=="true")
-            {
-                console.log(resp.data);
-            }
-        });
-}
-
 function check_something(value)
 {
 	if(value != '' && value != null)
