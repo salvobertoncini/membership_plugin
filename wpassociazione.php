@@ -30,14 +30,14 @@ function wpardeekmembership_menu()
 }
 add_action('admin_menu', 'wpardeekmembership_menu');
 
+
+
 function wpardeekmembership_option_page()
 {
 	require ('view/main_menu_associazione.php');
 }
 
 /* FUNZIONE CHE SI ATTIVA QUANDO SI INSTALLA IL PLUGIN */
-wp_enqueue_script('jquery');
-
 function wpardeekmembership_activate()
 {
     global $wpdb;
@@ -52,98 +52,98 @@ function wpardeekmembership_activate()
 							$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ardeek_users;");
 
 
-$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_permissions (
-`id` int(11) NOT NULL,
-`name` varchar(255) NOT NULL,
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+	$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_permissions (
+	`id` int(11) NOT NULL,
+	`name` varchar(255) NOT NULL,
+	PRIMARY KEY (`id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 
-$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_roles (
-`id` int(11) NOT NULL,
-`id_permission` int(11) NOT NULL,
-`name` varchar(255) NOT NULL,
-`editable` tinyint(4) NOT NULL,
-PRIMARY KEY (`id`),
-FOREIGN KEY (`id_permission`) REFERENCES {$wpdb->prefix}ardeek_permissions(`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+	$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_roles (
+	`id` int(11) NOT NULL,
+	`id_permission` int(11) NOT NULL,
+	`name` varchar(255) NOT NULL,
+	`editable` tinyint(4) NOT NULL,
+	PRIMARY KEY (`id`),
+	FOREIGN KEY (`id_permission`) REFERENCES {$wpdb->prefix}ardeek_permissions(`id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 
-$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_users (
-`id` int(11) NOT NULL,
-`id_permission` int(11) NOT NULL,
-`id_role` int(11) NOT NULL,
-`name` varchar(255) NOT NULL,
-`surname` varchar(255) NOT NULL,
-`birthday` date NOT NULL,
-`email` varchar(255) NOT NULL,
-`password` varchar(255) NOT NULL,
-`website` varchar(255) NOT NULL,
-`education` text NOT NULL,
-`skills` text NOT NULL,
-`bio` text NOT NULL,
-`token` varchar(255) NOT NULL,
-`verified` tinyint(4) NOT NULL,
-`enabled` tinyint(4) NOT NULL,
-`paid` tinyint(4) NOT NULL,
-`avatar` text NOT NULL,
-PRIMARY KEY (`id`),
-FOREIGN KEY (`id_permission`) REFERENCES {$wpdb->prefix}ardeek_permissions(`id`),
-FOREIGN KEY (`id_role`) REFERENCES {$wpdb->prefix}ardeek_roles(`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+	$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_users (
+	`id` int(11) NOT NULL,
+	`id_permission` int(11) NOT NULL,
+	`id_role` int(11) NOT NULL,
+	`name` varchar(255) NOT NULL,
+	`surname` varchar(255) NOT NULL,
+	`birthday` date NOT NULL,
+	`email` varchar(255) NOT NULL,
+	`password` varchar(255) NOT NULL,
+	`website` varchar(255) NOT NULL,
+	`education` text NOT NULL,
+	`skills` text NOT NULL,
+	`bio` text NOT NULL,
+	`token` varchar(255) NOT NULL,
+	`verified` tinyint(4) NOT NULL,
+	`enabled` tinyint(4) NOT NULL,
+	`paid` tinyint(4) NOT NULL,
+	`avatar` text NOT NULL,
+	PRIMARY KEY (`id`),
+	FOREIGN KEY (`id_permission`) REFERENCES {$wpdb->prefix}ardeek_permissions(`id`),
+	FOREIGN KEY (`id_role`) REFERENCES {$wpdb->prefix}ardeek_roles(`id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 
-$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_contents (
-`id` int(11) NOT NULL,
-`id_user` int(11) NOT NULL,
-`id_role` int(11) NOT NULL,
-`type` enum('image','video','document') NOT NULL,
-`name` varchar(255) NOT NULL,
-`path` text NOT NULL,
-PRIMARY KEY (`id`),
-FOREIGN KEY (`id_user`) REFERENCES {$wpdb->prefix}ardeek_users(`id`),
-FOREIGN KEY (`id_role`) REFERENCES {$wpdb->prefix}ardeek_roles(`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+	$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_contents (
+	`id` int(11) NOT NULL,
+	`id_user` int(11) NOT NULL,
+	`id_role` int(11) NOT NULL,
+	`type` enum('image','video','document') NOT NULL,
+	`name` varchar(255) NOT NULL,
+	`path` text NOT NULL,
+	PRIMARY KEY (`id`),
+	FOREIGN KEY (`id_user`) REFERENCES {$wpdb->prefix}ardeek_users(`id`),
+	FOREIGN KEY (`id_role`) REFERENCES {$wpdb->prefix}ardeek_roles(`id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 
-$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_membership (
-`id` int(11) NOT NULL,
-`name` varchar(255) NOT NULL,
-`registered_office` text NOT NULL,
-`op_headquarter` text NOT NULL,
-`VAT` varchar(255) NOT NULL,
-`email` varchar(255) NOT NULL,
-`fee` float NOT NULL,
-`range_fee` int(2) NOT NULL,
-`website` varchar(255) NOT NULL,
-`clientId` text NOT NULL,
-`clientSecret` text NOT NULL,
-`url_plugin` text NOT NULL,
-`registration_date` date NOT NULL,
-`paid` int(4) NOT NULL,
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+	$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_membership (
+	`id` int(11) NOT NULL,
+	`name` varchar(255) NOT NULL,
+	`registered_office` text NOT NULL,
+	`op_headquarter` text NOT NULL,
+	`VAT` varchar(255) NOT NULL,
+	`email` varchar(255) NOT NULL,
+	`fee` float NOT NULL,
+	`range_fee` int(2) NOT NULL,
+	`website` varchar(255) NOT NULL,
+	`clientId` text NOT NULL,
+	`clientSecret` text NOT NULL,
+	`url_plugin` text NOT NULL,
+	`registration_date` date NOT NULL,
+	`paid` int(4) NOT NULL,
+	PRIMARY KEY (`id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 
-$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_messages (
-`id` int(11) NOT NULL,
-`id_user` int(11) NOT NULL,
-`id_roles` int(11) NOT NULL,
-`message` text NOT NULL,
-PRIMARY KEY (`id`),
-FOREIGN KEY (`id_user`) REFERENCES {$wpdb->prefix}ardeek_users(`id`),
-FOREIGN KEY (`id_roles`) REFERENCES {$wpdb->prefix}ardeek_roles(`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+	$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_messages (
+	`id` int(11) NOT NULL,
+	`id_user` int(11) NOT NULL,
+	`id_roles` int(11) NOT NULL,
+	`message` text NOT NULL,
+	PRIMARY KEY (`id`),
+	FOREIGN KEY (`id_user`) REFERENCES {$wpdb->prefix}ardeek_users(`id`),
+	FOREIGN KEY (`id_roles`) REFERENCES {$wpdb->prefix}ardeek_roles(`id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 
-$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_payments (
-`id` int(11) NOT NULL,
-`id_user` int(11) NOT NULL,
-`data` date NOT NULL,
-`information` text NOT NULL,
-PRIMARY KEY (`id`),
-FOREIGN KEY (`id_user`) REFERENCES {$wpdb->prefix}ardeek_users(`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+	$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_payments (
+	`id` int(11) NOT NULL,
+	`id_user` int(11) NOT NULL,
+	`data` date NOT NULL,
+	`information` text NOT NULL,
+	PRIMARY KEY (`id`),
+	FOREIGN KEY (`id_user`) REFERENCES {$wpdb->prefix}ardeek_users(`id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 
 
-$wpdb->query("INSERT INTO {$wpdb->prefix}ardeek_permissions (`id`, `name`)
-VALUES (1, 'editor'), (2, 'author'), (3, 'subscriber');");
-	$wpdb->query("INSERT INTO {$wpdb->prefix}ardeek_roles (`id`, `id_permission`, `name`, `editable`)
-	VALUES (1, 3, 'socio ordinario', 0), (2, 2, 'socio sostenitore', 0), (3, 3, 'socio onorario', 0), (4, 1, 'direttivo', 0);");
+	$wpdb->query("INSERT INTO {$wpdb->prefix}ardeek_permissions (`id`, `name`)
+	VALUES (1, 'editor'), (2, 'author'), (3, 'subscriber');");
+		$wpdb->query("INSERT INTO {$wpdb->prefix}ardeek_roles (`id`, `id_permission`, `name`, `editable`)
+		VALUES (1, 3, 'socio ordinario', 0), (2, 2, 'socio sostenitore', 0), (3, 3, 'socio onorario', 0), (4, 1, 'direttivo', 0);");
 
 }
 
@@ -361,3 +361,30 @@ function fill_shortcode_page()
 }
 
 add_shortcode('wpardeek', 'fill_shortcode_page');
+
+function js_and_css(){
+
+	$plugin_url = plugin_dir_url(__FILE__);
+
+	wp_enqueue_script('api', $plugin_url."/api/api.js" , false, '1.0', 'all');
+
+	wp_enqueue_script('all_view', $plugin_url."/view/view.js" , false, '1.0', 'all');
+	wp_enqueue_script('items_view', $plugin_url."/view/items_view.js" , false, '1.0', 'all');
+	wp_enqueue_script('login_view', $plugin_url."/view/login_view.js" , false, '1.0', 'all');
+	wp_enqueue_script('membership_view', $plugin_url."/view/membership_view.js" , false, '1.0', 'all');
+	wp_enqueue_script('payment_view', $plugin_url."/view/payment_view.js" , false, '1.0', 'all');
+	wp_enqueue_script('registration_view', $plugin_url."/view/registration_view.js", false, '1.0', 'all');
+	wp_enqueue_script('messages_view', $plugin_url."/view/messages_view.js" , false, '1.0', 'all');
+
+	wp_enqueue_script('routing_controller', $plugin_url."/controller/routing.js" , false, '1.0', 'all');
+	wp_enqueue_script('registration_controller', $plugin_url."/controller/registration.js", false, '1.0', 'all');
+	wp_enqueue_script('login_controller', $plugin_url."/controller/login.js" , false, '1.0', 'all');
+	wp_enqueue_script('forgot_password_controller', $plugin_url."/controller/forgot_password.js", false, '1.0', 'all');
+	wp_enqueue_script('membership_controller', $plugin_url."/controller/membership.js", false, '1.0', 'all');
+	wp_enqueue_script('messages_view_controller', $plugin_url."/controller/messages.js" , false, '1.0', 'all');
+	wp_enqueue_script('items_controller', $plugin_url."/controller/items.js", false, '1.0', 'all');
+	wp_enqueue_script('payment_controller', $plugin_url."/controller/payment.js" , false, '1.0', 'all');
+
+}
+
+add_action('admin_init', 'js_and_css');

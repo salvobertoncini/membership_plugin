@@ -6,10 +6,10 @@
 	echo "<script>var path = '".$plugin_url."/';</script>";
 	echo "<script>var full_url = \"".'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']."\" ;</script>";
 
-?>
+	wp_enqueue_style('style', $plugin_url . '/style.css' , false, '1.0', 'all');
+	wp_enqueue_style('material-design-iconic-font', 'https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css' , false, '1.0', 'all');
 
-<link <?php echo "href=\"".$plugin_url."/style.css\"" ?> rel="stylesheet" type="text/css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css">
+?>
 
 <h2><?php esc_attr_e( 'Ardeek 4 Associazioni Plugin', 'wp_admin_style' ); ?></h2>
 
@@ -63,7 +63,11 @@
 
 </div> <!-- .wrap -->
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script>
+	$ = jQuery.noConflict();
+</script>
+
+<!--
 <script <?php echo "src=".$plugin_url."/api/api.js"; ?> ></script>
 <script <?php echo "src=".$plugin_url."/view/view.js"; ?> ></script>
 <script <?php echo "src=".$plugin_url."/view/items_view.js"; ?> ></script>
@@ -80,3 +84,4 @@
 <script <?php echo "src=".$plugin_url."/controller/messages.js"; ?> ></script>
 <script <?php echo "src=".$plugin_url."/controller/items.js"; ?> ></script>
 <script <?php echo "src=".$plugin_url."/controller/payment.js"; ?> ></script>
+-->
