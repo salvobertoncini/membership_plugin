@@ -1,3 +1,5 @@
+$ = jQuery.noConflict();
+
 function ajaxPost(url, data, success)
 {
 	$.ajax({

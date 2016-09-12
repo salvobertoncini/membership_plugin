@@ -237,6 +237,7 @@ function fill_edit_member_view(user)
     img += "<li><b><i class=\"zmdi zmdi-image\"></i> Current Profile Image: </b><br><br><img id=\"img-settings\" src=\"" + immagineProfilo +"\" class=\"pv-main\"/></li>";
 
     var post = '';
+
 	post += "<form id=\"upload_form\" enctype=\"multipart/form-data\" method=\"post\">";
 	post += "<b><i class=\"zmdi zmdi-image-o\"></i> Change Your Profile Image: </b><br>";
   	post += "<input type=\"file\" name=\"file1\" id=\"file1\">";
@@ -250,6 +251,10 @@ function fill_edit_member_view(user)
 
 	$("#profilePhoto").html(img);
 
+	////////////////////////////////////////////////
+	post += "<tr><td><button class=\"button-primary\" onclick=\"open_media_uploader_image()\">UPLOAD WORDPRESS</button></td></tr>";
+	////////////////////////////////////////////////
+	
 	post += "<tr><td><div class=\"pmo-contact\" id=\"pmo-contact\"><ul  id=\"profilePhoto\"> </ul></div></td></tr>";
 
 	post += "<tr><td><b>Nome: </b></td><td><input type=\"text\" name=\"name\" id=\"name\" value=\""+user.name+"\" class=\"regular-text\" /></td></tr>";

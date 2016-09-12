@@ -62,26 +62,3 @@
 	<!-- #poststuff -->
 
 </div> <!-- .wrap -->
-
-<script>
-	$ = jQuery.noConflict();
-</script>
-
-<!--
-<script <?php echo "src=".$plugin_url."/api/api.js"; ?> ></script>
-<script <?php echo "src=".$plugin_url."/view/view.js"; ?> ></script>
-<script <?php echo "src=".$plugin_url."/view/items_view.js"; ?> ></script>
-<script <?php echo "src=".$plugin_url."/view/login_view.js"; ?> ></script>
-<script <?php echo "src=".$plugin_url."/view/membership_view.js"; ?> ></script>
-<script <?php echo "src=".$plugin_url."/view/payment_view.js"; ?> ></script>
-<script <?php echo "src=".$plugin_url."/view/registration_view.js"; ?> ></script>
-<script <?php echo "src=".$plugin_url."/view/messages_view.js"; ?> ></script>
-<script <?php echo "src=".$plugin_url."/controller/routing.js"; ?> ></script>
-<script <?php echo "src=".$plugin_url."/controller/registration.js"; ?> ></script>
-<script <?php echo "src=".$plugin_url."/controller/login.js"; ?> ></script>
-<script <?php echo "src=".$plugin_url."/controller/forgot_password.js"; ?> ></script>
-<script <?php echo "src=".$plugin_url."/controller/membership.js"; ?> ></script>
-<script <?php echo "src=".$plugin_url."/controller/messages.js"; ?> ></script>
-<script <?php echo "src=".$plugin_url."/controller/items.js"; ?> ></script>
-<script <?php echo "src=".$plugin_url."/controller/payment.js"; ?> ></script>
--->

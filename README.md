@@ -103,6 +103,14 @@ Wordpress plugin for membership. Php &amp; jQuery.
 * path fixing
 * wp_enqueue for script and link
 
+###2 settembre 2016
+
+* path fixing on server
+
+###12 settembre 2016
+
+* https://www.youtube.com/watch?v=_uk_clTGWlE
+
 ##COSE DA FARE
 
 * ricevuta del pagamento

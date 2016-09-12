@@ -14,10 +14,6 @@
  * WORDPRESS PLUGIN
 */
 
-$plugin_path 	= __DIR__ . '/../../../..';
-$website_path 	= __DIR__ . '/..';
-$full_url 		= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
-
 function wpardeekmembership_menu()
 {
 	add_options_page(
@@ -29,8 +25,6 @@ function wpardeekmembership_menu()
 		);
 }
 add_action('admin_menu', 'wpardeekmembership_menu');
-
-
 
 function wpardeekmembership_option_page()
 {
@@ -366,7 +360,10 @@ function js_and_css(){
 
 	$plugin_url = plugin_dir_url(__FILE__);
 
+	wp_enqueue_media();
+
 	wp_enqueue_script('api', $plugin_url."/api/api.js" , false, '1.0', 'all');
+	wp_enqueue_script('upload_wordpress', $plugin_url."/api/upload_wordpress.js", false, '1.0', 'all');
 
 	wp_enqueue_script('all_view', $plugin_url."/view/view.js" , false, '1.0', 'all');
 	wp_enqueue_script('items_view', $plugin_url."/view/items_view.js" , false, '1.0', 'all');
@@ -384,6 +381,7 @@ function js_and_css(){
 	wp_enqueue_script('messages_view_controller', $plugin_url."/controller/messages.js" , false, '1.0', 'all');
 	wp_enqueue_script('items_controller', $plugin_url."/controller/items.js", false, '1.0', 'all');
 	wp_enqueue_script('payment_controller', $plugin_url."/controller/payment.js" , false, '1.0', 'all');
+
 
 }
 

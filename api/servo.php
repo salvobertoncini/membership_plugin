@@ -1,18 +1,14 @@
 <?php
 
-//if ( ! defined( 'ABSPATH' ) ) exit; 
-
 require_once '../vendor/autoload.php';
 
-$includes_path 	= __DIR__ . '/../../../..';
 $full_url 		= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
-
 global $wpdb;
 
 if(!isset($wpdb))
 {
-	require_once( $includes_path . '/wp-config.php' );
-	require_once( $includes_path . '/wp-includes/wp-db.php' );
+	require_once( '../../../..' . '/wp-config.php' );
+	require_once( '../../../..' . '/wp-includes/wp-db.php' );
 }
 
 define('ARDEEK_URL_PLUGIN_SITE', $full_url);

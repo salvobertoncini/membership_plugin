@@ -1,15 +1,14 @@
 <?php
 
-$website_path 	= __DIR__ . '/../../../..';
-$plugin_path 	= __DIR__ . '/..';
+$includes_path 	= __DIR__ . '/../../..';
 $full_url 		= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
 
 	global $wpdb;
 
 	if(!isset($wpdb))
 	{
-		require_once( $website_path . '/wp-config.php' );
-		require_once( $website_path . '/wp-includes/wp-db.php' );
+		require_once( $includes_path . '/wp-config.php' );
+		require_once( $includes_path . '/wp-includes/wp-db.php' );
 	}
 
 	$fileName 		= $_FILES["file1"]["name"]; // The file name
