@@ -360,10 +360,39 @@ function js_and_css(){
 
 	$plugin_url = plugin_dir_url(__FILE__);
 
+	wp_enqueue_script('api', $plugin_url."/api/api.js" , false, '1.0', 'all');
+
+	wp_enqueue_script('all_view', $plugin_url."/view/view.js" , false, '1.0', 'all');
+	wp_enqueue_script('items_view', $plugin_url."/view/items_view.js" , false, '1.0', 'all');
+	wp_enqueue_script('login_view', $plugin_url."/view/login_view.js" , false, '1.0', 'all');
+	wp_enqueue_script('membership_view', $plugin_url."/view/membership_view.js" , false, '1.0', 'all');
+	wp_enqueue_script('payment_view', $plugin_url."/view/payment_view.js" , false, '1.0', 'all');
+	wp_enqueue_script('registration_view', $plugin_url."/view/registration_view.js", false, '1.0', 'all');
+	wp_enqueue_script('messages_view', $plugin_url."/view/messages_view.js" , false, '1.0', 'all');
+
+	wp_enqueue_script('routing_controller', $plugin_url."/controller/routing.js" , false, '1.0', 'all');
+	wp_enqueue_script('registration_controller', $plugin_url."/controller/registration.js", false, '1.0', 'all');
+	wp_enqueue_script('login_controller', $plugin_url."/controller/login.js" , false, '1.0', 'all');
+	wp_enqueue_script('forgot_password_controller', $plugin_url."/controller/forgot_password.js", false, '1.0', 'all');
+	wp_enqueue_script('membership_controller', $plugin_url."/controller/membership.js", false, '1.0', 'all');
+	wp_enqueue_script('messages_view_controller', $plugin_url."/controller/messages.js" , false, '1.0', 'all');
+	wp_enqueue_script('items_controller', $plugin_url."/controller/items.js", false, '1.0', 'all');
+	wp_enqueue_script('payment_controller', $plugin_url."/controller/payment.js" , false, '1.0', 'all');
+	
+}
+
+//add_action('admin_init', 'js_and_css');
+
+add_action('admin_enqueue_scripts', 'enqueue_that');
+ 
+function enqueue_that() {
+
+	$plugin_url = plugin_dir_url(__FILE__);
+
 	wp_enqueue_media();
 
 	wp_enqueue_script('api', $plugin_url."/api/api.js" , false, '1.0', 'all');
-	wp_enqueue_script('upload_wordpress', $plugin_url."/api/upload_wordpress.js", false, '1.0', 'all');
+	wp_enqueue_script('upload_wordpress', $plugin_url."/api/upload_wordpress.js" , false, '1.0', 'all');
 
 	wp_enqueue_script('all_view', $plugin_url."/view/view.js" , false, '1.0', 'all');
 	wp_enqueue_script('items_view', $plugin_url."/view/items_view.js" , false, '1.0', 'all');
@@ -382,7 +411,4 @@ function js_and_css(){
 	wp_enqueue_script('items_controller', $plugin_url."/controller/items.js", false, '1.0', 'all');
 	wp_enqueue_script('payment_controller', $plugin_url."/controller/payment.js" , false, '1.0', 'all');
 
-
 }
-
-add_action('admin_init', 'js_and_css');

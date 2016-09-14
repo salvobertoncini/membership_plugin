@@ -1,8 +1,9 @@
 /****************************************************************************************/
-function _(el)
+/*function _(el)
 {
 	return document.getElementById(el);
 }
+*/
 
 function uploadFile()
 {

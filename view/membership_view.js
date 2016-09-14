@@ -193,6 +193,11 @@ function fill_member_view(user)
         var immagineProfilo = "http://placehold.it/350x350";
 
     post += "<tr><td><img id=\"img-settings\" src=\"" + immagineProfilo +"\" class=\"pv-main\"/></td><td></td></tr>";
+
+    post += "<tr><td><input type=\"button\" class=\"button button-secondary\" id=\"upload_image_button\" value=\"Upload new Image\"></td></tr>";
+
+    //post += "<tr><td><input id=\"upload_image\" type=\"text\" size=\"36\" name=\"ad_image\" value=\"http://\" /><input id=\"upload_image_button\" class=\"button\" type=\"button\" value=\"Upload Image\" /></tr></td>";
+
 	post += "<tr><td><b>Nome: </b></td><td>"+user.name+"</td></tr>";
 	post += "<tr><td><b>Cognome: </b></td><td>"+user.surname+"</td></tr>";
 	post += "<tr><td><b>Email: </b></td><td>"+user.email+"</td></tr>";
