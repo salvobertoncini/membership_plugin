@@ -51,16 +51,8 @@ function registration_step_1()
 	var education = $("#education").val();
 	var skills = $("#skills").val();
 	var bio = $("#bio").val();
-	if ($('#i').attr('src') != undefined && $('#i').attr('src') != 'undefined' && $('#i').attr('src') != '')
-	{
-		var avatar = $('#i').attr('src');
-		var splitted = splitSomething(avatar, ',');
-		var avatar = createImageForServer(splitted);
-	}
-	else
-		var avatar = 'undefined';
-
-
+	
+	var avatar = 'undefined';
 
 	if(check_something(website) && check_something(education) && check_something(skills) && check_something(bio))
 	{

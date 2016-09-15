@@ -246,9 +246,9 @@ function fill_edit_member_view(user)
 	post += "<b><i class=\"zmdi zmdi-image-o\"></i> Change Your Profile Image: </b><br>";
 
 	////////////////////////////////////////////////
-	post += "<tr><td><input type=\"button\" class=\"button button-secondary\" id=\"upload_image_button\" value=\"Upload new Image\"></td>";
-	post += "<td><input id=\"preview-name-image\" class=\"hidden\"></p></td></tr>";
-	post += "<tr><td><button class=\"button-primary\" onclick=\"uploadWPAvatar("+user.id+")\">Update Image</button></td></tr>";
+	post += "<tr><td><input type=\"button\" class=\"button button-secondary\" id=\"upload_image_button\" value=\"Select Image\">";
+	post += " <input id=\"preview-name-image\" class=\"hidden\"> ";
+	post += " <button id=\"update_image_button\" class=\"hidden\" onclick=\"uploadWPAvatar("+user.id+")\">Update Image</button></td></tr>";
 	////////////////////////////////////////////////
 	
 	//post += "<tr><td><div class=\"pmo-contact\" id=\"pmo-contact\"><ul  id=\"profilePhoto\"> </ul></div></td></tr>";

@@ -26,7 +26,8 @@ function upload_image_from_wp()
         custom_uploader.on('select', function() {
             attachment = custom_uploader.state().get('selection').first().toJSON();
             $('#upload_image').val(attachment.url);
-
+            $('#update_image_button').removeClass('hidden');
+            $('#update_image_button').addClass('button-primary');
             $('#preview-name-image').removeClass('hidden');
             $('#preview-name-image').val(attachment.url);
         });

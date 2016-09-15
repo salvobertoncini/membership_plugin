@@ -33,9 +33,6 @@ function registration_view_2()
 	post += "<tr><td><label for=\"skills\">Skills</label></td><td><input type=\"text\" name=\"skills\" id=\"skills\" value=\"\" class=\"regular-text\" /><br></td></tr>";
 	
 	post += "<tr><td><label for=\"bio\">Bio</label></td><td><input type=\"textarea\" name=\"bio\" id=\"bio\" value=\"\" class=\"regular-text\" /><br></td></tr>";
-	post += "<tr><td><label for=\"avatar\">Profile Pic</label></td>";
-
-	post += "<td><div class=\"pmo-contact\" id=\"pmo-contact\"><ul  id=\"profilePhoto\"> </ul><span><img id=\"i\" /></span><br><br><input id=\"f\" type=\"file\" /></div></td></tr>";
 
 	post += "<tr><td><input class=\"button-primary\" type=\"submit\" onclick=\"registration_step_1()\" name=\"reg_1\" value=\"Next Step\" /></td></tr><tr><td>";
 	post += "<a onclick=\"login_view()\">Login</a> | <a onclick=\"donate_view()\">Donate</a> </td></tr></table></form></div>";
