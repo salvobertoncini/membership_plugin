@@ -26,6 +26,26 @@ function uploadFile()
 	ajax.send(formdata);
 }
 
+function uploadWPAvatar(id)
+{
+	var userLogged = JSON.parse(localStorage.getItem('userLogged'));
+	var image = $('#preview-name-image').val();
+
+	//inserisco i dati in un json
+	object = JSON.stringify({ r: 'changeAvatar' , i: id, a: image });
+
+	ajaxPost(path+"api/servo.php", { js_object: object }, 
+		function(response)
+		{
+			console.log(response);
+
+			var resp = jQuery.parseJSON(response);
+		
+		}
+		);
+	$('#img-settings').attr("src", image);
+}
+
 function uploadAvatar(id)
 {
 	var userLogged = JSON.parse(localStorage.getItem('userLogged'));

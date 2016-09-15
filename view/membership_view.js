@@ -188,13 +188,13 @@ function fill_member_view(user)
 	var post = '';
 
 	if (user.avatar != "undefined")
-        var immagineProfilo = path + user.avatar +"";   
+        var immagineProfilo = user.avatar +"";   
     else 
         var immagineProfilo = "http://placehold.it/350x350";
 
     post += "<tr><td><img id=\"img-settings\" src=\"" + immagineProfilo +"\" class=\"pv-main\"/></td><td></td></tr>";
 
-    post += "<tr><td><input type=\"button\" class=\"button button-secondary\" id=\"upload_image_button\" value=\"Upload new Image\"></td></tr>";
+    //post += "<tr><td><input type=\"button\" class=\"button button-secondary\" id=\"upload_image_button\" value=\"Upload new Image\"></td></tr>";
 
     //post += "<tr><td><input id=\"upload_image\" type=\"text\" size=\"36\" name=\"ad_image\" value=\"http://\" /><input id=\"upload_image_button\" class=\"button\" type=\"button\" value=\"Upload Image\" /></tr></td>";
 
@@ -235,32 +235,23 @@ function fill_edit_member_view(user)
 	var img = '';
 
     if (user.avatar != "undefined")
-        var immagineProfilo = path+user.avatar;   
+        var immagineProfilo = user.avatar;   
     else 
         var immagineProfilo = "http://placehold.it/350x350";
+	
+	var post = '';
 
-    img += "<li><b><i class=\"zmdi zmdi-image\"></i> Current Profile Image: </b><br><br><img id=\"img-settings\" src=\"" + immagineProfilo +"\" class=\"pv-main\"/></li>";
+    post += "<b><i class=\"zmdi zmdi-image\"></i> Current Profile Image: </b><br><br><img id=\"img-settings\" src=\"" + immagineProfilo +"\" class=\"pv-main\"/><br>";
 
-    var post = '';
-
-	post += "<form id=\"upload_form\" enctype=\"multipart/form-data\" method=\"post\">";
 	post += "<b><i class=\"zmdi zmdi-image-o\"></i> Change Your Profile Image: </b><br>";
-  	post += "<input type=\"file\" name=\"file1\" id=\"file1\">";
-  	post += "<input type=\"button\" class=\"button-primary\" value=\"Upload File\" onclick=\"uploadAvatar("+user.id+")\"><br>";
-  	post += "<br><progress id=\"progressBar\" value=\"0\" max=\"100\" style=\"width:300px;\"></progress>";
-  	post += "<h3 id=\"status\"></h3>";
-  	post += "<p id=\"loaded_n_total\"></p>";
-	
-	post += "</form>";
-	post += "</li>";
-
-	$("#profilePhoto").html(img);
 
 	////////////////////////////////////////////////
-	post += "<tr><td><button class=\"button-primary\" onclick=\"open_media_uploader_image()\">UPLOAD WORDPRESS</button></td></tr>";
+	post += "<tr><td><input type=\"button\" class=\"button button-secondary\" id=\"upload_image_button\" value=\"Upload new Image\"></td>";
+	post += "<td><input id=\"preview-name-image\" class=\"hidden\"></p></td></tr>";
+	post += "<tr><td><button class=\"button-primary\" onclick=\"uploadWPAvatar("+user.id+")\">Update Image</button></td></tr>";
 	////////////////////////////////////////////////
 	
-	post += "<tr><td><div class=\"pmo-contact\" id=\"pmo-contact\"><ul  id=\"profilePhoto\"> </ul></div></td></tr>";
+	//post += "<tr><td><div class=\"pmo-contact\" id=\"pmo-contact\"><ul  id=\"profilePhoto\"> </ul></div></td></tr>";
 
 	post += "<tr><td><b>Nome: </b></td><td><input type=\"text\" name=\"name\" id=\"name\" value=\""+user.name+"\" class=\"regular-text\" /></td></tr>";
 	post += "<tr><td><b>Cognome: </b></td><td><input type=\"text\" name=\"surname\" id=\"surname\" value=\""+user.surname+"\" class=\"regular-text\" /></td></tr>";
@@ -304,6 +295,8 @@ function edit_member_view(id)
 	post +=" </table></form></div>";
 
 	$("#maindiv").html(post);
+
+	upload_image_from_wp();
 
 }
 

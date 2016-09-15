@@ -1,5 +1,6 @@
-jQuery(document).ready(function(){
- 
+function upload_image_from_wp()
+{
+    jQuery(document).ready(function(){
     var custom_uploader;
  
     $('#upload_image_button').on("click", function(e) {
@@ -25,6 +26,9 @@ jQuery(document).ready(function(){
         custom_uploader.on('select', function() {
             attachment = custom_uploader.state().get('selection').first().toJSON();
             $('#upload_image').val(attachment.url);
+
+            $('#preview-name-image').removeClass('hidden');
+            $('#preview-name-image').val(attachment.url);
         });
  
         //Open the uploader dialog
@@ -34,3 +38,5 @@ jQuery(document).ready(function(){
  
  
 });
+
+}

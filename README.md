@@ -115,6 +115,9 @@ Wordpress plugin for membership. Php &amp; jQuery.
 
 * PER EVITARE ON CLICK SU BOTTONE non appena caricata la vista, cioè dopo aver inserito l'html nella pagina, se la vista caricata corrisponde a admin_view, aggiungere la funzione all'evento on click del bottone per uploadare immagini wordpress. (funzione statica o anche dinamica passando come parametro l'id dell'oggetto). 
 
+###15 settembre 2016
+
+* upload from wordpress
 
 ##COSE DA FARE
 

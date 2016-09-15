@@ -58,6 +58,8 @@ function admin_view()
 
 	$("#secdiv").show();
 	$("#secdiv").html(post);
+
+	upload_image_from_wp();
 }
 
 function user_view()
@@ -112,6 +114,8 @@ function user_view()
 
 	$("#secdiv").show();
 	$("#secdiv").html(post);
+
+	upload_image_from_wp();
 }
 
 function init_personal_profile()
