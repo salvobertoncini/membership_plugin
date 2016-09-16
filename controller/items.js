@@ -46,6 +46,69 @@ function uploadWPAvatar(id)
 	$('#img-settings').attr("src", image);
 }
 
+function what_kind_of_file(filePath)
+{
+	var arr = splitSomething(filePath, '.');
+	var name = '';
+
+	for (var i in arr)
+		var type = i;
+
+	switch (type)
+	{
+		case 'png':
+			name = 'image';
+			break;
+
+		case 'jpg':
+			name = 'image';
+			break;
+
+		case 'mp4':
+			name = 'video';
+			break;
+
+		case 'avi':
+			name = 'video';
+			break;
+
+		default:
+			name = 'document';
+			break;
+	}
+
+	return name;
+}
+
+function uploadWPFile(id)
+{
+	var userLogged = JSON.parse(localStorage.getItem('userLogged'));
+	var filePath = $('#preview-file-image').val();
+
+	//var typefile = what_kind_of_file(filePath);
+
+	var id_role = $('#role_select').val();
+
+	//id role, filename, typefile, path
+
+	//inserisco i dati in un json
+	object = JSON.stringify({ r: 'uploadFile' , i: id, l: id_role, n: filePath,  t: 'document', p: filePath });
+
+	ajaxPost(path+"api/servo.php", { js_object: object }, 
+		function(response)
+		{
+			console.log(response);
+
+			var resp = jQuery.parseJSON(response);
+		
+		}
+		);
+
+	alert('caricamento riuscito');
+
+	items_view();
+}
+
 function uploadAvatar(id)
 {
 	var userLogged = JSON.parse(localStorage.getItem('userLogged'));
@@ -89,24 +152,22 @@ function abortHandler(event)
 
 function fill_upload_button()
 {
+	var user = JSON.parse(localStorage.getItem('userLogged'));
+
 	var post = '';
 
-	post += "<form id=\"upload_form\" enctype=\"multipart/form-data\" method=\"post\">";
-  	post += "<input type=\"file\" name=\"file1\" id=\"file1\">";
+	
   	
-  	post += " <b>Visibilità: </b><select id=\"role_select\">";
+  	post += " <tr><td><b>Upload New File </b><br>Visibilità: <select id=\"role_select\">";
 		post += "<option value=\"1\">Socio Ordinario</option>";
 		post += "<option value=\"2\">Socio Sostenitore</option>";
 		post += "<option value=\"3\">Socio Onorario</option>";
 		post += "<option value=\"4\">Direttivo</option>";
-		post += "</select> ";
+		post += "</select> </td>";
 	
-	post += "<br><br><input type=\"button\" class=\"button-primary\" value=\"Upload File\" onclick=\"uploadFile()\"><br>";
-  	post += "<br><progress id=\"progressBar\" value=\"0\" max=\"100\" style=\"width:300px;\"></progress>";
-  	post += "<h3 id=\"status\"></h3>";
-  	post += "<p id=\"loaded_n_total\"></p>";
-	
-	post += "</form>";
+	post += "<tr><td><input type=\"button\" class=\"button button-secondary\" id=\"select_file_button\" value=\"Select File\">";
+	post += " <input id=\"preview-file-image\" class=\"hidden\"> ";
+	post += " <button id=\"upload_file_button\" class=\"hidden\" onclick=\"uploadWPFile("+user.id+")\">Insert into DataBase</button></td></tr>";
 
 	return post;
 }

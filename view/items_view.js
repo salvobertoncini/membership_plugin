@@ -14,6 +14,8 @@ function items_view()
 	$('#progressBar').hide();
 	$("#maindiv").html(post);
 
+	upload_file_from_wp();
+
 }
 
 function delete_item_view(id)

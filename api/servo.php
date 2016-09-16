@@ -798,10 +798,10 @@ function upload_file($id, $id_role, $fileName, $fileType, $path)
 {
 	global $wpdb;
 
-	$type = checkTypeUploadedFile($fileType);
+	//$type = checkTypeUploadedFile($fileType);
 
 	$wpdb->query(
-	$wpdb->prepare("INSERT INTO {$wpdb->prefix}ardeek_contents(`id_user`, `id_role`, `type`, `name`, `path`) VALUES (%d, %d, %s, %s, %s)", $id, $id_role, $type, $fileName, $path));
+	$wpdb->prepare("INSERT INTO {$wpdb->prefix}ardeek_contents(`id_user`, `id_role`, `type`, `name`, `path`) VALUES (%d, %d, %s, %s, %s)", $id, $id_role, $fileType, $fileName, $path));
 
 	$risposta = array('response' => 'true');
 

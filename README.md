@@ -102,6 +102,7 @@ Wordpress plugin for membership. Php &amp; jQuery.
 
 * path fixing
 * wp_enqueue for script and link
+* installazione e disinstallazione plugin
 
 ###2 settembre 2016
 
@@ -122,6 +123,5 @@ Wordpress plugin for membership. Php &amp; jQuery.
 ##COSE DA FARE
 
 * ricevuta del pagamento
-* sistemare routing => GET
-* installazione e disinstallazione plugin, e aggiornamento
+* aggiornamento plugin
 * abbellire app
