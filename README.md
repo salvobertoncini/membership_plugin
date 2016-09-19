@@ -125,6 +125,10 @@ Wordpress plugin for membership. Php &amp; jQuery.
 * bug fixing auto increment query
 * password sicure bcrypt
 * bug fixing registrazione utente
+* bug fixing login utente
+* bug fixing pagamenti utente
+* bug fixing messaggi
+* bug fixing rimozione elemento "content / item"
 
 ##COSE DA FARE
 

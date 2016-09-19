@@ -31,7 +31,8 @@ function try_login()
 							//se admin pannello admin, altrimenti pannello utente
 							route();
 						}
-						alert("Utente non ancora verificato. Effettua la procedura di verifica tramite email.");
+						else
+							alert("Utente non ancora verificato. Contatta l'amministrazione.");
 					}
 					else
 						alert("Utente bloccato. Contatta l'amministrazione. ");

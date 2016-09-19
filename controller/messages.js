@@ -186,7 +186,7 @@ function init_message_dashboard(id)
 			else
 			{
 				//errore messaggio
-				message = "non ci sono messaggi da visualizzare";
+				message = "<tr><td><i>Non ci sono messaggi da visualizzare</i></td></tr>";
 				localStorage.setItem('message', message);
 			}
 						

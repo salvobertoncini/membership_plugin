@@ -674,7 +674,7 @@ function remove_item($id)
 	$wpdb->query(
 		$wpdb->prepare("DELETE FROM {$wpdb->prefix}ardeek_contents WHERE id = %d",$id));
 
-	unlink("../contents/".$name);
+	//unlink("../contents/".$name);
 
 	$risposta = array('response' => 'true');
 
@@ -921,11 +921,6 @@ function users_payments_made($id)
 	global $wpdb;
 
 	$myrows = $wpdb->get_results($wpdb->prepare("SELECT {$wpdb->prefix}ardeek_payments.id, name, surname, data, information FROM {$wpdb->prefix}ardeek_payments JOIN {$wpdb->prefix}ardeek_users ON ({$wpdb->prefix}ardeek_payments.id_user = {$wpdb->prefix}ardeek_users.id) WHERE {$wpdb->prefix}ardeek_payments.id_user = %d",$id));
-
-	$mysqli = db_connection();
-
-    //eseguo la query
-	$query = $mysqli->query($sql);
 
 	//verifichiamo che siano presenti records
 	foreach ($myrows as $row)

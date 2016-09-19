@@ -27,7 +27,7 @@ function admin_view()
 	post += "<div class=\"inside\">";
 
 	post += "<table class=\"form-table\">";
-	post += "<tr></td><td><td>Benvenuto "+user.name+" "+user.surname+", il tuo ruolo è: <b>"+ruolo+"</b>. </td></tr>";
+	post += "<tr><td>Benvenuto "+user.name+" "+user.surname+", il tuo ruolo è: <b>"+ruolo+"</b>. </td></tr>";
 
 
 	//remember payment
