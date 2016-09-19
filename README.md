@@ -120,8 +120,17 @@ Wordpress plugin for membership. Php &amp; jQuery.
 
 * upload from wordpress
 
+###19 settembre 2016
+
+* bug fixing auto increment query
+* password sicure bcrypt
+* bug fixing registrazione utente
+
 ##COSE DA FARE
 
 * ricevuta del pagamento
 * aggiornamento plugin
 * abbellire app
+
+###Bug fixing
+

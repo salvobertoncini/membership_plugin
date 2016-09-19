@@ -266,9 +266,8 @@ function login($email, $password)
 
 	$myrows = $wpdb->get_results(
 		$wpdb->prepare("
-			SELECT * FROM {$wpdb->prefix}ardeek_users WHERE email = %s AND password = %s ORDER BY id DESC",
-				$email, $password
-			)
+			SELECT * FROM {$wpdb->prefix}ardeek_users WHERE email = %s ORDER BY id DESC",
+				$email)
 		);
 
 	foreach ($myrows as $row)
@@ -281,7 +280,7 @@ function login($email, $password)
 		$surname        = $row->surname;
 		$birthday       = $row->birthday;
 		$email          = $row->email;
-		$password       = $row->password;
+		$xpassword       = $row->password;
 		$website        = $row->website;
 		$education      = $row->education;
 		$skills         = $row->skills;
@@ -292,9 +291,14 @@ function login($email, $password)
 		$enabled        = $row->enabled;
 		$paid        	= $row->paid;
 
-		$user = array('id'=> $id, 'id_role' => $id_role, 'id_permission' => $id_permission, 'name' => $name, 'surname' => $surname, 'birthday' => $birthday, 'email' => $email, 'password' => $password, 'website' => $website, 'education' => $education, 'skills' => $skills, 'bio' => $bio, 'avatar' => $avatar, 'token' => $token, 'verified' => $verified, 'enabled' => $enabled, 'paid' => $paid);
+		if(password_verify($password, $xpassword))
+		{
+			$user = array('id'=> $id, 'id_role' => $id_role, 'id_permission' => $id_permission, 'name' => $name, 'surname' => $surname, 'birthday' => $birthday, 'email' => $email, 'password' => $xpassword, 'website' => $website, 'education' => $education, 'skills' => $skills, 'bio' => $bio, 'avatar' => $avatar, 'token' => $token, 'verified' => $verified, 'enabled' => $enabled, 'paid' => $paid);
 
-		$risposta = array('response' => 'true', 'user' => $user);
+			$risposta = array('response' => 'true', 'user' => $user);
+		}
+		else
+			$risposta = array('response' => 'false', 'message' => 'email o password incorrect');
 	}
 
 	return $risposta;
@@ -311,7 +315,12 @@ function registration($name, $surname, $birthday, $email, $password, $website, $
 
 	//verifichiamo che siano presenti records
 	if($myrows)
+	{
 		$nothing = 0;
+		$ruolo = $id_role;
+		$permessi = $id_permission;
+		$verified = 0;
+	}
 	else
 	{
 		//se è il primo registrato, quindi l'admin
@@ -320,11 +329,17 @@ function registration($name, $surname, $birthday, $email, $password, $website, $
 		$verified = 1;
 	}
 
-	$wpdb->query(
-		$wpdb->prepare(
-			"INSERT INTO {$wpdb->prefix}ardeek_users (name, surname, birthday, email, password, website, education, skills, bio, token, id_permission, verified, enabled, paid, id_role, avatar) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %d, %d, %d, %d, %d, %s)", $name, $surname, $birthday, $email, $password, $website, $education, $skills, $bio, $token, $permessi, $verified, $enabled, $paid, $ruolo, $avatar));
+	$newpassword = password_hash($password, PASSWORD_BCRYPT);
 
-	$risposta = array('response' => 'true');
+	if($wpdb->query(
+		$wpdb->prepare(
+			"INSERT INTO {$wpdb->prefix}ardeek_users (name, surname, birthday, email, password, website, education, skills, bio, token, id_permission, verified, enabled, paid, id_role, avatar) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %d, %d, %d, %d, %d, %s)", $name, $surname, $birthday, $email, $newpassword, $website, $education, $skills, $bio, $token, $permessi, $verified, $enabled, $paid, $ruolo, $avatar)) === FALSE)
+	{
+		$risposta = array('response' => 'false', 'message' => 'error!!');
+	}
+	else
+		$risposta = array('response' => 'true');
+	
 
 	return $risposta;
 }

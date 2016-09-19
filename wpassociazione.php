@@ -47,13 +47,13 @@ function wpardeekmembership_activate()
 
 
 	$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_permissions (
-	`id` int(11) NOT NULL,
+	`id` int(11) NOT NULL AUTO_INCREMENT,
 	`name` varchar(255) NOT NULL,
 	PRIMARY KEY (`id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 
 	$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_roles (
-	`id` int(11) NOT NULL,
+	`id` int(11) NOT NULL AUTO_INCREMENT,
 	`id_permission` int(11) NOT NULL,
 	`name` varchar(255) NOT NULL,
 	`editable` tinyint(4) NOT NULL,
@@ -62,7 +62,7 @@ function wpardeekmembership_activate()
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 
 	$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_users (
-	`id` int(11) NOT NULL,
+	`id` int(11) NOT NULL AUTO_INCREMENT,
 	`id_permission` int(11) NOT NULL,
 	`id_role` int(11) NOT NULL,
 	`name` varchar(255) NOT NULL,
@@ -85,7 +85,7 @@ function wpardeekmembership_activate()
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 
 	$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_contents (
-	`id` int(11) NOT NULL,
+	`id` int(11) NOT NULL AUTO_INCREMENT,
 	`id_user` int(11) NOT NULL,
 	`id_role` int(11) NOT NULL,
 	`type` enum('image','video','document') NOT NULL,
@@ -97,7 +97,7 @@ function wpardeekmembership_activate()
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 
 	$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_membership (
-	`id` int(11) NOT NULL,
+	`id` int(11) NOT NULL AUTO_INCREMENT,
 	`name` varchar(255) NOT NULL,
 	`registered_office` text NOT NULL,
 	`op_headquarter` text NOT NULL,
@@ -115,7 +115,7 @@ function wpardeekmembership_activate()
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 
 	$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_messages (
-	`id` int(11) NOT NULL,
+	`id` int(11) NOT NULL AUTO_INCREMENT,
 	`id_user` int(11) NOT NULL,
 	`id_roles` int(11) NOT NULL,
 	`message` text NOT NULL,
@@ -125,7 +125,7 @@ function wpardeekmembership_activate()
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 
 	$wpdb->query("CREATE TABLE {$wpdb->prefix}ardeek_payments (
-	`id` int(11) NOT NULL,
+	`id` int(11) NOT NULL AUTO_INCREMENT,
 	`id_user` int(11) NOT NULL,
 	`data` date NOT NULL,
 	`information` text NOT NULL,
